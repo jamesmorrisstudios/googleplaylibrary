@@ -3,6 +3,7 @@ package com.jamesmorrisstudios.googleplaylibrary.activities;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -10,8 +11,11 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
 import com.jamesmorrisstudios.googleplaylibrary.R;
+import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.utilites.AdUsage;
+import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
+import com.squareup.otto.Subscribe;
 
 /**
  * Created by James on 5/11/2015.
@@ -26,6 +30,14 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     private int retryCount = 0;
     private boolean retryRunning = false;
 
+    private final Object busListener = new Object() {
+        @Subscribe
+        public void onSettingEvent(final GooglePlay.GooglePlayEvent event) {
+            BaseAdLauncherActivity.this.onGooglePlayEvent(event);
+        }
+    };
+
+
     /**
      * @param savedInstanceState
      */
@@ -38,6 +50,27 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             initInterstitialAd();
         }
         initOnCreate();
+        AdUsage.onCreate();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Bus.register(busListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Bus.unregister(busListener);
+    }
+
+    public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
+        switch(event) {
+            case SHOW_INTERSTITIAL:
+                showInterstitialAd();
+                break;
+        }
     }
 
     private void initBannerAd() {
@@ -88,11 +121,14 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
      */
     protected final void showInterstitialAd() {
         //Make sure we are using the interstitial ad and that its loaded
+        Log.v(TAG, "Requested interstitial");
         if (mInterstitialAd == null) {
+            Log.v(TAG, "No interstitial loaded");
             return;
         }
         //See if its too shown to show another ad
         if(!AdUsage.allowInterstitial()) {
+            Log.v(TAG, "Not enough time since last shown an add");
             return;
         }
         //Try and load the ad or retry as needed

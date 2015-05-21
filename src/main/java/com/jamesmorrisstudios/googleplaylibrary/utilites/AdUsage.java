@@ -7,6 +7,7 @@ import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
  * Created by James on 5/11/2015.
  */
 public class AdUsage {
+    private static boolean alreadyRunning = false;
     private static long lastInterstitialShownTimeStamp = 0;
     private static long minTimeBetween = AppUtil.getContext().getResources().getInteger(R.integer.interstitial_timeout) * 1000;
 
@@ -22,6 +23,13 @@ public class AdUsage {
      */
     public static void updateAdShowTimeStamp() {
         lastInterstitialShownTimeStamp = System.currentTimeMillis();
+    }
+
+    public static void onCreate() {
+        if(!alreadyRunning) {
+            updateAdShowTimeStamp();
+            alreadyRunning = true;
+        }
     }
 
     public static void reset() {

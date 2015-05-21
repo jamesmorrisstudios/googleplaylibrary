@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.jamesmorrisstudios.googleplaylibrary.R;
+import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 
 /**
  * Created by James on 5/11/2015.
@@ -97,6 +98,15 @@ public class GooglePlayUtils {
         whichString = whichString >= 0 && whichString < RES_IDS.length ? whichString : 0;
         int resId = RES_IDS[whichString];
         return ctx.getString(resId);
+    }
+
+    /**
+     * Gets the height of the smart banner style ad
+     *
+     * @return Height of the ad view
+     */
+    public static float getAdHeight() {
+        return AppUtil.getContext().getResources().getDimension(R.dimen.ad_height);
     }
 
 }

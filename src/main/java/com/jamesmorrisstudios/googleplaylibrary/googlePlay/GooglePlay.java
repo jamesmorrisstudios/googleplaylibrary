@@ -42,6 +42,10 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         return instance;
     }
 
+    public enum GooglePlayEvent {
+        SHOW_INTERSTITIAL;
+    }
+
     //Normal class flow below this
 
     // Are we expecting the result of a resolution flow?
