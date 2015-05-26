@@ -1,10 +1,16 @@
 package com.jamesmorrisstudios.googleplaylibrary.activities;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -12,7 +18,9 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
-import com.jamesmorrisstudios.googleplaylibrary.utilites.AdUsage;
+import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
+import com.jamesmorrisstudios.googleplaylibrary.util.IabHelper;
+import com.jamesmorrisstudios.googleplaylibrary.util.IabResult;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
 import com.squareup.otto.Subscribe;
@@ -37,6 +45,21 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     };
 
+    protected IInAppBillingService mService;
+    protected IabHelper mHelper;
+
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            mService = IInAppBillingService.Stub.asInterface(service);
+        }
+    };
 
     /**
      * @param savedInstanceState
@@ -45,6 +68,22 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main_ad);
+        //Start the IAP service connection
+        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+        // compute your public key and store it in base64EncodedPublicKey
+        mHelper = new IabHelper(this, getPublicKey());
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    // Oh noes, there was a problem.
+                    Log.d(TAG, "Problem setting up In-app Billing: " + result);
+                }
+                Log.d(TAG, "In app billing is setup and working: " + result);
+                // Hooray, IAB is fully set up!
+            }
+        });
         initBannerAd();
         if(getResources().getBoolean(R.bool.interstitial_enable)) {
             initInterstitialAd();
@@ -52,6 +91,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         initOnCreate();
         AdUsage.onCreate();
     }
+
+    protected abstract String getPublicKey();
 
     @Override
     public void onStart() {
@@ -63,6 +104,18 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onStop() {
         super.onStop();
         Bus.unregister(busListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mService != null) {
+            unbindService(mServiceConn);
+        }
+        if (mHelper != null) {
+            mHelper.dispose();
+        }
+        mHelper = null;
     }
 
     public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {

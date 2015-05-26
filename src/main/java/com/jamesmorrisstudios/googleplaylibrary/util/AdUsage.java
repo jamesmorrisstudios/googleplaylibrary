@@ -1,4 +1,4 @@
-package com.jamesmorrisstudios.googleplaylibrary.utilites;
+package com.jamesmorrisstudios.googleplaylibrary.util;
 
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
