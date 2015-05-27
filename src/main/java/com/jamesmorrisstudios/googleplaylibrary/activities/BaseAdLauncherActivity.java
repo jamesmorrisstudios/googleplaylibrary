@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdListener;
@@ -16,20 +20,28 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
+import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.GooglePlaySettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabHelper;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabResult;
+import com.jamesmorrisstudios.googleplaylibrary.util.Inventory;
+import com.jamesmorrisstudios.googleplaylibrary.util.Purchase;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
+import com.jamesmorrisstudios.utilitieslibrary.Utils;
 import com.squareup.otto.Subscribe;
 
 /**
  * Created by James on 5/11/2015.
  */
-public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity {
+public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity implements
+    GooglePlaySettingsFragment.OnGooglePlaySettingsListener {
     private static final String TAG = "BaseAdLauncherActivity";
+
+    private static final String REMOVE_ADS_SKU = "android.test.purchased";
 
     //ad management
     private AdView mAdView;
@@ -67,7 +79,22 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_main_ad);
+        if(AdUsage.isAlreadyRunning()) {
+            if(AdUsage.getAdsEnabled()) {
+                setContentView(R.layout.layout_main_ad);
+                startIABHelper();
+            } else {
+                setContentView(R.layout.layout_main);
+            }
+        } else {
+            setContentView(R.layout.layout_main_ad);
+            startIABHelper();
+            AdUsage.onCreate();
+        }
+        initOnCreate();
+    }
+
+    private void startIABHelper() {
         //Start the IAP service connection
         Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
@@ -77,22 +104,61 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
-                    // Oh noes, there was a problem.
                     Log.d(TAG, "Problem setting up In-app Billing: " + result);
                 }
                 Log.d(TAG, "In app billing is setup and working: " + result);
-                // Hooray, IAB is fully set up!
+                mHelper.queryInventoryAsync(false, mGotInventoryListener);
             }
         });
-        initBannerAd();
-        if(getResources().getBoolean(R.bool.interstitial_enable)) {
-            initInterstitialAd();
-        }
-        initOnCreate();
-        AdUsage.onCreate();
     }
 
     protected abstract String getPublicKey();
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            if (result.isFailure()) {
+                // Handle error
+                Utils.toastShort("Failed to purchase item");
+            } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
+                Utils.toastShort("Ads Removed");
+                hideAds();
+            }
+        }
+    };
+
+    // Get already purchased response
+    private IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            if (result.isFailure()) {
+                // handle error here
+                Log.v("TAG", "Error checking inventory: " + result);
+                initAds();
+            } else {
+                // does the user have the premium upgrade?
+                if(inventory.hasPurchase(REMOVE_ADS_SKU)) {
+                    Log.v("TAG", "onQueryInventoryFinished GOT A RESPONSE YES Premium");
+                    hideAds();
+                } else {
+                    Log.v("TAG", "onQueryInventoryFinished GOT A RESPONSE No Premium");
+                    initAds();
+                }
+
+            }
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
 
     @Override
     public void onStart() {
@@ -118,6 +184,36 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         mHelper = null;
     }
 
+    private void initAds() {
+        Log.v("TAG", "Showing ads");
+        AdUsage.setAdsEnabled(true);
+        initBannerAd();
+        if(getResources().getBoolean(R.bool.interstitial_enable)) {
+            initInterstitialAd();
+        }
+    }
+
+    private void hideAds() {
+        Log.v("TAG", "Hiding ads");
+        AdUsage.setAdsEnabled(false);
+        if(mAdView != null) {
+            mAdView.pause();
+            //LinearLayout adContainer = (LinearLayout) findViewById(R.id.adViewContainer);
+            //adContainer.removeAllViews();
+            //adContainer.requestLayout();
+            Log.v("TAG", "Ad container gone");
+            //LinearLayout toolbarContainer = (LinearLayout) findViewById(R.id.toolbarContainer);
+            //toolbarContainer.requestLayout();
+            //FrameLayout container = (FrameLayout) findViewById(R.id.container);
+            //container.requestLayout();
+        }
+    }
+
+    @Override
+    public void purchaseRemoveAds() {
+        mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, mPurchaseFinishedListener, "REMOVE_ADS_PURCHASE_TOKEN");
+    }
+
     public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
         switch(event) {
             case SHOW_INTERSTITIAL:
@@ -138,6 +234,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     .build();
 
             // Start loading the ad in the background.
+            mAdView.resume();
             mAdView.loadAd(adRequest);
         }
     }
@@ -230,5 +327,21 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             showInterstitialAd();
         }
     };
+
+    /**
+     * Gets the help fragment from the fragment manager.
+     * Creates the fragment if it does not exist yet.
+     *
+     * @return The fragment
+     */
+    @Override @NonNull
+    protected GooglePlaySettingsFragment getSettingsFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        GooglePlaySettingsFragment fragment = (GooglePlaySettingsFragment) fragmentManager.findFragmentByTag(SettingsFragment.TAG);
+        if (fragment == null) {
+            fragment = new GooglePlaySettingsFragment();
+        }
+        return fragment;
+    }
 
 }

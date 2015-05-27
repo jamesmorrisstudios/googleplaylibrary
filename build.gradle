@@ -48,7 +48,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.jamesmorrisstudios:appbaselibrary:1.0'
+    compile 'com.jamesmorrisstudios:appbaselibrary:1.1'
     compile 'com.google.android.gms:play-services-games:7.3.0'
     compile 'com.google.android.gms:play-services-ads:7.3.0'
 }
