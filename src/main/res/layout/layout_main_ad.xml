@@ -22,19 +22,12 @@
             app:popupTheme="@style/ThemeOverlay.toolbar">
         </android.support.v7.widget.Toolbar>
 
-        <LinearLayout
-            android:id="@+id/adViewContainer"
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                ads:adSize="SMART_BANNER"
-                ads:adUnitId="@string/banner_id" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="@string/banner_id" />
 
         <FrameLayout
             android:id="@+id/container"

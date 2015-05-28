@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/achievement_card"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
+    card_view:cardBackgroundColor="@color/primaryLight"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true">
+
+    <!-- Primary layout container -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dip">
+
+        <!-- Left side is image -->
+        <FrameLayout
+            android:id="@+id/achievement_icon_container"
+            android:layout_width="86dp"
+            android:layout_height="86dp">
+
+            <!-- Achievement icon -->
+            <ImageView
+                android:id="@+id/achievement_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true" />
+
+            <!-- Achievement icon progress bar for uncompleted incrementals -->
+            <com.jamesmorrisstudios.turnbasedlibrary.customViews.CircleProgressDeterminate
+                android:id="@+id/achievement_percentage_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/primaryLight" />
+
+            <!-- Achievement icon text percentage for uncompleted incrementals -->
+            <TextView
+                android:id="@+id/achievement_percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="50%"
+                android:textColor="@color/textDarkMain"
+                android:textSize="25sp"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <!-- Achievement title/name -->
+        <TextView
+            android:id="@+id/achievement_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/achievement_icon_container"
+            android:textColor="@color/textDarkMain"
+            android:textSize="15sp" />
+
+        <!-- Achievement Description -->
+        <TextView
+            android:id="@+id/achievement_description_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/achievement_title_text"
+            android:layout_toRightOf="@id/achievement_icon_container"
+            android:textColor="@color/textDarkMain"
+            android:textSize="12sp" />
+
+        <!-- Achievement xp gained -->
+        <TextView
+            android:id="@+id/achievement_xp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/achievement_icon_container"
+            android:textColor="@color/accent"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

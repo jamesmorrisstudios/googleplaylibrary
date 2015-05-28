@@ -60,12 +60,10 @@ public class Security {
         if (TextUtils.isEmpty(signedData) || TextUtils.isEmpty(base64PublicKey) ||
                 TextUtils.isEmpty(signature)) {
             Log.e(TAG, "Purchase verification failed: missing data.");
-            return true; //TODO false
+            return false;
         }
-        return true;
-
-        //PublicKey key = Security.generatePublicKey(base64PublicKey);
-        //return Security.verify(key, signedData, signature);
+        PublicKey key = Security.generatePublicKey(base64PublicKey);
+        return Security.verify(key, signedData, signature);
     }
 
     /**

@@ -9,10 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.android.gms.common.SignInButton;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
+import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
+import com.jamesmorrisstudios.utilitieslibrary.Bus;
+import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.squareup.otto.Subscribe;
 
 /**
  * Created by James on 5/26/2015.
@@ -43,6 +49,18 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
         googlePlaySettingsListener = null;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Bus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Bus.unregister(this);
+    }
+
     /**
      * Create view
      *
@@ -55,15 +73,60 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         Log.v("GooglePlaySettingsFragm", "On Create View");
+        addLoginButton(view);
         addRemoveAdsButton(view);
         addSettingsOptions(view);
         return view;
     }
 
+    private void addLoginButton(View view) {
+        View item = getActivity().getLayoutInflater().inflate(R.layout.layout_google_play_sign, null);
+        updateLoginButton(item);
+        getSettingsContainer(view).addView(item);
+    }
+
+    private void updateLoginButton(View view) {
+        final SignInButton signIn = (SignInButton)view.findViewById(R.id.sign_in_button);
+        final Button signOut = (Button)view.findViewById(R.id.sign_out_button);
+
+        if(GooglePlay.getInstance().isSignedIn()) {
+            signIn.setVisibility(View.GONE);
+            signOut.setVisibility(View.VISIBLE);
+            signOut.setEnabled(true);
+            signOut.setTextColor(getResources().getColor(R.color.textLightMain));
+            signOut.setAlpha(1.0f);
+            signOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utils.toastShort("Signed out of Google Play Games");
+                    GooglePlay.getInstance().signOut();
+                    signOut.setEnabled(false);
+                    signOut.setTextColor(getResources().getColor(R.color.textLightMain));
+                    signOut.setAlpha(0.5f);
+                }
+            });
+        } else {
+            signIn.setVisibility(View.VISIBLE);
+            signIn.setEnabled(true);
+            signIn.setAlpha(1.5f);
+            signIn.setSize(SignInButton.SIZE_WIDE);
+            signIn.setColorScheme(SignInButton.COLOR_DARK);
+            signOut.setVisibility(View.GONE);
+            signIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GooglePlay.getInstance().beginUserInitiatedSignIn();
+                    signIn.setEnabled(false);
+                    signIn.setAlpha(0.5f);
+                }
+            });
+        }
+    }
+
     private void addRemoveAdsButton(View view) {
-        View item = getActivity().getLayoutInflater().inflate(R.layout.layout_remove_ads, null);
-        Button button = (Button)item.findViewById(R.id.btn_remove_ads);
         if(AdUsage.getAdsEnabled()) {
+            View item = getActivity().getLayoutInflater().inflate(R.layout.layout_remove_ads, null);
+            Button button = (Button)item.findViewById(R.id.btn_remove_ads);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -73,18 +136,52 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
             button.setEnabled(true);
             button.setTextColor(getResources().getColor(R.color.textLightMain));
             button.setAlpha(1.0f);
+            getSettingsContainer(view).addView(item);
         } else {
-            button.setEnabled(false);
-            button.setTextColor(getResources().getColor(R.color.textLightMain));
-            button.setAlpha(0.5f);
+            View item = getActivity().getLayoutInflater().inflate(R.layout.layout_remove_ads_gone, null);
+
+            TextView text = (TextView)item.findViewById(R.id.ads_removed);
+            text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    googlePlaySettingsListener.testingConsumePurchase();
+                }
+            });
+
+            getSettingsContainer(view).addView(item);
         }
-        getSettingsContainer(view).addView(item);
+    }
+
+    @Subscribe
+    public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
+        switch(event) {
+            case SIGN_IN_SUCCESS:
+                View view = getView();
+                if(view != null) {
+                    updateLoginButton(view);
+                }
+                break;
+            case SIGN_IN_FAIL:
+                View view2 = getView();
+                if(view2 != null) {
+                    updateLoginButton(view2);
+                }
+                break;
+            case SIGN_OUT:
+                View view3 = getView();
+                if(view3 != null) {
+                    updateLoginButton(view3);
+                }
+                break;
+        }
     }
 
     /**
      *
      */
     public interface OnGooglePlaySettingsListener {
+
+        void testingConsumePurchase();
 
         /**
          *
