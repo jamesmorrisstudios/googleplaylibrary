@@ -7,5 +7,8 @@
     <string name="gamehelper_unknown_error">Unknown error.</string>
 
 
+    <string name="separator">/</string>
+    <string name="xp">xp</string>
+    <string name="percent_char">%</string>
 
 </resources>

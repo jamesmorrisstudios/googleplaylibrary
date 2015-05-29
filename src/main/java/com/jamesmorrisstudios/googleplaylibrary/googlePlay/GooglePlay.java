@@ -53,7 +53,8 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     public enum GooglePlayEvent {
-        SHOW_INTERSTITIAL, SIGN_IN_SUCCESS, SIGN_IN_FAIL, SIGN_OUT
+        SHOW_INTERSTITIAL, SIGN_IN_SUCCESS, SIGN_IN_FAIL, SIGN_OUT,
+        ACHIEVEMENTS_ITEMS_FAIL, ACHIEVEMENTS_ITEMS_READY
     }
 
     //Normal class flow below this

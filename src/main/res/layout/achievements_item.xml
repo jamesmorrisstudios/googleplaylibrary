@@ -34,7 +34,7 @@
                 android:layout_alignParentTop="true" />
 
             <!-- Achievement icon progress bar for uncompleted incrementals -->
-            <com.jamesmorrisstudios.turnbasedlibrary.customViews.CircleProgressDeterminate
+            <com.jamesmorrisstudios.utilitieslibrary.controls.CircleProgressDeterminate
                 android:id="@+id/achievement_percentage_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -56,6 +56,7 @@
 
         <!-- Achievement title/name -->
         <TextView
+            android:layout_marginLeft="4dp"
             android:id="@+id/achievement_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,16 +67,18 @@
 
         <!-- Achievement Description -->
         <TextView
+            android:layout_marginLeft="4dp"
             android:id="@+id/achievement_description_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/achievement_title_text"
             android:layout_toRightOf="@id/achievement_icon_container"
-            android:textColor="@color/textDarkMain"
+            android:textColor="@color/textDarkSecondary"
             android:textSize="12sp" />
 
         <!-- Achievement xp gained -->
         <TextView
+            android:layout_marginLeft="4dp"
             android:id="@+id/achievement_xp_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
