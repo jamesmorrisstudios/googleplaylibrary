@@ -42,6 +42,8 @@ public class AchievementsViewHolder extends BaseRecycleViewHolder {
 
     @Override
     protected void initItem(View view) {
+        CardView topLayout = (CardView) view.findViewById(R.id.achievement_card);
+        topLayout.setOnClickListener(this);
         title = (TextView) view.findViewById(R.id.achievement_title_text);
         description = (TextView) view.findViewById(R.id.achievement_description_text);
         xp = (TextView) view.findViewById(R.id.achievement_xp_text);

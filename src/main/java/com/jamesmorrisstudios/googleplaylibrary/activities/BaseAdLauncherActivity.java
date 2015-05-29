@@ -214,9 +214,9 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     @Override
-    public void onDestroy() {
+      public void onDestroy() {
         super.onDestroy();
-        GooglePlay.getInstance().onStop();
+        //GooglePlay.getInstance().onStop();
         if (mService != null) {
             unbindService(mServiceConn);
         }
@@ -236,7 +236,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             // Create an ad request. Check logcat output for the hashed device ID to
             // get test ads on a physical device. e.g.
             AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice("1DF30F3FB16CD733C2937A5531598396") //Nexus 5
+                    .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
                     .addTestDevice("5FE0C6962C9C4F8DD6F30B9B11CC0E42") //transformer prime
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Emulator
                     .build();

@@ -13,14 +13,16 @@
     app:slm_section_headerMarginStart="56dip">
 
     <!-- Icon -->
-    <ImageView
+    <com.jamesmorrisstudios.utilitieslibrary.controls.TintedImageView
         android:id="@+id/achievement_icon"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/menu_achievements" />
+        android:src="@drawable/menu_achievements_white"
+        android:scaleType="fitCenter"
+        android:tint="@color/textDarkMain" />
 
     <!-- Main Text -->
     <TextView

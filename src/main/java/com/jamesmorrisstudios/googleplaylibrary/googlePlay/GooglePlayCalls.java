@@ -20,7 +20,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     private static GooglePlayCalls instance = null;
 
     //Cached Data
-    private ArrayList<AchievementItem> achievements;
+    private ArrayList<AchievementItem> achievements = null;
 
     /**
      * Required private constructor to enforce singleton
@@ -45,6 +45,10 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
      * @param forceRefresh True to force a data refresh. Use only for user initiated refresh
      */
     public synchronized final void loadAchievements(boolean forceRefresh) {
+        if(hasAchievements() && !forceRefresh) {
+            Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_READY);
+            return;
+        }
         if(!GooglePlay.getInstance().isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_FAIL);
             return;
