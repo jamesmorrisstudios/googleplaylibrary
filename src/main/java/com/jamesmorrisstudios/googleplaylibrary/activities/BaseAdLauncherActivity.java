@@ -271,7 +271,22 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     @Override
     public void purchaseRemoveAds() {
-        mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, mPurchaseFinishedListener, "REMOVE_ADS_PURCHASE_TOKEN");
+        Utils.lockOrientationCurrent(this);
+        mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
+            public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+                if (result.isFailure()) {
+                    // Handle error
+                    Utils.toastShort("Failed to purchase item");
+                } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
+                    //TODO inspect that the payload and signature match!
+                    Preferences.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
+                    Utils.toastShort("Ads Removed");
+                    disableAds();
+                    restartActivity();
+                }
+                Utils.unlockOrientation(BaseAdLauncherActivity.this);
+            }
+        }, "REMOVE_ADS_PURCHASE_TOKEN");
     }
 
     @Override
