@@ -134,4 +134,8 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         Games.Achievements.increment(GooglePlay.getInstance().getApiClient(), achievementId, numberIncrements);
     }
 
+    public final void updateLeaderboard(@NonNull String leaderboardId, long value) {
+        Games.Leaderboards.submitScore(GooglePlay.getInstance().getApiClient(), leaderboardId, value);
+    }
+
 }

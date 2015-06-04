@@ -75,7 +75,7 @@ public class AchievementsFragment extends BaseRecycleListFragment {
         ViewHelper.setAlpha(overlayBackground, 0.0f);
 
         overlayCard = (CardView) getActivity().getLayoutInflater().inflate(R.layout.achievements_item, null);
-        RelativeLayout.LayoutParams paramsCard = new RelativeLayout.LayoutParams(Utils.getDipInt(300), Utils.getDipInt(120));
+        RelativeLayout.LayoutParams paramsCard = new RelativeLayout.LayoutParams(Utils.getDipInt(300), Utils.getDipInt(102));
         paramsCard.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
 

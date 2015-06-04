@@ -18,6 +18,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.games.Games;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
@@ -34,7 +35,7 @@ import com.jamesmorrisstudios.googleplaylibrary.util.Purchase;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
-import com.jamesmorrisstudios.utilitieslibrary.preferences.SecurePrefs;
+import com.jamesmorrisstudios.utilitieslibrary.preferences.Prefs;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -166,7 +167,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 Utils.toastShort("Failed to purchase item");
             } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
                 //TODO inspect that the payload and signature match!
-                SecurePrefs.putString(getCode(), getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
+                Prefs.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
                 Utils.toastShort("Ads Removed");
                 disableAds();
                 restartActivity();
@@ -248,7 +249,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     private void enableAds() {
         Log.v("TAG", "Showing ads");
-        SecurePrefs.putBoolean(getCode(), getResources().getString(R.string.settings_pref), "ENABLED", true);
+        Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
         AdUsage.setAdsEnabled(true);
         //Init Banner
         mAdView = (AdView) findViewById(R.id.adView);
@@ -282,7 +283,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     private void disableAds() {
         Log.v("TAG", "Hiding ads");
-        SecurePrefs.putBoolean(getCode(), getResources().getString(R.string.settings_pref), "ENABLED", false);
+        Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", false);
         AdUsage.setAdsEnabled(false);
         if(mAdView != null) {
             mAdView.pause();
@@ -299,7 +300,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     Utils.toastShort("Failed to purchase item");
                 } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
                     //TODO inspect that the payload and signature match!
-                    SecurePrefs.putString(getCode(), getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
+                    Prefs.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
                     Utils.toastShort("Ads Removed");
                     disableAds();
                     restartActivity();
@@ -341,7 +342,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     };
 
     private boolean getCacheEnableAds() {
-        return SecurePrefs.getBoolean(getCode(), getResources().getString(R.string.settings_pref), "ENABLED", true);
+        return Prefs.getBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
     }
 
     public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
@@ -445,7 +446,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     /**
-     * Gets the help fragment from the fragment manager.
+     * Gets the achievements fragment from the fragment manager.
      * Creates the fragment if it does not exist yet.
      *
      * @return The fragment
@@ -461,12 +462,22 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     /**
-     * Loads the help fragment into the main view
+     * Loads the achievements fragment into the main view
      */
     protected final void loadAchievementsFragment() {
         AchievementsFragment fragment = getAchievementsFragment();
         loadFragment(fragment, AchievementsFragment.TAG, true);
         getSupportFragmentManager().executePendingTransactions();
+    }
+
+    /**
+     * Loads the leaderboard fragment into the main view
+     */
+    protected final void loadLeaderboardsFragment() {
+        if(GooglePlay.getInstance().isSignedIn()) {
+            Intent intent = Games.Leaderboards.getAllLeaderboardsIntent(GooglePlay.getInstance().getApiClient());
+            startActivityForResult(intent, 1234);
+        }
     }
 
     @Override
@@ -479,15 +490,12 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onSignInSucceeded() {
         Log.v("Activity", "Sign in Succeeded");
         Bus.postEnum(GooglePlay.GooglePlayEvent.SIGN_IN_SUCCESS);
+        Games.setViewForPopups(GooglePlay.getInstance().getApiClient(), findViewById(R.id.toolbarContainer));
     }
 
     @Override
     public final boolean isGooglePlayServicesEnabled() {
         return playServicesEnabled;
-    }
-
-    private String getCode() {
-        return "CJdD3CjF74k2X7sOhvWYIcjIeQuvHKimUcRghz7F";
     }
 
 }
