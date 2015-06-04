@@ -126,4 +126,12 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         return -1;
     }
 
+    public final void unlockAchievement(@NonNull String achievementId) {
+        Games.Achievements.unlock(GooglePlay.getInstance().getApiClient(), achievementId);
+    }
+
+    public final void incrementAchievement(@NonNull String achievementId, int numberIncrements) {
+        Games.Achievements.increment(GooglePlay.getInstance().getApiClient(), achievementId, numberIncrements);
+    }
+
 }

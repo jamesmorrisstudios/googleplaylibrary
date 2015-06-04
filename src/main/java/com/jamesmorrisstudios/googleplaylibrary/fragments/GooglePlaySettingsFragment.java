@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
@@ -18,6 +17,7 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.nineoldandroids.view.ViewHelper;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -80,6 +80,9 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
     }
 
     private void addLoginButton(View view) {
+        if(!googlePlaySettingsListener.isGooglePlayServicesEnabled()){
+            return;
+        }
         View item = getActivity().getLayoutInflater().inflate(R.layout.layout_google_play_sign, null);
         updateLoginButton(item);
         getSettingsContainer(view).addView(item);
@@ -94,7 +97,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
             signOut.setVisibility(View.VISIBLE);
             signOut.setEnabled(true);
             signOut.setTextColor(getResources().getColor(R.color.textLightMain));
-            signOut.setAlpha(1.0f);
+            ViewHelper.setAlpha(signOut, 1.0f);
             signOut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -102,13 +105,13 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
                     GooglePlay.getInstance().signOut();
                     signOut.setEnabled(false);
                     signOut.setTextColor(getResources().getColor(R.color.textLightMain));
-                    signOut.setAlpha(0.5f);
+                    ViewHelper.setAlpha(signOut, 0.5f);
                 }
             });
         } else {
             signIn.setVisibility(View.VISIBLE);
             signIn.setEnabled(true);
-            signIn.setAlpha(1.5f);
+            ViewHelper.setAlpha(signIn, 1.0f);
             signIn.setSize(SignInButton.SIZE_WIDE);
             signIn.setColorScheme(SignInButton.COLOR_DARK);
             signOut.setVisibility(View.GONE);
@@ -117,13 +120,16 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
                 public void onClick(View v) {
                     GooglePlay.getInstance().beginUserInitiatedSignIn();
                     signIn.setEnabled(false);
-                    signIn.setAlpha(0.5f);
+                    ViewHelper.setAlpha(signIn, 0.5f);
                 }
             });
         }
     }
 
     private void addRemoveAdsButton(View view) {
+        if(!googlePlaySettingsListener.isGooglePlayServicesEnabled()){
+            return;
+        }
         if(AdUsage.getAdsEnabled()) {
             View item = getActivity().getLayoutInflater().inflate(R.layout.layout_remove_ads, null);
             Button button = (Button)item.findViewById(R.id.btn_remove_ads);
@@ -135,11 +141,11 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
             });
             button.setEnabled(true);
             button.setTextColor(getResources().getColor(R.color.textLightMain));
-            button.setAlpha(1.0f);
+            ViewHelper.setAlpha(button, 1.0f);
             getSettingsContainer(view).addView(item);
         } else {
             View item = getActivity().getLayoutInflater().inflate(R.layout.layout_remove_ads_gone, null);
-
+/*
             TextView text = (TextView)item.findViewById(R.id.ads_removed);
             text.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -147,7 +153,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
                     googlePlaySettingsListener.testingConsumePurchase();
                 }
             });
-
+*/
             getSettingsContainer(view).addView(item);
         }
     }
@@ -187,6 +193,8 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
          *
          */
         void purchaseRemoveAds();
+
+        boolean isGooglePlayServicesEnabled();
     }
 
 }

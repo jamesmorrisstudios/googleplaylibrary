@@ -22,6 +22,9 @@ uploadArchives {
 }
 
 repositories {
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
     mavenLocal()
     mavenCentral()
 }
@@ -33,7 +36,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 10
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -51,4 +54,5 @@ dependencies {
     compile 'com.jamesmorrisstudios:appbaselibrary:1.1'
     compile 'com.google.android.gms:play-services-games:7.5.0'
     compile 'com.google.android.gms:play-services-ads:7.5.0'
+    compile 'com.nineoldandroids:library:2.4.0'
 }

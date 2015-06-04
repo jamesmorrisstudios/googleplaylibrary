@@ -1,19 +1,19 @@
 package com.jamesmorrisstudios.googleplaylibrary.fragments;
 
-import android.animation.Animator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.images.ImageManager;
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
-import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementHeader;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementItem;
@@ -26,6 +26,8 @@ import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
 import com.jamesmorrisstudios.utilitieslibrary.animator.AnimatorControl;
 import com.jamesmorrisstudios.utilitieslibrary.animator.AnimatorEndListener;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.view.ViewHelper;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -53,12 +55,24 @@ public class AchievementsFragment extends BaseRecycleListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RelativeLayout parent = (RelativeLayout) view;
+        if(!(view instanceof ViewGroup)) {
+            return;
+        }
+        ViewGroup viewGroup = (ViewGroup) view;
+        RelativeLayout parent = null;
+        if(viewGroup instanceof RelativeLayout) {
+            parent = (RelativeLayout) view;
+        } else if(viewGroup.getChildCount() == 1 && viewGroup.getChildAt(0) instanceof RelativeLayout) {
+            parent = (RelativeLayout) viewGroup.getChildAt(0);
+        }
+        if(parent == null) {
+            return;
+        }
         overlayBackground = new View(getActivity().getApplicationContext());
         RelativeLayout.LayoutParams paramsBackground = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         overlayBackground.setLayoutParams(paramsBackground);
         overlayBackground.setBackgroundColor(getResources().getColor(R.color.background_material_light));
-        overlayBackground.setAlpha(0.0f);
+        ViewHelper.setAlpha(overlayBackground, 0.0f);
 
         overlayCard = (CardView) getActivity().getLayoutInflater().inflate(R.layout.achievements_item, null);
         RelativeLayout.LayoutParams paramsCard = new RelativeLayout.LayoutParams(Utils.getDipInt(300), Utils.getDipInt(120));
@@ -66,7 +80,7 @@ public class AchievementsFragment extends BaseRecycleListFragment {
 
 
         overlayCard.setLayoutParams(paramsCard);
-        overlayCard.setAlpha(0.0f);
+        ViewHelper.setAlpha(overlayCard, 0.0f);
         overlayHolder = new AchievementsViewHolder(overlayCard, false, null, ImageManager.create(getActivity().getApplicationContext()));
 
         overlayBackground.setVisibility(View.GONE);

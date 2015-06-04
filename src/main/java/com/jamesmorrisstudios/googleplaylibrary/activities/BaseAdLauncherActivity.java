@@ -16,10 +16,14 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.AchievementsFragment;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayFragment;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayMainFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.GooglePlaySettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
@@ -30,7 +34,7 @@ import com.jamesmorrisstudios.googleplaylibrary.util.Purchase;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
-import com.jamesmorrisstudios.utilitieslibrary.preferences.Preferences;
+import com.jamesmorrisstudios.utilitieslibrary.preferences.SecurePrefs;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -38,10 +42,13 @@ import com.squareup.otto.Subscribe;
  */
 public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity implements
         GooglePlaySettingsFragment.OnGooglePlaySettingsListener,
-        GooglePlay.GameHelperListener {
+        GooglePlay.GameHelperListener,
+        BaseGooglePlayFragment.OnGooglePlayListener,
+        BaseGooglePlayMainFragment.OnGooglePlayListener {
     private static final String TAG = "BaseAdLauncherActivity";
-
     private static final String REMOVE_ADS_SKU = "remove_ads_1";
+
+    private boolean playServicesEnabled = false;
 
     //ad management
     private AdView mAdView;
@@ -79,37 +86,47 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(AdUsage.isAlreadyRunning()) {
-            //App is already open
-            if(AdUsage.getAdsEnabled()) {
-                //Ads enabled
-                setContentView(R.layout.layout_main_ad);
-                enableAds();
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode == ConnectionResult.SUCCESS){
+            playServicesEnabled = true;
+        }
+        if(playServicesEnabled) {
+            if(AdUsage.isAlreadyRunning()) {
+                //App is already open
+                if(AdUsage.getAdsEnabled()) {
+                    //Ads enabled
+                    setContentView(R.layout.layout_main_ad);
+                    enableAds();
+                } else {
+                    //Ads disabled
+                    setContentView(R.layout.layout_main);
+                    disableAds();
+                }
             } else {
-                //Ads disabled
-                setContentView(R.layout.layout_main);
-                disableAds();
+                //First launch
+                AdUsage.onCreate();
+                //Check the cache if ads are enabled or not. If the user used root to change this we will
+                //overwrite it after checking the IAP helper
+                if(getCacheEnableAds()) {
+                    //Ads Enabled
+                    setContentView(R.layout.layout_main_ad);
+                    enableAds();
+                } else {
+                    //Ads Disabled
+                    setContentView(R.layout.layout_main);
+                    disableAds();
+                }
+            }
+            startIABHelper();
+            GooglePlay.getInstance().init(this, GooglePlay.CLIENT_GAMES);
+            if (GooglePlay.getInstance().isFirstLaunch()) {
+                GooglePlay.getInstance().setup(this);
+                GooglePlay.getInstance().setHasLaunched();
             }
         } else {
-            //First launch
-            AdUsage.onCreate();
-            //Check the cache if ads are enabled or not. If the user used root to change this we will
-            //overwrite it after checking the IAP helper
-            if(getCacheEnableAds()) {
-                //Ads Enabled
-                setContentView(R.layout.layout_main_ad);
-                enableAds();
-            } else {
-                //Ads Disabled
-                setContentView(R.layout.layout_main);
-                disableAds();
-            }
-        }
-        startIABHelper();
-        GooglePlay.getInstance().init(this, GooglePlay.CLIENT_GAMES);
-        if(GooglePlay.getInstance().isFirstLaunch()) {
-            GooglePlay.getInstance().setup(this);
-            GooglePlay.getInstance().setHasLaunched();
+            //Ads Disabled as we have no Google Play Services
+            setContentView(R.layout.layout_main);
+            disableAds();
         }
         initOnCreate();
     }
@@ -149,7 +166,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 Utils.toastShort("Failed to purchase item");
             } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
                 //TODO inspect that the payload and signature match!
-                Preferences.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
+                SecurePrefs.putString(getCode(), getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
                 Utils.toastShort("Ads Removed");
                 disableAds();
                 restartActivity();
@@ -202,8 +219,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onStart() {
         super.onStart();
         Bus.register(busListener);
-        if(!GooglePlay.getInstance().isSignedIn()) {
-            GooglePlay.getInstance().onStart(this);
+        if(playServicesEnabled) {
+            if (!GooglePlay.getInstance().isSignedIn()) {
+                GooglePlay.getInstance().onStart(this);
+            }
         }
     }
 
@@ -216,19 +235,20 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
       public void onDestroy() {
         super.onDestroy();
-        //GooglePlay.getInstance().onStop();
-        if (mService != null) {
-            unbindService(mServiceConn);
+        if(playServicesEnabled) {
+            if (mService != null) {
+                unbindService(mServiceConn);
+            }
+            if (mHelper != null) {
+                mHelper.dispose();
+            }
+            mHelper = null;
         }
-        if (mHelper != null) {
-            mHelper.dispose();
-        }
-        mHelper = null;
     }
 
     private void enableAds() {
         Log.v("TAG", "Showing ads");
-        Preferences.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
+        SecurePrefs.putBoolean(getCode(), getResources().getString(R.string.settings_pref), "ENABLED", true);
         AdUsage.setAdsEnabled(true);
         //Init Banner
         mAdView = (AdView) findViewById(R.id.adView);
@@ -262,7 +282,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     private void disableAds() {
         Log.v("TAG", "Hiding ads");
-        Preferences.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", false);
+        SecurePrefs.putBoolean(getCode(), getResources().getString(R.string.settings_pref), "ENABLED", false);
         AdUsage.setAdsEnabled(false);
         if(mAdView != null) {
             mAdView.pause();
@@ -279,7 +299,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     Utils.toastShort("Failed to purchase item");
                 } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
                     //TODO inspect that the payload and signature match!
-                    Preferences.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
+                    SecurePrefs.putString(getCode(), getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
                     Utils.toastShort("Ads Removed");
                     disableAds();
                     restartActivity();
@@ -321,7 +341,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     };
 
     private boolean getCacheEnableAds() {
-        return Preferences.getBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
+        return SecurePrefs.getBoolean(getCode(), getResources().getString(R.string.settings_pref), "ENABLED", true);
     }
 
     public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
@@ -459,6 +479,15 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onSignInSucceeded() {
         Log.v("Activity", "Sign in Succeeded");
         Bus.postEnum(GooglePlay.GooglePlayEvent.SIGN_IN_SUCCESS);
+    }
+
+    @Override
+    public final boolean isGooglePlayServicesEnabled() {
+        return playServicesEnabled;
+    }
+
+    private String getCode() {
+        return "CJdD3CjF74k2X7sOhvWYIcjIeQuvHKimUcRghz7F";
     }
 
 }
