@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -20,8 +19,8 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementItem;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementContainer;
-import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementsAdapter;
-import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementsViewHolder;
+import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementAdapter;
+import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementViewHolder;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
 import com.jamesmorrisstudios.utilitieslibrary.animator.AnimatorControl;
@@ -35,15 +34,15 @@ import java.util.ArrayList;
 /**
  * Created by James on 5/27/2015.
  */
-public class AchievementsFragment extends BaseRecycleListFragment {
+public class AchievementFragment extends BaseRecycleListFragment {
     public static final String TAG = "AchievementsFragment";
     private View overlayBackground;
     private CardView overlayCard;
-    private AchievementsViewHolder overlayHolder;
+    private AchievementViewHolder overlayHolder;
 
     @Override
     protected BaseRecycleAdapter getAdapter(int i, BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
-        return new AchievementsAdapter(i, onItemClickListener);
+        return new AchievementAdapter(i, onItemClickListener);
     }
 
     /**
@@ -74,14 +73,14 @@ public class AchievementsFragment extends BaseRecycleListFragment {
         overlayBackground.setBackgroundColor(getResources().getColor(R.color.background_material_light));
         ViewHelper.setAlpha(overlayBackground, 0.0f);
 
-        overlayCard = (CardView) getActivity().getLayoutInflater().inflate(R.layout.achievements_item, null);
+        overlayCard = (CardView) getActivity().getLayoutInflater().inflate(R.layout.achievement_item, null);
         RelativeLayout.LayoutParams paramsCard = new RelativeLayout.LayoutParams(Utils.getDipInt(300), Utils.getDipInt(102));
         paramsCard.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
 
         overlayCard.setLayoutParams(paramsCard);
         ViewHelper.setAlpha(overlayCard, 0.0f);
-        overlayHolder = new AchievementsViewHolder(overlayCard, false, null, ImageManager.create(getActivity().getApplicationContext()));
+        overlayHolder = new AchievementViewHolder(overlayCard, false, null, ImageManager.create(getActivity().getApplicationContext()));
 
         overlayBackground.setVisibility(View.GONE);
         overlayCard.setVisibility(View.GONE);
@@ -167,7 +166,12 @@ public class AchievementsFragment extends BaseRecycleListFragment {
 
     @Override
     public void onBack() {
+        GooglePlayCalls.getInstance().clearAchievementsCache();
+    }
 
+    @Override
+    public boolean showToolbarTitle() {
+        return true;
     }
 
     @Override

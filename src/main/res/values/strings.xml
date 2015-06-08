@@ -11,4 +11,15 @@
     <string name="xp">xp</string>
     <string name="percent_char">%</string>
 
+    <string-array name="leaderboard_span">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>All Time</item>
+    </string-array>
+
+    <string-array name="leaderboard_collection">
+        <item>My Circles</item>
+        <item>Public</item>
+    </string-array>
+
 </resources>

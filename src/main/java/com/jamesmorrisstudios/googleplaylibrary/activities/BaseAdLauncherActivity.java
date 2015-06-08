@@ -9,7 +9,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdListener;
@@ -22,10 +26,11 @@ import com.google.android.gms.games.Games;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.fragments.AchievementsFragment;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.AchievementFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayMainFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.GooglePlaySettingsFragment;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardMetaFragment;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabHelper;
@@ -35,6 +40,7 @@ import com.jamesmorrisstudios.googleplaylibrary.util.Purchase;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 import com.jamesmorrisstudios.utilitieslibrary.preferences.Prefs;
 import com.squareup.otto.Subscribe;
 
@@ -45,11 +51,15 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         GooglePlaySettingsFragment.OnGooglePlaySettingsListener,
         GooglePlay.GameHelperListener,
         BaseGooglePlayFragment.OnGooglePlayListener,
-        BaseGooglePlayMainFragment.OnGooglePlayListener {
+        BaseGooglePlayMainFragment.OnGooglePlayListener,
+        LeaderboardMetaFragment.OnLeaderboardMetaListener {
     private static final String TAG = "BaseAdLauncherActivity";
     private static final String REMOVE_ADS_SKU = "remove_ads_1";
 
     private boolean playServicesEnabled = false;
+
+    private AppCompatSpinner spinnerSpan;
+    private AppCompatSpinner spinnerCollection;
 
     //ad management
     private AdView mAdView;
@@ -130,6 +140,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             disableAds();
         }
         initOnCreate();
+        initToolbarSpinners();
     }
 
     private void startIABHelper() {
@@ -234,7 +245,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     @Override
-      public void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if(playServicesEnabled) {
             if (mService != null) {
@@ -353,6 +364,83 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     }
 
+    private void initToolbarSpinners() {
+        spinnerSpan = (AppCompatSpinner) findViewById(R.id.leaderboard_span);
+        spinnerCollection = (AppCompatSpinner) findViewById(R.id.leaderboard_collection);
+
+        final ArrayAdapter spinnerTimesAdapter = ArrayAdapter.createFromResource(AppUtil.getContext(), R.array.leaderboard_span, R.layout.simple_drop_down_item);
+        final ArrayAdapter spinnerCollectionAdapter = ArrayAdapter.createFromResource(AppUtil.getContext(), R.array.leaderboard_collection, R.layout.simple_drop_down_item);
+        spinnerTimesAdapter.setDropDownViewResource(R.layout.simple_drop_down_item);
+        spinnerCollectionAdapter.setDropDownViewResource(R.layout.simple_drop_down_item);
+
+        spinnerSpan.setAdapter(spinnerTimesAdapter);
+        spinnerCollection.setAdapter(spinnerCollectionAdapter);
+
+        spinnerSpan.setSelection(2);
+        spinnerCollection.setSelection(1);
+    }
+
+    @Override
+    public void setLeaderboardSpinnerVisibility(boolean visible) {
+        if(visible) {
+            spinnerSpan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARD_SPINNER_CHANGE);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+            spinnerCollection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARD_SPINNER_CHANGE);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+            spinnerSpan.setVisibility(View.VISIBLE);
+            spinnerCollection.setVisibility(View.VISIBLE);
+        } else {
+            spinnerSpan.setOnItemSelectedListener(null);
+            spinnerCollection.setOnItemSelectedListener(null);
+            spinnerSpan.setVisibility(View.GONE);
+            spinnerCollection.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public GooglePlay.Span getLeaderboardSpinnerSpan() {
+        switch(spinnerSpan.getSelectedItemPosition()) {
+            case 0:
+                return GooglePlay.Span.DAILY;
+            case 1:
+                return GooglePlay.Span.WEEKLY;
+            case 2:
+                return GooglePlay.Span.ALL_TIME;
+            default:
+                return GooglePlay.Span.ALL_TIME;
+        }
+    }
+
+    @Override
+    public GooglePlay.Collection getLeaderboardSpinnerCollection() {
+        switch(spinnerCollection.getSelectedItemPosition()) {
+            case 0:
+                return GooglePlay.Collection.SOCIAL;
+            case 1:
+                return GooglePlay.Collection.PUBLIC;
+            default:
+                return GooglePlay.Collection.PUBLIC;
+        }
+    }
+
     /**
      * Request an interstitial ad be loaded (not shown)
      */
@@ -452,11 +540,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
      * @return The fragment
      */
     @NonNull
-    protected final AchievementsFragment getAchievementsFragment() {
+    protected final AchievementFragment getAchievementFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        AchievementsFragment fragment = (AchievementsFragment) fragmentManager.findFragmentByTag(AchievementsFragment.TAG);
+        AchievementFragment fragment = (AchievementFragment) fragmentManager.findFragmentByTag(AchievementFragment.TAG);
         if (fragment == null) {
-            fragment = new AchievementsFragment();
+            fragment = new AchievementFragment();
         }
         return fragment;
     }
@@ -464,20 +552,34 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     /**
      * Loads the achievements fragment into the main view
      */
-    protected final void loadAchievementsFragment() {
-        AchievementsFragment fragment = getAchievementsFragment();
-        loadFragment(fragment, AchievementsFragment.TAG, true);
+    protected final void loadAchievementFragment() {
+        AchievementFragment fragment = getAchievementFragment();
+        loadFragment(fragment, AchievementFragment.TAG, true);
         getSupportFragmentManager().executePendingTransactions();
+    }
+
+    @NonNull
+    protected final LeaderboardMetaFragment getLeaderboardMetaFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        LeaderboardMetaFragment fragment = (LeaderboardMetaFragment) fragmentManager.findFragmentByTag(LeaderboardMetaFragment.TAG);
+        if (fragment == null) {
+            fragment = new LeaderboardMetaFragment();
+        }
+        return fragment;
     }
 
     /**
      * Loads the leaderboard fragment into the main view
      */
-    protected final void loadLeaderboardsFragment() {
-        if(GooglePlay.getInstance().isSignedIn()) {
-            Intent intent = Games.Leaderboards.getAllLeaderboardsIntent(GooglePlay.getInstance().getApiClient());
-            startActivityForResult(intent, 1234);
-        }
+    protected final void loadLeaderboardMetaFragment() {
+        LeaderboardMetaFragment fragment = getLeaderboardMetaFragment();
+        loadFragment(fragment, LeaderboardMetaFragment.TAG, true);
+        getSupportFragmentManager().executePendingTransactions();
+
+        //if(GooglePlay.getInstance().isSignedIn()) {
+        //    Intent intent = Games.Leaderboards.getAllLeaderboardsIntent(GooglePlay.getInstance().getApiClient());
+        //    startActivityForResult(intent, 1234);
+        //}
     }
 
     @Override

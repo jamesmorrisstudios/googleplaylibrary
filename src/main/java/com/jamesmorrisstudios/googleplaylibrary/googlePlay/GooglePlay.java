@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
@@ -54,7 +55,66 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 
     public enum GooglePlayEvent {
         SHOW_INTERSTITIAL, SIGN_IN_SUCCESS, SIGN_IN_FAIL, SIGN_OUT,
-        ACHIEVEMENTS_ITEMS_FAIL, ACHIEVEMENTS_ITEMS_READY
+        ACHIEVEMENTS_ITEMS_FAIL, ACHIEVEMENTS_ITEMS_READY,
+        LEADERBOARDS_META_FAIL, LEADERBOARDS_META_READY,
+        LEADERBOARDS_FAIL, LEADERBOARDS_READY,
+        LEADERBOARD_SPINNER_CHANGE
+    }
+
+    public enum Span {
+        DAILY, WEEKLY, ALL_TIME;
+
+        public int getInt() {
+            switch(ordinal()) {
+                case 0:
+                    return LeaderboardVariant.TIME_SPAN_DAILY;
+                case 1:
+                    return LeaderboardVariant.TIME_SPAN_WEEKLY;
+                case 2:
+                    return LeaderboardVariant.TIME_SPAN_ALL_TIME;
+                default:
+                    return LeaderboardVariant.TIME_SPAN_ALL_TIME;
+            }
+        }
+
+        public static Span getFromInt(int variantInt) {
+            switch(variantInt) {
+                case LeaderboardVariant.TIME_SPAN_DAILY:
+                    return DAILY;
+                case LeaderboardVariant.TIME_SPAN_WEEKLY:
+                    return WEEKLY;
+                case LeaderboardVariant.TIME_SPAN_ALL_TIME:
+                    return ALL_TIME;
+                default:
+                    return ALL_TIME;
+            }
+        }
+    }
+
+    public enum Collection {
+        PUBLIC, SOCIAL;
+
+        public int getInt() {
+            switch(ordinal()) {
+                case 0:
+                    return LeaderboardVariant.COLLECTION_PUBLIC;
+                case 1:
+                    return LeaderboardVariant.COLLECTION_SOCIAL;
+                default:
+                    return LeaderboardVariant.COLLECTION_PUBLIC;
+            }
+        }
+
+        public static Collection getFromInt(int variantInt) {
+            switch(variantInt) {
+                case LeaderboardVariant.COLLECTION_PUBLIC:
+                    return PUBLIC;
+                case LeaderboardVariant.COLLECTION_SOCIAL:
+                    return SOCIAL;
+                default:
+                    return PUBLIC;
+            }
+        }
     }
 
     //Normal class flow below this

@@ -18,7 +18,7 @@ import com.jamesmorrisstudios.utilitieslibrary.controls.ProgressBarDeterminate;
 /**
  * Created by James on 5/27/2015.
  */
-public class AchievementsViewHolder extends BaseRecycleViewHolder {
+public class AchievementViewHolder extends BaseRecycleViewHolder {
     private ImageManager imageManager;
     //Header
     private TextView headerTitle, headerCount;
@@ -28,7 +28,7 @@ public class AchievementsViewHolder extends BaseRecycleViewHolder {
     private ImageView image;
     private CircleProgressDeterminate circle;
 
-    public AchievementsViewHolder(View view, boolean isHeader, cardClickListener mListener, ImageManager imageManager) {
+    public AchievementViewHolder(View view, boolean isHeader, cardClickListener mListener, ImageManager imageManager) {
         super(view, isHeader, mListener);
         this.imageManager = imageManager;
     }
