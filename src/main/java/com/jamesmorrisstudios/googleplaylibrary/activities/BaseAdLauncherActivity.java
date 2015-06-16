@@ -30,6 +30,7 @@ import com.jamesmorrisstudios.googleplaylibrary.fragments.AchievementFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayMainFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.GooglePlaySettingsFragment;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardMetaFragment;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
@@ -53,7 +54,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         GooglePlay.GameHelperListener,
         BaseGooglePlayFragment.OnGooglePlayListener,
         BaseGooglePlayMainFragment.OnGooglePlayListener,
-        LeaderboardMetaFragment.OnLeaderboardMetaListener {
+        LeaderboardMetaFragment.OnLeaderboardMetaListener,
+        LeaderboardFragment.OnLeaderboardListener{
     private static final String TAG = "BaseAdLauncherActivity";
     private static final String REMOVE_ADS_SKU = "remove_ads_1";
 
@@ -278,6 +280,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             // get test ads on a physical device. e.g.
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
+                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1")
                     .addTestDevice("5FE0C6962C9C4F8DD6F30B9B11CC0E42") //transformer prime
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Emulator
                     .build();
@@ -458,6 +461,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     }
 
+    @Override
+    public void goToLeaderboard(String leaderboardId) {
+        loadLeaderboardFragment(leaderboardId);
+    }
+
     /**
      * Request an interstitial ad be loaded (not shown)
      */
@@ -465,6 +473,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         if (mInterstitialAd != null) {
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("1DF30F3FB16CD733C2937A5531598396") //Nexus 5
+                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1")
                     .addTestDevice("5FE0C6962C9C4F8DD6F30B9B11CC0E42") //transformer prime
                     .build();
 
@@ -592,11 +601,34 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         LeaderboardMetaFragment fragment = getLeaderboardMetaFragment();
         loadFragment(fragment, LeaderboardMetaFragment.TAG, true);
         getSupportFragmentManager().executePendingTransactions();
+    }
 
-        //if(GooglePlay.getInstance().isSignedIn()) {
-        //    Intent intent = Games.Leaderboards.getAllLeaderboardsIntent(GooglePlay.getInstance().getApiClient());
-        //    startActivityForResult(intent, 1234);
-        //}
+    @NonNull
+    protected final LeaderboardFragment getLeaderboardFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        LeaderboardFragment fragment = (LeaderboardFragment) fragmentManager.findFragmentByTag(LeaderboardFragment.TAG);
+        if (fragment == null) {
+            fragment = new LeaderboardFragment();
+        }
+        return fragment;
+    }
+
+    /**
+     * Loads the leaderboard fragment into the main view
+     */
+    protected final void loadLeaderboardFragment(String leaderboardId) {
+        LeaderboardFragment fragment = getLeaderboardFragment();
+        fragment.setLeaderboardId(leaderboardId);
+        loadFragment(fragment, LeaderboardFragment.TAG, true);
+        getSupportFragmentManager().executePendingTransactions();
+    }
+
+    @Override
+    protected void onBackToHome() {
+        Log.v("BaseAdLauncherActivity", "Back To Home");
+        GooglePlayCalls.getInstance().clearLeaderboardsMetaCache();
+        GooglePlayCalls.getInstance().clearAchievementsCache();
+        GooglePlayCalls.getInstance().clearLeaderboardsCache();
     }
 
     @Override

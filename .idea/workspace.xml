@@ -97,25 +97,110 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="LeaderboardMetaViewHolder.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java">
+      <file leaf-file-name="GooglePlayCalls.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="62" column="5" selection-start-line="62" selection-start-column="5" selection-end-line="62" selection-end-column="5" />
+              <caret line="277" column="7" selection-start-line="277" selection-start-column="7" selection-end-line="277" selection-end-column="7" />
+              <folding>
+                <element signature="method#loadAchievements#0;class#GooglePlayCalls#0" expanded="false" />
+                <element signature="method#loadPlayerScores#0;class#GooglePlayCalls#0" expanded="false" />
+                <element signature="method#getLeaderboardMetaItem#0;class#GooglePlayCalls#0" expanded="false" />
+                <element signature="method#clearLeaderboardsMetaCache#0;class#GooglePlayCalls#0" expanded="false" />
+                <element signature="method#getLeaderboardsMeta#0;class#GooglePlayCalls#0" expanded="false" />
+                <element signature="e#12979#13714#0" expanded="true" />
+                <element signature="e#13713#13714#0" expanded="true" />
+                <element signature="e#13801#13802#0" expanded="true" />
+                <element signature="e#13836#13837#0" expanded="true" />
+                <element signature="e#14101#14102#0" expanded="true" />
+                <element signature="e#14144#14145#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LeaderboardFragment.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.76038337">
+              <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+              <folding>
+                <element signature="e#1695#1696#0" expanded="true" />
+                <element signature="e#1745#1746#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LeaderboardViewHolder.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardViewHolder.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="leaderboard_meta_item.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/res/layout/leaderboard_meta_item.xml">
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
+      <file leaf-file-name="BaseAdLauncherActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.65829146">
-              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-              <folding />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="623" column="5" selection-start-line="623" selection-start-column="5" selection-end-line="623" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="docComment;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="class#3740:4105" expanded="false" />
+                <element signature="method#onServiceConnected#0;class#3740:4105" expanded="false" />
+                <element signature="docComment;method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="e#4981#5070#0" expanded="false" />
+                <element signature="method#setLayout#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="e#6052#6106#0" expanded="true" />
+                <element signature="e#6133#6191#0" expanded="true" />
+                <element signature="method#startIABHelper#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#onActivityResult#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="e#8279#8327#0" expanded="true" />
+                <element signature="method#onResume#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#onStart#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#onStop#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#enableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="e#10628#10676#0" expanded="true" />
+                <element signature="e#10852#10924#0" expanded="false" />
+                <element signature="e#11743#11793#0" expanded="true" />
+                <element signature="method#disableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="e#12194#12242#0" expanded="true" />
+                <element signature="docComment;method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#purchaseRemoveAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="e#13143#13191#0" expanded="true" />
+                <element signature="method#testingConsumePurchase#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#getCacheEnableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="e#14627#14675#0" expanded="true" />
+                <element signature="method#onGooglePlayEvent#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="class#16249:17423" expanded="false" />
+                <element signature="method#onItemSelected#0;class#16249:17423" expanded="false" />
+                <element signature="method#onNothingSelected#0;class#16249:17423" expanded="false" />
+                <element signature="class#17486:18530" expanded="false" />
+                <element signature="method#onItemSelected#0;class#17486:18530" expanded="false" />
+                <element signature="method#onNothingSelected#0;class#17486:18530" expanded="false" />
+                <element signature="e#18861#18862#0" expanded="true" />
+                <element signature="e#18915#18916#0" expanded="true" />
+                <element signature="method#requestNewInterstitial#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="docComment;method#showInterstitialAd#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#showInterstitialAd#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="docComment;method#retry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#retry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="docComment;method#initRetry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#initRetry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="docComment;field#retryRun#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="docComment;method#getSettingsFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#getSettingsFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="docComment;method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="docComment;method#loadAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+                <element signature="method#onSignInFailed#0;class#BaseAdLauncherActivity#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -126,8 +211,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="valueResourceFile" />
-        <option value="Class" />
         <option value="layoutResourceFile_vertical" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -1066,13 +1151,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/utilites/GooglePlayUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/res/values/ads.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/Base64DecoderException.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/IabException.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/IabResult.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/Inventory.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/Purchase.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/SkuDetails.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/Base64.java" />
         <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
@@ -1111,12 +1189,19 @@
         <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardMetaVariantItem.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardMetaItem.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlay.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/leaderboard_meta_item.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardAdapter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardHeader.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardContainer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/leaderboard_item.xml" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/leaderboard_header.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardViewHolder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardFragment.java" />
       </list>
     </option>
   </component>
@@ -1279,6 +1364,28 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="googlePlay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="fragments" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -1340,6 +1447,11 @@
     <property name="OverrideImplement.overriding.sorted" value="false" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.jamesmorrisstudios.googleplaylibrary.googlePlay" />
+      <recent name="com.jamesmorrisstudios.googleplaylibrary.listAdapters" />
+      <recent name="com.jamesmorrisstudios.googleplaylibrary.fragments" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Programming\googleplaylibrary\src\main\res\layout" />
     </key>
@@ -1562,7 +1674,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="1" width="1918" height="1038" extended-state="1" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1584,9 +1696,9 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22497308" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497309" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26190478" sideWeight="0.49573562" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1616,68 +1728,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.22303207">
-          <caret line="9" column="34" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/layout/layout_remove_ads_gone.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18112633">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/layout/layout_remove_ads.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20700152">
-          <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/local.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3050571">
-          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/values-land/dimens.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29864866">
-          <caret line="13" column="34" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/values-large-land/dimens.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48243243">
-          <caret line="21" column="12" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/values/dimens.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.52837837">
-          <caret line="23" column="40" selection-start-line="23" selection-start-column="40" selection-end-line="23" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/AchievementHeader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCallsBase.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1763,17 +1813,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/layout/achievement_header.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.11908932">
-          <caret line="4" column="40" selection-start-line="4" selection-start-column="40" selection-end-line="4" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/values/strings_name.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.07981221">
@@ -1812,13 +1851,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardItem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19428572">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/AchievementContainer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.36914286">
@@ -1850,13 +1882,6 @@
         <state vertical-scroll-proportion="0.7083333">
           <caret line="37" column="1" selection-start-line="37" selection-start-column="1" selection-end-line="37" selection-end-column="1" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/AchievementViewHolder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46314102">
-          <caret line="30" column="27" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -1970,57 +1995,198 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlay.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.1973466">
-          <caret line="40" column="17" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.60383385">
+          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardMetaVariantItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9233227">
+          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardMetaItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="32" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7028754">
+          <caret line="33" column="34" selection-start-line="33" selection-start-column="34" selection-end-line="33" selection-end-column="34" />
           <folding>
-            <element signature="method#loadAchievements#0;class#GooglePlayCalls#0" expanded="false" />
-            <element signature="e#3395#5183#0" expanded="true" />
-            <element signature="e#5182#5183#0" expanded="true" />
-            <element signature="e#7657#9443#0" expanded="true" />
-            <element signature="e#9442#9443#0" expanded="true" />
-            <element signature="e#10210#11295#0" expanded="true" />
-            <element signature="e#11294#11295#0" expanded="true" />
-            <element signature="e#11462#11745#0" expanded="true" />
-            <element signature="e#11744#11745#0" expanded="true" />
-            <element signature="e#12545#12546#0" expanded="true" />
-            <element signature="e#12592#12593#0" expanded="true" />
-            <element signature="e#13268#13905#0" expanded="true" />
-            <element signature="e#13904#13905#0" expanded="true" />
-            <element signature="e#14379#14380#0" expanded="true" />
-            <element signature="e#14414#14415#0" expanded="true" />
-            <element signature="e#14679#14680#0" expanded="true" />
-            <element signature="e#14722#14723#0" expanded="true" />
-            <element signature="e#15221#15222#0" expanded="true" />
-            <element signature="e#15264#15265#0" expanded="true" />
+            <element signature="e#1091#1092#0" expanded="false" />
+            <element signature="e#1141#1142#0" expanded="false" />
+            <element signature="e#1239#1240#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardHeader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.19009584">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardContainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24440895">
+          <caret line="15" column="43" selection-start-line="15" selection-start-column="43" selection-end-line="15" selection-end-column="43" />
+          <folding>
+            <element signature="e#1047#1048#0" expanded="false" />
+            <element signature="e#1076#1077#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.19009584">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../android/sdk/extras/android/m2repository/com/android/support/cardview-v7/22.2.0/cardview-v7-22.2.0-sources.jar!/android/support/v7/widget/CardView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33226836">
+          <caret line="69" column="13" selection-start-line="69" selection-start-column="13" selection-end-line="69" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/leaderboard_meta_item.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.085427135">
+          <caret line="3" column="42" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/leaderboard_header.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.085427135">
+          <caret line="3" column="12" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/leaderboard_item.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.085427135">
+          <caret line="3" column="32" selection-start-line="3" selection-start-column="32" selection-end-line="3" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/achievement_header.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.113902844">
+          <caret line="4" column="40" selection-start-line="4" selection-start-column="40" selection-end-line="4" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/AchievementViewHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.51597446">
+          <caret line="44" column="8" selection-start-line="44" selection-start-column="8" selection-end-line="45" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.701278">
+          <caret line="85" column="47" selection-start-line="85" selection-start-column="47" selection-end-line="85" selection-end-column="47" />
+          <folding>
+            <element signature="method#onGooglePlayEvent#0;class#LeaderboardMetaFragment#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6789137">
+          <caret line="39" column="7" selection-start-line="39" selection-start-column="7" selection-end-line="40" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardViewHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36741215">
-          <caret line="401" column="66" selection-start-line="401" selection-start-column="66" selection-end-line="401" selection-end-column="66" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="623" column="5" selection-start-line="623" selection-start-column="5" selection-end-line="623" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="class#3611:3976" expanded="false" />
-            <element signature="method#onServiceConnected#0;class#3611:3976" expanded="false" />
+            <element signature="class#3740:4105" expanded="false" />
+            <element signature="method#onServiceConnected#0;class#3740:4105" expanded="false" />
             <element signature="docComment;method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="e#4852#4941#0" expanded="false" />
+            <element signature="method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#4981#5070#0" expanded="false" />
+            <element signature="method#setLayout#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#6052#6106#0" expanded="true" />
+            <element signature="e#6133#6191#0" expanded="true" />
             <element signature="method#startIABHelper#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#onActivityResult#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#8279#8327#0" expanded="true" />
             <element signature="method#onResume#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#onStart#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#onStop#0;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="method#onDestroy#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#enableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="e#10723#10795#0" expanded="false" />
+            <element signature="e#10628#10676#0" expanded="true" />
+            <element signature="e#10852#10924#0" expanded="false" />
+            <element signature="e#11743#11793#0" expanded="true" />
             <element signature="method#disableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#12194#12242#0" expanded="true" />
+            <element signature="docComment;method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#purchaseRemoveAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#13143#13191#0" expanded="true" />
             <element signature="method#testingConsumePurchase#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#getCacheEnableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#14627#14675#0" expanded="true" />
             <element signature="method#onGooglePlayEvent#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="class#16249:17423" expanded="false" />
+            <element signature="method#onItemSelected#0;class#16249:17423" expanded="false" />
+            <element signature="method#onNothingSelected#0;class#16249:17423" expanded="false" />
+            <element signature="class#17486:18530" expanded="false" />
+            <element signature="method#onItemSelected#0;class#17486:18530" expanded="false" />
+            <element signature="method#onNothingSelected#0;class#17486:18530" expanded="false" />
+            <element signature="e#18861#18862#0" expanded="true" />
+            <element signature="e#18915#18916#0" expanded="true" />
             <element signature="method#requestNewInterstitial#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="docComment;method#showInterstitialAd#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#showInterstitialAd#0;class#BaseAdLauncherActivity#0" expanded="false" />
@@ -2034,65 +2200,39 @@
             <element signature="docComment;method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="docComment;method#loadAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="method#loadAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="method#getLeaderboardMetaFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="docComment;method#loadLeaderboardMetaFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
             <element signature="method#onSignInFailed#0;class#BaseAdLauncherActivity#0" expanded="false" />
-            <element signature="method#onSignInSucceeded#0;class#BaseAdLauncherActivity#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlay.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.60383385">
-          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.456869">
-          <caret line="91" column="10" selection-start-line="91" selection-start-column="10" selection-end-line="91" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardMetaItem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75559103">
-          <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/LeaderboardMetaVariantItem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9233227">
-          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="62" column="5" selection-start-line="62" selection-start-column="5" selection-end-line="62" selection-end-column="5" />
-          <folding />
+          <caret line="277" column="7" selection-start-line="277" selection-start-column="7" selection-end-line="277" selection-end-column="7" />
+          <folding>
+            <element signature="method#loadAchievements#0;class#GooglePlayCalls#0" expanded="false" />
+            <element signature="method#loadPlayerScores#0;class#GooglePlayCalls#0" expanded="false" />
+            <element signature="method#getLeaderboardMetaItem#0;class#GooglePlayCalls#0" expanded="false" />
+            <element signature="method#clearLeaderboardsMetaCache#0;class#GooglePlayCalls#0" expanded="false" />
+            <element signature="method#getLeaderboardsMeta#0;class#GooglePlayCalls#0" expanded="false" />
+            <element signature="e#12979#13714#0" expanded="true" />
+            <element signature="e#13713#13714#0" expanded="true" />
+            <element signature="e#13801#13802#0" expanded="true" />
+            <element signature="e#13836#13837#0" expanded="true" />
+            <element signature="e#14101#14102#0" expanded="true" />
+            <element signature="e#14144#14145#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/layout/leaderboard_meta_item.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.65829146">
-          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.76038337">
+          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+          <folding>
+            <element signature="e#1695#1696#0" expanded="true" />
+            <element signature="e#1745#1746#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
