@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
+
 import java.util.ArrayList;
 
 /**
@@ -11,7 +13,7 @@ import java.util.ArrayList;
  *
  * Created by James on 6/6/2015.
  */
-public class LeaderboardMetaItem {
+public class LeaderboardMetaItem extends BaseRecycleItem {
     public final String displayName;
     public final Uri imageUri;
     public final String leaderboardId;
@@ -32,6 +34,13 @@ public class LeaderboardMetaItem {
             }
         }
         return null;
+    }
+
+    public final void updateVariant(@NonNull GooglePlay.Collection collection, @NonNull GooglePlay.Span span, @NonNull String displayPlayerRank, @NonNull String displayPlayerScore, long playerRank, long playerScore) {
+        LeaderboardMetaVariantItem item = getVariant(collection, span);
+        if(item != null) {
+            item.updateScore(displayPlayerRank, displayPlayerScore, playerRank, playerScore);
+        }
     }
 
 }

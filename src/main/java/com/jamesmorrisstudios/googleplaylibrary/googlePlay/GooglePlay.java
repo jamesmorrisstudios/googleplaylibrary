@@ -92,14 +92,14 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     public enum Collection {
-        PUBLIC, SOCIAL;
+        SOCIAL, PUBLIC;
 
         public int getInt() {
             switch(ordinal()) {
                 case 0:
-                    return LeaderboardVariant.COLLECTION_PUBLIC;
-                case 1:
                     return LeaderboardVariant.COLLECTION_SOCIAL;
+                case 1:
+                    return LeaderboardVariant.COLLECTION_PUBLIC;
                 default:
                     return LeaderboardVariant.COLLECTION_PUBLIC;
             }

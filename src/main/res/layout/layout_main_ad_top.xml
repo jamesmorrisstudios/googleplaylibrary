@@ -27,7 +27,8 @@
                 android:visibility="gone"
                 android:id="@+id/leaderboard_span"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:saveEnabled="false"/>
 
             <android.support.v7.widget.AppCompatSpinner
                 android:gravity="right|center_vertical"
@@ -36,7 +37,8 @@
                 android:layout_marginRight="16dp"
                 android:id="@+id/leaderboard_collection"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:saveEnabled="false"/>
 
         </android.support.v7.widget.Toolbar>
 

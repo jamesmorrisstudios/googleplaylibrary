@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="leaderboard_weekly">Change This</string>
-    <string name="leaderboard_all_time">Change This</string>
+    <string-array name="leaderboard_ids">
+        <!-- Override for your use case -->
+    </string-array>
 </resources>

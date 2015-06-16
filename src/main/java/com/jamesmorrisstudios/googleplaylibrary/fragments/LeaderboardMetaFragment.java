@@ -8,7 +8,10 @@ import android.util.Log;
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
+import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
+import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
+import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaContainer;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
@@ -57,19 +60,25 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     }
 
     @Override
-    protected BaseRecycleAdapter getAdapter(int i, BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
+    protected BaseRecycleAdapter getAdapter(int i, @NonNull BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
         return new LeaderboardMetaAdapter(i, onItemClickListener);
     }
 
     @Override
-    protected void startDataLoad(boolean b) {
-        ArrayList<BaseRecycleContainer> items = new ArrayList<>();
+    protected void startDataLoad(boolean forceRefresh) {
+        Log.v("LeaderboardMetaFragment", "Start data load");
+        GooglePlayCalls.getInstance().loadLeaderboardsMeta(forceRefresh, getResources().getStringArray(R.array.leaderboard_ids));
+    }
 
-        items.add(new LeaderboardMetaContainer(false));
-        items.add(new LeaderboardMetaContainer(false));
-        items.add(new LeaderboardMetaContainer(false));
-
-        applyData(items);
+    private void applyData() {
+        ArrayList<BaseRecycleContainer> data = new ArrayList<>();
+        if(GooglePlayCalls.getInstance().hasLeaderboardsMeta()) {
+            ArrayList<LeaderboardMetaItem> items = GooglePlayCalls.getInstance().getLeaderboardsMeta();
+            for(LeaderboardMetaItem item : items) {
+                data.add(new LeaderboardMetaContainer(item));
+            }
+        }
+        applyData(data);
     }
 
     @Override
@@ -80,14 +89,21 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     @Override
     public void onBack() {
         leaderboardMetaListener.setLeaderboardSpinnerVisibility(false);
+        //GooglePlayCalls.getInstance().clearLeaderboardsMetaCache();// TODO remove this
     }
 
     @Subscribe
     public void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
         switch(event) {
             case LEADERBOARD_SPINNER_CHANGE:
-                Log.v(TAG, "Spinner value changed: Span Is "+leaderboardMetaListener.getLeaderboardSpinnerSpan().toString()
-                        +" Collection is "+leaderboardMetaListener.getLeaderboardSpinnerCollection().toString());
+                Log.v("LeaderboardMetaFragment", "Spinner change");
+                startRefresh(false);
+                break;
+            case LEADERBOARDS_META_READY:
+                applyData();
+                break;
+            case LEADERBOARDS_META_FAIL:
+                applyData();
                 break;
         }
     }
@@ -99,6 +115,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
     @Override
     protected void afterViewCreated() {
+        setEnablePullToRefresh(true);
         leaderboardMetaListener.setLeaderboardSpinnerVisibility(true);
     }
 
@@ -106,9 +123,6 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
         void setLeaderboardSpinnerVisibility(boolean visible);
 
-        GooglePlay.Span getLeaderboardSpinnerSpan();
-
-        GooglePlay.Collection getLeaderboardSpinnerCollection();
     }
 
 }

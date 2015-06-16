@@ -32,6 +32,7 @@ import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayMainFrag
 import com.jamesmorrisstudios.googleplaylibrary.fragments.GooglePlaySettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardMetaFragment;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
+import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabHelper;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabResult;
@@ -106,11 +107,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 //App is already open
                 if(AdUsage.getAdsEnabled()) {
                     //Ads enabled
-                    setContentView(R.layout.layout_main_ad);
+                    setLayout(true);
                     enableAds();
                 } else {
                     //Ads disabled
-                    setContentView(R.layout.layout_main);
+                    setLayout(false);
                     disableAds();
                 }
             } else {
@@ -120,11 +121,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 //overwrite it after checking the IAP helper
                 if(getCacheEnableAds()) {
                     //Ads Enabled
-                    setContentView(R.layout.layout_main_ad);
+                    setLayout(true);
                     enableAds();
                 } else {
                     //Ads Disabled
-                    setContentView(R.layout.layout_main);
+                    setLayout(false);
                     disableAds();
                 }
             }
@@ -141,6 +142,20 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
         initOnCreate();
         initToolbarSpinners();
+    }
+
+    private void setLayout(boolean showAd) {
+        if(showAd) {
+            String pref = AppUtil.getContext().getString(R.string.settings_pref);
+            String key = AppUtil.getContext().getString(R.string.pref_ad_on_bottom);
+            if (Prefs.getBoolean(pref, key, true)) {
+                setContentView(R.layout.layout_main_ad_bottom);
+            } else {
+                setContentView(R.layout.layout_main_ad_top);
+            }
+        } else {
+            setContentView(R.layout.layout_main);
+        }
     }
 
     private void startIABHelper() {
@@ -214,12 +229,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             }
         }
     };
-
-    private void restartActivity() {
-        Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-    }
 
     @Override
     public void onResume() {
@@ -301,6 +310,15 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     }
 
+    /**
+     * Called on settings change event
+     */
+    @Override
+    public void onSettingsChanged() {
+        super.onSettingsChanged();
+
+    }
+
     @Override
     public void purchaseRemoveAds() {
         Utils.lockOrientationCurrent(this);
@@ -376,16 +394,32 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         spinnerSpan.setAdapter(spinnerTimesAdapter);
         spinnerCollection.setAdapter(spinnerCollectionAdapter);
 
-        spinnerSpan.setSelection(2);
-        spinnerCollection.setSelection(1);
+        spinnerSpan.setSelection(GooglePlayCalls.getInstance().getLeaderboardSpan().ordinal(), false);
+        spinnerCollection.setSelection(GooglePlayCalls.getInstance().getLeaderboardCollection().ordinal(), false);
     }
 
     @Override
     public void setLeaderboardSpinnerVisibility(boolean visible) {
         if(visible) {
+            spinnerSpan.setVisibility(View.VISIBLE);
+            spinnerCollection.setVisibility(View.VISIBLE);
             spinnerSpan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    switch(spinnerSpan.getSelectedItemPosition()) {
+                        case 0:
+                            GooglePlayCalls.getInstance().setLeaderboardSpan(GooglePlay.Span.DAILY);
+                            break;
+                        case 1:
+                            GooglePlayCalls.getInstance().setLeaderboardSpan(GooglePlay.Span.WEEKLY);
+                            break;
+                        case 2:
+                            GooglePlayCalls.getInstance().setLeaderboardSpan(GooglePlay.Span.ALL_TIME);
+                            break;
+                        default:
+                            GooglePlayCalls.getInstance().setLeaderboardSpan(GooglePlay.Span.ALL_TIME);
+                            break;
+                    }
                     Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARD_SPINNER_CHANGE);
                 }
 
@@ -397,6 +431,17 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             spinnerCollection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    switch(spinnerCollection.getSelectedItemPosition()) {
+                        case 0:
+                            GooglePlayCalls.getInstance().setLeaderboardCollection(GooglePlay.Collection.SOCIAL);
+                            break;
+                        case 1:
+                            GooglePlayCalls.getInstance().setLeaderboardCollection(GooglePlay.Collection.PUBLIC);
+                            break;
+                        default:
+                            GooglePlayCalls.getInstance().setLeaderboardCollection(GooglePlay.Collection.PUBLIC);
+                            break;
+                    }
                     Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARD_SPINNER_CHANGE);
                 }
 
@@ -405,39 +450,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
                 }
             });
-            spinnerSpan.setVisibility(View.VISIBLE);
-            spinnerCollection.setVisibility(View.VISIBLE);
         } else {
             spinnerSpan.setOnItemSelectedListener(null);
             spinnerCollection.setOnItemSelectedListener(null);
             spinnerSpan.setVisibility(View.GONE);
             spinnerCollection.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public GooglePlay.Span getLeaderboardSpinnerSpan() {
-        switch(spinnerSpan.getSelectedItemPosition()) {
-            case 0:
-                return GooglePlay.Span.DAILY;
-            case 1:
-                return GooglePlay.Span.WEEKLY;
-            case 2:
-                return GooglePlay.Span.ALL_TIME;
-            default:
-                return GooglePlay.Span.ALL_TIME;
-        }
-    }
-
-    @Override
-    public GooglePlay.Collection getLeaderboardSpinnerCollection() {
-        switch(spinnerCollection.getSelectedItemPosition()) {
-            case 0:
-                return GooglePlay.Collection.SOCIAL;
-            case 1:
-                return GooglePlay.Collection.PUBLIC;
-            default:
-                return GooglePlay.Collection.PUBLIC;
         }
     }
 

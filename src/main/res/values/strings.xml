@@ -6,10 +6,12 @@
     <string name="gamehelper_license_failed">License check failed.</string>
     <string name="gamehelper_unknown_error">Unknown error.</string>
 
-
     <string name="separator">/</string>
     <string name="xp">xp</string>
     <string name="percent_char">%</string>
+
+    <string name="settings_google_play_item_0_primary">Ad at the bottom</string>
+    <string name="settings_google_play_item_0_secondary">Uncheck to show the ad at the top of the screen</string>
 
     <string-array name="leaderboard_span">
         <item>Daily</item>
