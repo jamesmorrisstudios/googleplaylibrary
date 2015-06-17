@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/leaderboard_card"
     android:layout_width="match_parent"
@@ -22,10 +23,52 @@
         android:padding="8dip">
 
         <TextView
-            android:id="@+id/leaderboard_score"
-            android:text="Item"
-            android:textSize="18sp"
+            android:id="@+id/leaderboard_rank"
+            android:layout_marginRight="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textSize="22sp"
             android:textColor="@color/textDarkMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:layout_centerVertical="true"
+            android:id="@+id/leaderboard_icon_container"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/leaderboard_rank"
+            android:layout_width="40dp"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:id="@+id/leaderboard_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"/>
+
+            <com.jamesmorrisstudios.utilitieslibrary.controls.TintedImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/circle_mask"
+                android:tint="@color/primaryLight" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/leaderboard_name"
+            android:layout_toRightOf="@+id/leaderboard_icon_container"
+            android:textSize="16sp"
+            android:textColor="@color/textDarkMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/leaderboard_score"
+            android:layout_toRightOf="@+id/leaderboard_icon_container"
+            android:layout_below="@+id/leaderboard_name"
+            android:textSize="14sp"
+            android:textColor="@color/textAccent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

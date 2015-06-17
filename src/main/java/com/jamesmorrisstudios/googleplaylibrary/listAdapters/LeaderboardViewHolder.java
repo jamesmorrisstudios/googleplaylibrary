@@ -21,7 +21,7 @@ public class LeaderboardViewHolder extends BaseRecycleViewHolder {
     private ImageManager imageManager;
 
     private ImageView icon;
-    private TextView title, score, rank;
+    private TextView name, score, rank;
 
     public LeaderboardViewHolder(View view, boolean isHeader, cardClickListener mListener, ImageManager imageManager) {
         super(view, isHeader, mListener);
@@ -37,10 +37,10 @@ public class LeaderboardViewHolder extends BaseRecycleViewHolder {
     protected void initItem(View view) {
         CardView topLayout = (CardView) view.findViewById(R.id.leaderboard_card);
         topLayout.setOnClickListener(this);
-        //icon = (ImageView) view.findViewById(R.id.leaderboard_icon);
-        //title = (TextView) view.findViewById(R.id.leaderboard_title);
-        //score = (TextView) view.findViewById(R.id.leaderboard_score);
-        //rank = (TextView) view.findViewById(R.id.leaderboard_rank);
+        icon = (ImageView) view.findViewById(R.id.leaderboard_icon);
+        name = (TextView) view.findViewById(R.id.leaderboard_name);
+        score = (TextView) view.findViewById(R.id.leaderboard_score);
+        rank = (TextView) view.findViewById(R.id.leaderboard_rank);
     }
 
     @Override
@@ -51,17 +51,9 @@ public class LeaderboardViewHolder extends BaseRecycleViewHolder {
     @Override
     protected void bindItem(BaseRecycleItem baseRecycleItem, boolean b) {
         LeaderboardItem item = (LeaderboardItem) baseRecycleItem;
-        /*
-        imageManager.loadImage(icon, item.imageUri);
-        title.setText(item.displayName);
-        LeaderboardMetaVariantItem variant = item.getVariant(GooglePlayCalls.getInstance().getLeaderboardCollection(), GooglePlayCalls.getInstance().getLeaderboardSpan());
-        if(variant != null && variant.displayPlayerScore != null && variant.displayPlayerRank != null) {
-            score.setText(variant.displayPlayerScore);
-            rank.setText(variant.displayPlayerRank);
-        } else {
-            score.setText("N/A");
-            rank.setText("");
-        }
-        */
+        imageManager.loadImage(icon, item.icon);
+        name.setText(item.displayName);
+        rank.setText(Long.toString(item.playerRank));
+        score.setText(item.displayPlayerScore);
     }
 }

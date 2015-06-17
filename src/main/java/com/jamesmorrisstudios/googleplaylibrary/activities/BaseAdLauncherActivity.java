@@ -147,7 +147,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     private void setLayout(boolean showAd) {
-        if(showAd) {
+        if(showAd && !AdUsage.getBannerAdHide()) {
             String pref = AppUtil.getContext().getString(R.string.settings_pref);
             String key = AppUtil.getContext().getString(R.string.pref_ad_on_bottom);
             if (Prefs.getBoolean(pref, key, true)) {
@@ -280,7 +280,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             // get test ads on a physical device. e.g.
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
-                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1")
+                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
                     .addTestDevice("5FE0C6962C9C4F8DD6F30B9B11CC0E42") //transformer prime
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Emulator
                     .build();
@@ -292,7 +292,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         //Init Interstitial
         if(getResources().getBoolean(R.bool.interstitial_enable)) {
             mInterstitialAd = new InterstitialAd(getApplicationContext());
-            mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_id));
+            if(AdUsage.getBannerAdHide()) {
+                mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_id_common));
+            } else {
+                mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_id_rare));
+            }
             mInterstitialAd.setAdListener(new AdListener() {
                 @Override
                 public void onAdClosed() {
@@ -319,7 +323,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     public void onSettingsChanged() {
         super.onSettingsChanged();
-
+        AdUsage.updateHideBanner();
     }
 
     @Override
@@ -379,8 +383,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
         switch(event) {
-            case SHOW_INTERSTITIAL:
-                showInterstitialAd();
+            case SHOW_INTERSTITIAL_COMMON:
+                showInterstitialAd(true);
+                break;
+            case SHOW_INTERSTITIAL_RARE:
+                showInterstitialAd(false);
                 break;
         }
     }
@@ -472,8 +479,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     private void requestNewInterstitial() {
         if (mInterstitialAd != null) {
             AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice("1DF30F3FB16CD733C2937A5531598396") //Nexus 5
-                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1")
+                    .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
+                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
                     .addTestDevice("5FE0C6962C9C4F8DD6F30B9B11CC0E42") //transformer prime
                     .build();
 
@@ -484,7 +491,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     /**
      * Show the interstitial ad if we have one loaded and retry if not
      */
-    protected final void showInterstitialAd() {
+    protected final void showInterstitialAd(boolean common) {
+        if(!(AdUsage.getBannerAdHide() && common)) {
+            return;
+        }
         //Make sure we are using the interstitial ad and that its loaded
         Log.v(TAG, "Requested interstitial");
         if (mInterstitialAd == null) {
@@ -539,7 +549,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @NonNull
     private Runnable retryRun = new Runnable() {
         public void run() {
-            showInterstitialAd();
+            showInterstitialAd(AdUsage.getBannerAdHide());
         }
     };
 

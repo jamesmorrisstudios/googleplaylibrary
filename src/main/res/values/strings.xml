@@ -10,8 +10,11 @@
     <string name="xp">xp</string>
     <string name="percent_char">%</string>
 
-    <string name="settings_google_play_item_0_primary">Ad at the bottom</string>
-    <string name="settings_google_play_item_0_secondary">Uncheck to show the ad at the top of the screen</string>
+    <string name="settings_google_play_item_0_primary">Ad On Bottom</string>
+    <string name="settings_google_play_item_0_secondary">Uncheck to show the ad at the top of the screen.</string>
+
+    <string name="settings_google_play_item_1_primary">Hide Banner Ads</string>
+    <string name="settings_google_play_item_1_secondary">Uncheck to hide banner ads but show more full page ads</string>
 
     <string-array name="leaderboard_span">
         <item>Daily</item>
