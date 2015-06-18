@@ -26,7 +26,6 @@ import com.jamesmorrisstudios.utilitieslibrary.Utils;
 import com.jamesmorrisstudios.utilitieslibrary.animator.AnimatorControl;
 import com.jamesmorrisstudios.utilitieslibrary.animator.AnimatorEndListener;
 import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.view.ViewHelper;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
     private AchievementViewHolder overlayHolder;
 
     @Override
-    protected BaseRecycleAdapter getAdapter(int i, BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
+    protected BaseRecycleAdapter getAdapter(int i, @NonNull BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
         return new AchievementAdapter(i, onItemClickListener);
     }
 
@@ -54,39 +53,6 @@ public class AchievementFragment extends BaseRecycleListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(!(view instanceof ViewGroup)) {
-            return;
-        }
-        ViewGroup viewGroup = (ViewGroup) view;
-        RelativeLayout parent = null;
-        if(viewGroup instanceof RelativeLayout) {
-            parent = (RelativeLayout) view;
-        } else if(viewGroup.getChildCount() == 1 && viewGroup.getChildAt(0) instanceof RelativeLayout) {
-            parent = (RelativeLayout) viewGroup.getChildAt(0);
-        }
-        if(parent == null) {
-            return;
-        }
-        overlayBackground = new View(getActivity().getApplicationContext());
-        RelativeLayout.LayoutParams paramsBackground = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        overlayBackground.setLayoutParams(paramsBackground);
-        overlayBackground.setBackgroundColor(getResources().getColor(R.color.background_material_light));
-        ViewHelper.setAlpha(overlayBackground, 0.0f);
-
-        overlayCard = (CardView) getActivity().getLayoutInflater().inflate(R.layout.achievement_item, null);
-        RelativeLayout.LayoutParams paramsCard = new RelativeLayout.LayoutParams(Utils.getDipInt(300), Utils.getDipInt(102));
-        paramsCard.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-
-
-        overlayCard.setLayoutParams(paramsCard);
-        ViewHelper.setAlpha(overlayCard, 0.0f);
-        overlayHolder = new AchievementViewHolder(overlayCard, false, null, ImageManager.create(getActivity().getApplicationContext()));
-
-        overlayBackground.setVisibility(View.GONE);
-        overlayCard.setVisibility(View.GONE);
-
-        parent.addView(overlayBackground);
-        parent.addView(overlayCard);
     }
 
     public void onCreate(Bundle bundle) {
@@ -140,6 +106,9 @@ public class AchievementFragment extends BaseRecycleListFragment {
     protected void itemClick(@NonNull BaseRecycleContainer baseRecycleContainer) {
         Log.v("AchievementsFragment", "Item clicked");
         AchievementContainer item = (AchievementContainer)baseRecycleContainer;
+
+        addOverlay();
+
         overlayHolder.bindItem(item, false);
 
         AnimatorControl.alphaAutoStart(overlayBackground, 0.0f, 0.7f, 100, 0, null);
@@ -156,12 +125,71 @@ public class AchievementFragment extends BaseRecycleListFragment {
                 AnimatorControl.alphaAutoStart(overlayCard, 1.0f, 0.0f, 100, 0, new AnimatorEndListener() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        Log.v("AchievementFragment", "Overlay hidden");
                         overlayBackground.setVisibility(View.GONE);
                         overlayCard.setVisibility(View.GONE);
+                        removeOverlay();
                     }
                 });
             }
         });
+    }
+
+    private void addOverlay() {
+        RelativeLayout parent = getParentView(null);
+        if(parent == null) {
+            return;
+        }
+        overlayBackground = new View(getActivity().getApplicationContext());
+        RelativeLayout.LayoutParams paramsBackground = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        overlayBackground.setLayoutParams(paramsBackground);
+        overlayBackground.setBackgroundColor(getResources().getColor(R.color.background_material_light));
+
+        overlayCard = (CardView) getActivity().getLayoutInflater().inflate(R.layout.achievement_item, null);
+        RelativeLayout.LayoutParams paramsCard = new RelativeLayout.LayoutParams(Utils.getDipInt(300), Utils.getDipInt(102));
+        paramsCard.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+
+        overlayCard.setLayoutParams(paramsCard);
+        overlayHolder = new AchievementViewHolder(overlayCard, false, null, ImageManager.create(getActivity().getApplicationContext()));
+
+        overlayBackground.setVisibility(View.GONE);
+        overlayCard.setVisibility(View.GONE);
+
+        parent.addView(overlayBackground);
+        parent.addView(overlayCard);
+    }
+
+    private void removeOverlay() {
+        RelativeLayout parent = getParentView(null);
+        if(parent == null) {
+            return;
+        }
+        if(overlayCard != null) {
+            parent.removeView(overlayCard);
+        }
+        if(overlayBackground != null) {
+            parent.removeView(overlayBackground);
+        }
+    }
+
+    private RelativeLayout getParentView(@Nullable View startView) {
+        View view;
+        if(startView != null) {
+            view = startView;
+        } else {
+            view = getView();
+        }
+        if(!(view instanceof ViewGroup)) {
+            return null;
+        }
+        ViewGroup viewGroup = (ViewGroup) view;
+        RelativeLayout parent = null;
+        if(viewGroup instanceof RelativeLayout) {
+            parent = (RelativeLayout) view;
+        } else if(viewGroup.getChildCount() == 1 && viewGroup.getChildAt(0) instanceof RelativeLayout) {
+            parent = (RelativeLayout) viewGroup.getChildAt(0);
+        }
+        return parent;
     }
 
     @Override

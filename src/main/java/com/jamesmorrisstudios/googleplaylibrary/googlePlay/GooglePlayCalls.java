@@ -294,6 +294,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
                         leaderboards.add(new LeaderboardItem(leaders.get(i).getScoreHolderDisplayName(), leaders.get(i).getScoreHolderIconImageUri(),
                                 leaders.get(i).getDisplayRank(), leaders.get(i).getDisplayScore(), leaders.get(i).getRank(), leaders.get(i).getRawScore()));
                     }
+                    leaders.release();
                     Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_READY);
                 } else {
                     Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_FAIL);

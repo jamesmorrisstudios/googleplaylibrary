@@ -60,7 +60,7 @@
             <TextView
                 android:id="@+id/leaderboard_score"
                 android:textSize="18sp"
-                android:textColor="@color/textDarkMain"
+                android:textColor="@color/textAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
