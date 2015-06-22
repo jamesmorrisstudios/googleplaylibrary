@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.SignInButton;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
+import com.jamesmorrisstudios.googleplaylibrary.activities.BaseAdLauncherActivity;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
@@ -124,6 +125,10 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
             signIn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(!GooglePlay.getInstance().getHasSetup()) {
+                        GooglePlay.getInstance().setup((BaseAdLauncherActivity)getActivity());
+                        GooglePlay.getInstance().setHasLaunched();
+                    }
                     GooglePlay.getInstance().beginUserInitiatedSignIn();
                     signIn.setEnabled(false);
                     ViewHelper.setAlpha(signIn, 0.5f);

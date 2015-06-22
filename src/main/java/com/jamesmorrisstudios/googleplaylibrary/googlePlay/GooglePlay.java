@@ -45,6 +45,10 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         return instance;
     }
 
+    public final boolean getHasSetup() {
+        return mSetupDone;
+    }
+
     public final boolean isFirstLaunch() {
         return firstLaunch;
     }

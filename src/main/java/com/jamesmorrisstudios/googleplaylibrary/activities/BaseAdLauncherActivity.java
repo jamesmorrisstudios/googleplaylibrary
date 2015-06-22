@@ -55,7 +55,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         BaseGooglePlayFragment.OnGooglePlayListener,
         BaseGooglePlayMainFragment.OnGooglePlayListener,
         LeaderboardMetaFragment.OnLeaderboardMetaListener,
-        LeaderboardFragment.OnLeaderboardListener{
+        LeaderboardFragment.OnLeaderboardListener {
+
     private static final String TAG = "BaseAdLauncherActivity";
     private static final String REMOVE_ADS_SKU = "remove_ads_1";
 
@@ -133,14 +134,16 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             }
             startIABHelper();
             GooglePlay.getInstance().init(this, GooglePlay.CLIENT_GAMES);
-            if (GooglePlay.getInstance().isFirstLaunch()) {
-                GooglePlay.getInstance().setup(this);
-                GooglePlay.getInstance().setHasLaunched();
+            if(getPlayGamesEnabledPref()) {
+                if (GooglePlay.getInstance().isFirstLaunch()) {
+                    GooglePlay.getInstance().setup(this);
+                    GooglePlay.getInstance().setHasLaunched();
+                }
             }
         } else {
-            //Ads Disabled as we have no Google Play Services
-            setContentView(R.layout.layout_main);
-            disableAds();
+            //Ads still work without google play services but the user cant remove them with an IAP
+            setLayout(true);
+            enableAds();
         }
         initOnCreate();
         initToolbarSpinners();
@@ -171,6 +174,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
                     Log.d(TAG, "Problem setting up In-app Billing: " + result);
+                    mHelper = null;
+                    return;
                 }
                 Log.d(TAG, "In app billing is setup and working: " + result);
                 mHelper.queryInventoryAsync(false, mGotInventoryListener);
@@ -182,7 +187,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+        if (mHelper != null && !mHelper.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
         GooglePlay.getInstance().onActivityResult(requestCode, resultCode, data);
@@ -243,8 +248,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         super.onStart();
         Bus.register(busListener);
         if(playServicesEnabled) {
-            if (!GooglePlay.getInstance().isSignedIn()) {
-                GooglePlay.getInstance().onStart(this);
+            if(getPlayGamesEnabledPref()) {
+                if (!GooglePlay.getInstance().isSignedIn()) {
+                    GooglePlay.getInstance().onStart(this);
+                }
             }
         }
     }
@@ -328,6 +335,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     @Override
     public void purchaseRemoveAds() {
+        if(mHelper == null) {
+            Utils.toastShort("Unable to setup In App Billing");
+            return;
+        }
         Utils.lockOrientationCurrent(this);
         mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
             public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
@@ -354,7 +365,9 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     public void consumeItem() {
-        mHelper.queryInventoryAsync(mReceivedInventoryListener);
+        if(mHelper != null) {
+            mHelper.queryInventoryAsync(mReceivedInventoryListener);
+        }
     }
 
     IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -553,6 +566,14 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     };
 
+    private boolean getPlayGamesEnabledPref() {
+        return Prefs.getBoolean(getString(R.string.settings_pref), "PlayGamesEnabled", true);
+    }
+
+    private void setPlayGamesEnabledPref(boolean playGamesEnabled) {
+        Prefs.putBoolean(getString(R.string.settings_pref), "PlayGamesEnabled", playGamesEnabled);
+    }
+
     /**
      * Gets the help fragment from the fragment manager.
      * Creates the fragment if it does not exist yet.
@@ -588,10 +609,23 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     /**
      * Loads the achievements fragment into the main view
      */
-    protected final void loadAchievementFragment() {
-        AchievementFragment fragment = getAchievementFragment();
-        loadFragment(fragment, AchievementFragment.TAG, true);
-        getSupportFragmentManager().executePendingTransactions();
+    protected final boolean loadAchievementFragment() {
+        if(isGooglePlayServicesEnabled()) {
+            if (GooglePlay.getInstance().isSignedIn()) {
+                AchievementFragment fragment = getAchievementFragment();
+                loadFragment(fragment, AchievementFragment.TAG, true);
+                getSupportFragmentManager().executePendingTransactions();
+                return true;
+            } else {
+                if(!GooglePlay.getInstance().getHasSetup()) {
+                    GooglePlay.getInstance().setup(this);
+                }
+                GooglePlay.getInstance().beginUserInitiatedSignIn();
+            }
+        } else {
+            Utils.toastShort("Achievements requires Google Play Games");
+        }
+        return false;
     }
 
     @NonNull
@@ -607,10 +641,23 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     /**
      * Loads the leaderboard fragment into the main view
      */
-    protected final void loadLeaderboardMetaFragment() {
-        LeaderboardMetaFragment fragment = getLeaderboardMetaFragment();
-        loadFragment(fragment, LeaderboardMetaFragment.TAG, true);
-        getSupportFragmentManager().executePendingTransactions();
+    protected final boolean loadLeaderboardMetaFragment() {
+        if(isGooglePlayServicesEnabled()) {
+            if (GooglePlay.getInstance().isSignedIn()) {
+                LeaderboardMetaFragment fragment = getLeaderboardMetaFragment();
+                loadFragment(fragment, LeaderboardMetaFragment.TAG, true);
+                getSupportFragmentManager().executePendingTransactions();
+                return true;
+            } else {
+                if(!GooglePlay.getInstance().getHasSetup()) {
+                    GooglePlay.getInstance().setup(this);
+                }
+                GooglePlay.getInstance().beginUserInitiatedSignIn();
+            }
+        } else {
+            Utils.toastShort("Leaderboards require Google Play Games");
+        }
+        return false;
     }
 
     @NonNull
@@ -645,6 +692,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onSignInFailed() {
         Log.v("Activity", "Sign in failed: ");// + GooglePlay.getInstance().getSignInError().getActivityResultCode()+" "+GooglePlay.getInstance().getSignInError().getServiceErrorCode());
         Bus.postEnum(GooglePlay.GooglePlayEvent.SIGN_IN_FAIL);
+        setPlayGamesEnabledPref(false);
     }
 
     @Override
@@ -652,6 +700,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         Log.v("Activity", "Sign in Succeeded");
         Bus.postEnum(GooglePlay.GooglePlayEvent.SIGN_IN_SUCCESS);
         Games.setViewForPopups(GooglePlay.getInstance().getApiClient(), findViewById(R.id.toolbarContainer));
+        setPlayGamesEnabledPref(true);
     }
 
     @Override
