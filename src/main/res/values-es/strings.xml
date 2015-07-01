@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Anuncio en la parte inferior"</string>
+    <string name="settings_google_play_item_0_secondary">"Desmarque para mostrar el anuncio en la parte superior de la pantalla."</string>
+
+    <string name="settings_google_play_item_1_primary">"Ocultar anuncios de banner"</string>
+    <string name="settings_google_play_item_1_secondary">"Desactive la opción de ocultar los anuncios de banner, sino mostrar anuncios de página más completos"</string>
+
+    <string name="failed_load_achievements">"Error al cargar Logros"</string>
+    <string name="failed_load_leaderboards">"Error al cargar tablas de clasificación"</string>
+
+</resources>

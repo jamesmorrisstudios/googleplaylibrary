@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad dole"</string>
+    <string name="settings_google_play_item_0_secondary">"Zrušte zaškrtnutie políčka pre zobrazenie reklamy v hornej časti obrazovky."</string>
+
+    <string name="settings_google_play_item_1_primary">"Skryť bannerovej reklamy"</string>
+    <string name="settings_google_play_item_1_secondary">"Zrušte zaškrtnutie skryť bannerovej reklamy, ale viac plné reklám stránok"</string>
+
+    <string name="failed_load_achievements">"Nepodarilo sa načítať Úspechy"</string>
+    <string name="failed_load_leaderboards">"Nepodarilo sa načítať rebríčkov"</string>
+
+</resources>

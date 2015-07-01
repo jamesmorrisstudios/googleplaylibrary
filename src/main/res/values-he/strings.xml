@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"מודעה בתחתית"</string>
+    <string name="settings_google_play_item_0_secondary">"בטל להראות את המודעה בחלק העליון של המסך."</string>
+
+    <string name="settings_google_play_item_1_primary">"להסתיר מודעות באנר"</string>
+    <string name="settings_google_play_item_1_secondary">"בטל להסתיר מודעות באנר, אבל להציג את מודעות של עמוד שלמות יותר"</string>
+
+    <string name="failed_load_achievements">"נכשל ניסיון לטעון הישגים"</string>
+    <string name="failed_load_leaderboards">"נכשל ניסיון לטעון Leaderboards"</string>
+
+</resources>

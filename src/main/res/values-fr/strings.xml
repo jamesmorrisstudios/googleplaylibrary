@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Annonce sur le fond"</string>
+    <string name="settings_google_play_item_0_secondary">"Décochez pour montrer l'annonce en haut de l'écran."</string>
+
+    <string name="settings_google_play_item_1_primary">"Cacher les bannières publicitaires"</string>
+    <string name="settings_google_play_item_1_secondary">"Décochez la case pour cacher les bannières publicitaires, mais montrer pages de publicité plus complètes"</string>
+
+    <string name="failed_load_achievements">"Impossible de charger Réalisations"</string>
+    <string name="failed_load_leaderboards">"Impossible de charger Leaderboards"</string>
+
+</resources>

@@ -18,8 +18,8 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementHeader;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementItem;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementContainer;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementAdapter;
+import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementContainer;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementViewHolder;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
@@ -76,7 +76,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case ACHIEVEMENTS_ITEMS_FAIL:
-                Utils.toastShort("Failed to load achievements");
+                Utils.toastShort(getString(R.string.failed_load_achievements));
                 applyData();
                 break;
         }
@@ -87,7 +87,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
         if(GooglePlayCalls.getInstance().hasAchievements()) {
             int complete = GooglePlayCalls.getInstance().getNumberCompletedAchievements();
             int total = GooglePlayCalls.getInstance().getNumberAchievements();
-            AchievementContainer header = new AchievementContainer(new AchievementHeader("Achievements", complete, total));
+            AchievementContainer header = new AchievementContainer(new AchievementHeader(getString(R.string.achievements), complete, total));
             data.add(header);
             ArrayList<AchievementItem> items = GooglePlayCalls.getInstance().getAchievements();
             for(AchievementItem item : items) {

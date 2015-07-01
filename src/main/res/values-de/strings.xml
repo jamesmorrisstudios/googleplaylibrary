@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad On Bottom"</string>
+    <string name="settings_google_play_item_0_secondary">"Deaktivieren Sie die Anzeige am oberen Rand des Bildschirms zeigen."</string>
+
+    <string name="settings_google_play_item_1_primary">"Ausblenden Banner Ads"</string>
+    <string name="settings_google_play_item_1_secondary">"Deaktivieren Sie die Option, um Werbebanner zu verstecken, sondern zeigen, mehr ganzseitige Anzeigen"</string>
+
+    <string name="failed_load_achievements">"Fehler beim laden Achievements"</string>
+    <string name="failed_load_leaderboards">"Fehler beim Listen laden"</string>
+
+</resources>

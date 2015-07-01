@@ -16,12 +16,10 @@ import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardItem;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardContainer;
-import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaAdapter;
-import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaContainer;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
+import com.jamesmorrisstudios.utilitieslibrary.Utils;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -132,6 +130,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case LEADERBOARDS_FAIL:
+                Utils.toastShort(getString(R.string.failed_load_leaderboards));
                 applyData();
                 break;
         }

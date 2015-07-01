@@ -1,30 +1,13 @@
 <resources>
-    <!-- Google Play -->
-    <string name="network_failure">Network Connection Failure</string>
-    <string name="gamehelper_sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
-    <string name="gamehelper_app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
-    <string name="gamehelper_license_failed">License check failed.</string>
-    <string name="gamehelper_unknown_error">Unknown error.</string>
 
-    <string name="separator">/</string>
-    <string name="xp">xp</string>
-    <string name="percent_char">%</string>
-
+    <!-- Settings -->
     <string name="settings_google_play_item_0_primary">Ad On Bottom</string>
     <string name="settings_google_play_item_0_secondary">Uncheck to show the ad at the top of the screen.</string>
 
     <string name="settings_google_play_item_1_primary">Hide Banner Ads</string>
     <string name="settings_google_play_item_1_secondary">Uncheck to hide banner ads but show more full page ads</string>
 
-    <string-array name="leaderboard_span">
-        <item>Daily</item>
-        <item>Weekly</item>
-        <item>All Time</item>
-    </string-array>
-
-    <string-array name="leaderboard_collection">
-        <item>My Circles</item>
-        <item>Public</item>
-    </string-array>
+    <string name="failed_load_achievements">Failed to load Achievements</string>
+    <string name="failed_load_leaderboards">Failed to load Leaderboards</string>
 
 </resources>

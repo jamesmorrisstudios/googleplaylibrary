@@ -1,19 +1,14 @@
 package com.jamesmorrisstudios.googleplaylibrary.fragments;
 
 import android.app.Activity;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
@@ -23,7 +18,6 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
-import com.jamesmorrisstudios.utilitieslibrary.preferences.Prefs;
 import com.nineoldandroids.view.ViewHelper;
 import com.squareup.otto.Subscribe;
 
@@ -108,7 +102,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
             signOut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.toastShort("Signed out of Google Play Games");
+                    Utils.toastShort(getString(R.string.signed_out));
                     GooglePlay.getInstance().signOut();
                     signOut.setEnabled(false);
                     signOut.setTextColor(getResources().getColor(R.color.textLightMain));

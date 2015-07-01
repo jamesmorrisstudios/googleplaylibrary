@@ -9,10 +9,7 @@ import com.google.android.gms.common.images.ImageManager;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleViewHolder;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardItem;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaItem;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaVariantItem;
 
 /**
  * Created by James on 6/6/2015.

@@ -186,27 +186,12 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     protected abstract String getPublicKey();
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mHelper != null && !mHelper.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
         GooglePlay.getInstance().onActivityResult(requestCode, resultCode, data);
     }
-
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            if (result.isFailure()) {
-                // Handle error
-                Utils.toastShort("Failed to purchase item");
-            } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
-                //TODO inspect that the payload and signature match!
-                Prefs.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
-                Utils.toastShort("Ads Removed");
-                disableAds();
-                restartActivity();
-            }
-        }
-    };
 
     // Get already purchased response
     private IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -348,7 +333,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
                     //TODO inspect that the payload and signature match!
                     Prefs.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
-                    Utils.toastShort("Ads Removed");
+                    Utils.toastShort(getString(R.string.ads_removed));
                     disableAds();
                     restartActivity();
                 }
@@ -396,10 +381,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
         switch(event) {
-            case SHOW_INTERSTITIAL_COMMON:
+            case SHOW_INTERSTITIAL_WITH_BANNER:
                 showInterstitialAd(true);
                 break;
-            case SHOW_INTERSTITIAL_RARE:
+            case SHOW_INTERSTITIAL_NO_BANNER:
                 showInterstitialAd(false);
                 break;
         }
@@ -504,8 +489,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     /**
      * Show the interstitial ad if we have one loaded and retry if not
      */
-    protected final void showInterstitialAd(boolean common) {
-        if(!(AdUsage.getBannerAdHide() && common)) {
+    protected final void showInterstitialAd(boolean withBanner) {
+        if(!AdUsage.getBannerAdHide() && !withBanner) {
             return;
         }
         //Make sure we are using the interstitial ad and that its loaded

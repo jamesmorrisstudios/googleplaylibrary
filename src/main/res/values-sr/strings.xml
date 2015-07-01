@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Оглас на дну"</string>
+    <string name="settings_google_play_item_0_secondary">"Искључите да покаже оглас на врху екрана."</string>
+
+    <string name="settings_google_play_item_1_primary">"Хиде банери"</string>
+    <string name="settings_google_play_item_1_secondary">"Уклоните ознаку да се сакрије баннер огласе, али показују више пуних страница Огласи"</string>
+
+    <string name="failed_load_achievements">"Фаилед то лоад достигнућа"</string>
+    <string name="failed_load_leaderboards">"Фаилед то лоад Леадербоардс"</string>
+
+</resources>

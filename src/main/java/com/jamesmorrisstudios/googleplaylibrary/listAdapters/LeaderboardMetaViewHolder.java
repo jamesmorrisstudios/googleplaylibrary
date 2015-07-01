@@ -6,15 +6,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.images.ImageManager;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.Player;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleViewHolder;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaItem;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaVariantItem;
+import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 
 /**
  * Created by James on 6/6/2015.
@@ -60,7 +58,7 @@ public class LeaderboardMetaViewHolder extends BaseRecycleViewHolder {
             score.setText(variant.displayPlayerScore);
             rank.setText(variant.displayPlayerRank);
         } else {
-            score.setText("N/A");
+            score.setText(AppUtil.getContext().getString(R.string.n_a));
             rank.setText("");
         }
     }

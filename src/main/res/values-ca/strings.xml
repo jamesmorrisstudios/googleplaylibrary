@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Anunci a la part inferior"</string>
+    <string name="settings_google_play_item_0_secondary">"Desmarqueu per mostrar l'anunci a la part superior de la pantalla."</string>
+
+    <string name="settings_google_play_item_1_primary">"Amaga anuncis de pancarta"</string>
+    <string name="settings_google_play_item_1_secondary">"Desactiveu l'opció d'ocultar els anuncis de pancarta, sinó mostrar anuncis de pàgina més complets"</string>
+
+    <string name="failed_load_achievements">"Error en carregar Assoliments"</string>
+    <string name="failed_load_leaderboards">"Error en carregar taules de classificació"</string>
+
+</resources>

@@ -6,11 +6,8 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.common.api.BatchResult;
-import com.google.android.gms.common.api.BatchResultToken;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.achievement.Achievement;
 import com.google.android.gms.games.achievement.AchievementBuffer;
@@ -21,15 +18,12 @@ import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -186,7 +180,9 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         Games.Leaderboards.loadLeaderboardMetadata(GooglePlay.getInstance().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Leaderboards.LeaderboardMetadataResult>() {
             @Override
             public void onResult(Leaderboards.LeaderboardMetadataResult leaderboardMetadataResult) {
+                Log.v("GooglePlayCalls", "Load leaderboard Meta Data complete");
                 if(leaderboardMetadataResult.getStatus().isSuccess()) {
+                    Log.v("GooglePlayCalls", "Load leaderboard Meta Data complete success");
                     LeaderboardBuffer leaders = leaderboardMetadataResult.getLeaderboards();
                     leaderboardsMeta = new ArrayList<>();
                     for(int i=0; i<leaders.getCount(); i++) {

@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"तल पर विज्ञापन"</string>
+    <string name="settings_google_play_item_0_secondary">"स्क्रीन के शीर्ष पर विज्ञापन दिखाने के लिए अनचेक करें।"</string>
+
+    <string name="settings_google_play_item_1_primary">"बैनर विज्ञापन छुपाएं"</string>
+    <string name="settings_google_play_item_1_secondary">"बैनर विज्ञापन छिपाने लेकिन अधिक पूरे पृष्ठ का विज्ञापन दिखाने के लिए अचयनित"</string>
+
+    <string name="failed_load_achievements">"उपलब्धियां लोड करने में असफल"</string>
+    <string name="failed_load_leaderboards">"लीडरबोर्ड लोड करने में असफल"</string>
+
+</resources>

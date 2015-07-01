@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad στο κάτω μέρος"</string>
+    <string name="settings_google_play_item_0_secondary">"Καταργήστε την επιλογή για να δείξει τη διαφήμιση στο επάνω μέρος της οθόνης."</string>
+
+    <string name="settings_google_play_item_1_primary">"Απόκρυψη διαφημιστικά banners"</string>
+    <string name="settings_google_play_item_1_secondary">"Καταργήστε την επιλογή για να κρύψει τις διαφημίσεις banner, αλλά εμφανίζουν πιο πλήρη διαφημίσεις σελίδα"</string>
+
+    <string name="failed_load_achievements">"Απέτυχε να φορτώσει Επιτεύγματα"</string>
+    <string name="failed_load_leaderboards">"Απέτυχε να φορτώσει Πίνακες"</string>
+
+</resources>

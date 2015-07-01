@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad alul"</string>
+    <string name="settings_google_play_item_0_secondary">"Törölje, hogy bemutassák a hirdetés az a képernyő felső részén."</string>
+
+    <string name="settings_google_play_item_1_primary">"Hide Banner Ads"</string>
+    <string name="settings_google_play_item_1_secondary">"Szüntesse meg elrejteni banner hirdetések, de azt mutatják, további egész oldalas hirdetések"</string>
+
+    <string name="failed_load_achievements">"Nem sikerült betölteni Eredmények"</string>
+    <string name="failed_load_leaderboards">"Nem sikerült betölteni ranglisták"</string>
+
+</resources>

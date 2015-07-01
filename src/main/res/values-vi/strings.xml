@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad Trên đáy"</string>
+    <string name="settings_google_play_item_0_secondary">"Bỏ chọn để hiển thị các quảng cáo ở phía trên cùng của màn hình."</string>
+
+    <string name="settings_google_play_item_1_primary">"Ẩn Banner quảng cáo"</string>
+    <string name="settings_google_play_item_1_secondary">"Bỏ chọn để ẩn các banner quảng cáo, nhưng cho thấy các quảng cáo trang đầy đủ hơn"</string>
+
+    <string name="failed_load_achievements">"Không tải được thành tích"</string>
+    <string name="failed_load_leaderboards">"Không tải Leaderboards"</string>
+
+</resources>

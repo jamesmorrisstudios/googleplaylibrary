@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Annons på botten"</string>
+    <string name="settings_google_play_item_0_secondary">"Avmarkera för att visa annonsen längst upp på skärmen."</string>
+
+    <string name="settings_google_play_item_1_primary">"Dölj bannerannonser"</string>
+    <string name="settings_google_play_item_1_secondary">"Avmarkera för att dölja bannerannonser men visa mer fullständiga sida annonser"</string>
+
+    <string name="failed_load_achievements">"Det gick inte att läsa in Prestationer"</string>
+    <string name="failed_load_leaderboards">"Det gick inte att läsa in Topplistor"</string>
+
+</resources>

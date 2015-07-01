@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad Op Bottom"</string>
+    <string name="settings_google_play_item_0_secondary">"Vink om de advertentie te tonen aan de bovenkant van het scherm."</string>
+
+    <string name="settings_google_play_item_1_primary">"Hide banneradvertenties"</string>
+    <string name="settings_google_play_item_1_secondary">"Haal het vinkje weg te verbergen banner advertenties, maar toon meer volledige pagina advertenties"</string>
+
+    <string name="failed_load_achievements">"Mislukt Prestaties laden"</string>
+    <string name="failed_load_leaderboards">"Mislukt Leaderboards laden"</string>
+
+</resources>

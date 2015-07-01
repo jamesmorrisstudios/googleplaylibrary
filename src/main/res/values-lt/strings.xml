@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Reklamos apačioje"</string>
+    <string name="settings_google_play_item_0_secondary">"Atžymėti parodyti skelbimą į ekrano viršuje."</string>
+
+    <string name="settings_google_play_item_1_primary">"Slėpti banerių"</string>
+    <string name="settings_google_play_item_1_secondary">"Nuimkite paslėpti banerių, bet parodyti daugiau visą puslapį skelbimus"</string>
+
+    <string name="failed_load_achievements">"Nepavyko įkelti pasiekimai"</string>
+    <string name="failed_load_leaderboards">"Nepavyko įkelti Lyderių"</string>
+
+</resources>

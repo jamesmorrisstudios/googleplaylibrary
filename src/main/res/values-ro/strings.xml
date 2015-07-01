@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad Pe jos"</string>
+    <string name="settings_google_play_item_0_secondary">"Debifați pentru a arăta anunțul în partea de sus a ecranului."</string>
+
+    <string name="settings_google_play_item_1_primary">"Ascunde Anunturi Banner"</string>
+    <string name="settings_google_play_item_1_secondary">"Debifați pentru a ascunde banner, dar arată mai multe anunțuri complete pagina"</string>
+
+    <string name="failed_load_achievements">"Nu a reușit să se încarce Realizări"</string>
+    <string name="failed_load_leaderboards">"Nu a reușit să se încarce Clasamente"</string>
+
+</resources>

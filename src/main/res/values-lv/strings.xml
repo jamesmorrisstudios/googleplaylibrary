@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Reklāmas apakšā"</string>
+    <string name="settings_google_play_item_0_secondary">"Noņemiet atzīmi, lai parādītu reklāmu pie ekrāna augšpusē."</string>
+
+    <string name="settings_google_play_item_1_primary">"Slēpt Banner Ads"</string>
+    <string name="settings_google_play_item_1_secondary">"Noņemiet atzīmi, lai slēptu reklāmas bannerus, bet parādīt vairāk pilnu lapu reklāmas"</string>
+
+    <string name="failed_load_achievements">"Neizdevās ielādēt sasniegumi"</string>
+    <string name="failed_load_leaderboards">"Neizdevās ielādēt līderu"</string>
+
+</resources>

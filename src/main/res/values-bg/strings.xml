@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad На Bottom"</string>
+    <string name="settings_google_play_item_0_secondary">"Махнете отметката да покаже обявата в горната част на екрана."</string>
+
+    <string name="settings_google_play_item_1_primary">"Скриване на банер реклами"</string>
+    <string name="settings_google_play_item_1_secondary">"Махнете отметката, за да скриете банер реклами, но показва по цяла страница реклама"</string>
+
+    <string name="failed_load_achievements">"Неуспех при зареждане на Постижения"</string>
+    <string name="failed_load_leaderboards">"Неуспешно зареждане Класирания"</string>
+
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Объявление внизу"</string>
+    <string name="settings_google_play_item_0_secondary">"Снимите, чтобы показать объявление в верхней части экрана."</string>
+
+    <string name="settings_google_play_item_1_primary">"Скрыть Баннеры"</string>
+    <string name="settings_google_play_item_1_secondary">"Снимите, чтобы скрыть баннеры, но показать более полные страницы объявления"</string>
+
+    <string name="failed_load_achievements">"Не удалось загрузить Достижения"</string>
+    <string name="failed_load_leaderboards">"Не удалось загрузить лидеров"</string>
+
+</resources>

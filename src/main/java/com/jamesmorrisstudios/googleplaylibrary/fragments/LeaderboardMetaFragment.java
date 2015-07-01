@@ -15,6 +15,7 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaContainer;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
+import com.jamesmorrisstudios.utilitieslibrary.Utils;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -103,6 +104,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case LEADERBOARDS_META_FAIL:
+                Utils.toastShort(getString(R.string.failed_load_leaderboards));
                 applyData();
                 break;
         }

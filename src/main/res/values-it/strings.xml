@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad SU FONDO"</string>
+    <string name="settings_google_play_item_0_secondary">"Deselezionare per mostrare l'annuncio nella parte superiore dello schermo."</string>
+
+    <string name="settings_google_play_item_1_primary">"Hide Banner"</string>
+    <string name="settings_google_play_item_1_secondary">"Deselezionare per nascondere i banner pubblicitari, ma mostrare annunci più piena pagina"</string>
+
+    <string name="failed_load_achievements">"Impossibile caricare Realizzazioni"</string>
+    <string name="failed_load_leaderboards">"Impossibile caricare Classifiche"</string>
+
+</resources>

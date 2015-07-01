@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ogłoszenie na dole"</string>
+    <string name="settings_google_play_item_0_secondary">"Odznacz pokazać reklamy na górze ekranu."</string>
+
+    <string name="settings_google_play_item_1_primary">"Ukryj banery reklamowe"</string>
+    <string name="settings_google_play_item_1_secondary">"Usuń zaznaczenie pola wyboru, aby ukryć reklamy banerowe, ale pokazać więcej pełne reklamy strony"</string>
+
+    <string name="failed_load_achievements">"Nie udało się załadować Osiągnięcia"</string>
+    <string name="failed_load_leaderboards">"Nie udało się załadować Liderów"</string>
+
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"الإعلان على القاع"</string>
+    <string name="settings_google_play_item_0_secondary">"قم بإلغاء التحديد لإظهار الإعلانات في الجزء العلوي من الشاشة."</string>
+
+    <string name="settings_google_play_item_1_primary">"إخفاء راية الإعلانات"</string>
+    <string name="settings_google_play_item_1_secondary">"قم بإلغاء تحديد إخفاء الإعلانات لافتة لكنها تظهر إعلانات الصفحة الكاملة أكثر"</string>
+
+    <string name="failed_load_achievements">"فشل تحميل الإنجازات"</string>
+    <string name="failed_load_leaderboards">"فشل تحميل المتصدرين"</string>
+
+</resources>

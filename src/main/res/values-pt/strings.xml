@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Anúncio na parte inferior"</string>
+    <string name="settings_google_play_item_0_secondary">"Desmarque para mostrar a publicidade na parte superior da tela."</string>
+
+    <string name="settings_google_play_item_1_primary">"Esconder Banners"</string>
+    <string name="settings_google_play_item_1_secondary">"Desmarque a opção para esconder banners mas mostrar anúncios de página mais completos"</string>
+
+    <string name="failed_load_achievements">"Falha ao carregar Conquistas"</string>
+    <string name="failed_load_leaderboards">"Falha ao carregar Leaderboards"</string>
+
+</resources>

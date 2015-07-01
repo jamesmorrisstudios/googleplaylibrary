@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad Na dnu"</string>
+    <string name="settings_google_play_item_0_secondary">"Počistite za prikaz oglasa na vrhu zaslona."</string>
+
+    <string name="settings_google_play_item_1_primary">"Skrij oglasne pasice"</string>
+    <string name="settings_google_play_item_1_secondary">"Počistite skriti oglasne pasice, vendar kažejo bolj polne strani oglasov"</string>
+
+    <string name="failed_load_achievements">"Napaka pri nalaganju Dosežki"</string>
+    <string name="failed_load_leaderboards">"Napaka pri nalaganju Lestvice"</string>
+
+</resources>

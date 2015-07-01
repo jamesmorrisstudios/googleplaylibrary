@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"โฆษณาบนล่าง"</string>
+    <string name="settings_google_play_item_0_secondary">"ยกเลิกการเลือกที่จะแสดงโฆษณาที่ด้านบนของหน้าจอ"</string>
+
+    <string name="settings_google_play_item_1_primary">"ซ่อนแบนเนอร์โฆษณา"</string>
+    <string name="settings_google_play_item_1_secondary">"ยกเลิกการเลือกที่จะซ่อนโฆษณาแบนเนอร์ แต่แสดงโฆษณาเต็มหน้ามากขึ้น"</string>
+
+    <string name="failed_load_achievements">"ไม่สามารถโหลดสำเร็จ"</string>
+    <string name="failed_load_leaderboards">"ไม่สามารถโหลดลีดเดอร์บอร์ด"</string>
+
+</resources>

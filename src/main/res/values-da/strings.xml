@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad On Bund"</string>
+    <string name="settings_google_play_item_0_secondary">"Fjern markeringen for at vise annoncen øverst på skærmen."</string>
+
+    <string name="settings_google_play_item_1_primary">"Skjul bannerannoncer"</string>
+    <string name="settings_google_play_item_1_secondary">"Fjern markeringen for at skjule bannerannoncer, men viser mere fuld side annoncer"</string>
+
+    <string name="failed_load_achievements">"Kunne ikke indlæse Achievements"</string>
+    <string name="failed_load_leaderboards">"Kunne ikke indlæse Ranglister"</string>
+
+</resources>

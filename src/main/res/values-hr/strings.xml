@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Oglas na dnu"</string>
+    <string name="settings_google_play_item_0_secondary">"Poništite pokazati oglas na vrhu zaslona."</string>
+
+    <string name="settings_google_play_item_1_primary">"Sakrij banner oglase"</string>
+    <string name="settings_google_play_item_1_secondary">"Poništite sakriti banner oglase, ali pokazuju više pune oglasa stranica"</string>
+
+    <string name="failed_load_achievements">"Nije uspjelo učitavanje Postignuća"</string>
+    <string name="failed_load_leaderboards">"Nije uspjelo učitavanje leaderboards"</string>
+
+</resources>

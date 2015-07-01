@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad På Bottom"</string>
+    <string name="settings_google_play_item_0_secondary">"Fjern merkingen for å vise annonsen på toppen av skjermen."</string>
+
+    <string name="settings_google_play_item_1_primary">"Skjule bannerannonser"</string>
+    <string name="settings_google_play_item_1_secondary">"Fjern haken ved å skjule bannerannonser, men viser mer helsides annonser"</string>
+
+    <string name="failed_load_achievements">"Kunne ikke laste prestasjoner"</string>
+    <string name="failed_load_leaderboards">"Kunne ikke laste Topplister"</string>
+
+</resources>

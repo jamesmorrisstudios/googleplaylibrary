@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- Settings -->
+    <string name="settings_google_play_item_0_primary">"Ad On Bottom"</string>
+    <string name="settings_google_play_item_0_secondary">"Poista näyttää mainoksen näytön yläreunassa."</string>
+
+    <string name="settings_google_play_item_1_primary">"Piilota bannerimainokset"</string>
+    <string name="settings_google_play_item_1_secondary">"Poista valinnat piilottaa mainosbannereita mutta näyttää enemmän koko sivun mainoksia"</string>
+
+    <string name="failed_load_achievements">"Lataaminen epäonnistui Saavutukset"</string>
+    <string name="failed_load_leaderboards">"Lataaminen epäonnistui Leaderboards"</string>
+
+</resources>

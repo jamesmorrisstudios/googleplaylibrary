@@ -40,12 +40,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:text=""
         android:textColor="@color/textDarkMain"
         android:textSize="15sp" />
 
     <!-- Progress bar for amount of achievements completed -->
-    <com.jamesmorrisstudios.utilitieslibrary.controls.ProgressBarDeterminate
+    <com.jamesmorrisstudios.utilitieslibrary.controls.ProgressBarDeterminateHorizontal
         android:id="@+id/achievement_progress"
         android:layout_width="100dp"
         android:layout_height="5dp"

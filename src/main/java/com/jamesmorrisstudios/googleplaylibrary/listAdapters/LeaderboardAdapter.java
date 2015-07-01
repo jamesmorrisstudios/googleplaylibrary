@@ -27,7 +27,7 @@ public class LeaderboardAdapter extends BaseRecycleAdapter {
 
     @Override
     protected int getHeaderResId() {
-        return R.layout.leaderboard_header;
+        return R.layout.leaderboard_item;
     }
 
     @Override
