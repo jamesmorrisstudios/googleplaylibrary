@@ -2,45 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4077de6c-d712-4194-8a4d-7d8261773451" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\layout\leaderboard_header.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values\strings_name.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/AchievementFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/AchievementFragment.java" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\appbaselibrary_1_1.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\appcompat_v7_22_2_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\cardview_v7_22_2_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\datetimepickerlibrary_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\design_22_2_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\gson_2_3_1.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\layouts_1_9.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\library_2_4_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\otto_1_3_7.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\play_services_ads_7_5_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\play_services_analytics_7_5_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\play_services_base_7_5_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\play_services_drive_7_5_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\play_services_games_7_5_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\recyclerview_v7_22_2_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\superslim_0_4_13.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\support_annotations_22_2_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\support_v4_22_2_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\.idea\libraries\utilitieslibrary_1_1.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlay.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlay.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/GooglePlaySettingsFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/GooglePlaySettingsFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardContainer.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardContainer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardViewHolder.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardViewHolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/Security.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/Security.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/achievement_header.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/achievement_header.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/achievement_item.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/achievement_item.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/values/ads.xml" afterPath="$PROJECT_DIR$/src/main/res/values/ads.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_22_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_22_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/cardview_v7_22_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/cardview_v7_22_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/design_22_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/design_22_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/googleplaylibrary.iml" afterPath="$PROJECT_DIR$/googleplaylibrary.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/layout_google_play_sign.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/layout_google_play_sign.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/layout_main.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/layout_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/layout_main_ad_bottom.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/layout_main_ad_bottom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/layout_main_ad_top.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/layout_main_ad_top.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/layout_remove_ads.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/layout_remove_ads.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/layout_remove_ads_gone.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/layout_remove_ads_gone.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/layouts_1_9.xml" afterPath="$PROJECT_DIR$/.idea/libraries/layouts_1_9.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/play_services_analytics_7_5_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/play_services_analytics_7_5_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/play_services_drive_7_5_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/play_services_drive_7_5_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/recyclerview_v7_22_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/recyclerview_v7_22_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_annotations_22_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_annotations_22_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_22_2_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_22_2_0.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="googleplaylibrary.iws" />
@@ -104,6 +86,9 @@
   </component>
   <component name="FavoritesManager">
     <favorites_list name="googleplaylibrary" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -1029,6 +1014,13 @@
       <projects_view />
     </option>
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java" />
+      </list>
+    </option>
+  </component>
   <component name="NamedScopeManager">
     <order />
   </component>
@@ -1061,6 +1053,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -1069,12 +1063,128 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="util" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="activities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1278,6 +1388,9 @@
     </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="4077de6c-d712-4194-8a4d-7d8261773451" name="Default" comment="" />
@@ -1288,36 +1401,44 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="1" />
+    <editor active="true" />
     <layout>
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18336888" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -1330,5 +1451,159 @@
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="class#3742:4107" expanded="false" />
+            <element signature="method#onServiceConnected#0;class#3742:4107" expanded="false" />
+            <element signature="docComment;method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#4983#5072#0" expanded="false" />
+            <element signature="method#setLayout#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#6174#6228#0" expanded="true" />
+            <element signature="method#startIABHelper#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onActivityResult#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onResume#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onStart#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onStop#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onDestroy#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#10169#10217#0" expanded="true" />
+            <element signature="e#10393#10465#0" expanded="false" />
+            <element signature="e#11357#11414#0" expanded="true" />
+            <element signature="e#11482#11537#0" expanded="true" />
+            <element signature="e#11800#11801#0" expanded="true" />
+            <element signature="method#disableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#11952#12000#0" expanded="true" />
+            <element signature="docComment;method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#purchaseRemoveAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#13060#13108#0" expanded="true" />
+            <element signature="e#13182#13213#0" expanded="true" />
+            <element signature="method#testingConsumePurchase#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#consumeItem#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getCacheEnableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#14606#14654#0" expanded="true" />
+            <element signature="method#initToolbarSpinners#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#setLeaderboardSpinnerVisibility#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="class#16356:17530" expanded="false" />
+            <element signature="method#onItemSelected#0;class#16356:17530" expanded="false" />
+            <element signature="method#onNothingSelected#0;class#16356:17530" expanded="false" />
+            <element signature="class#17593:18637" expanded="false" />
+            <element signature="method#onItemSelected#0;class#17593:18637" expanded="false" />
+            <element signature="method#onNothingSelected#0;class#17593:18637" expanded="false" />
+            <element signature="docComment;method#requestNewInterstitial#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#requestNewInterstitial#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#showInterstitialAd#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#retry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#initRetry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;field#retryRun#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#21445#21564#0" expanded="true" />
+            <element signature="e#21563#21564#0" expanded="true" />
+            <element signature="method#getPlayGamesEnabledPref#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#21647#21680#0" expanded="true" />
+            <element signature="method#setPlayGamesEnabledPref#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#21810#21843#0" expanded="true" />
+            <element signature="docComment;method#getSettingsFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getSettingsFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#loadAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getLeaderboardMetaFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#loadLeaderboardMetaFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getLeaderboardFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#loadLeaderboardFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#loadLeaderboardFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onSignInFailed#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onSignInSucceeded#0;class#BaseAdLauncherActivity#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/AdUsage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="18" column="30" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.83391005">
+          <caret line="292" column="25" selection-start-line="292" selection-start-column="25" selection-end-line="292" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="class#3742:4107" expanded="false" />
+            <element signature="method#onServiceConnected#0;class#3742:4107" expanded="false" />
+            <element signature="docComment;method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onCreate#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#4983#5072#0" expanded="false" />
+            <element signature="method#setLayout#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#6174#6228#0" expanded="true" />
+            <element signature="method#startIABHelper#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onActivityResult#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onResume#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onStart#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onStop#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onDestroy#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#10169#10217#0" expanded="true" />
+            <element signature="e#10393#10465#0" expanded="false" />
+            <element signature="e#11357#11414#0" expanded="true" />
+            <element signature="e#11482#11537#0" expanded="true" />
+            <element signature="e#11800#11801#0" expanded="true" />
+            <element signature="method#disableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#11952#12000#0" expanded="true" />
+            <element signature="docComment;method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onSettingsChanged#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#purchaseRemoveAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#13060#13108#0" expanded="true" />
+            <element signature="e#13182#13213#0" expanded="true" />
+            <element signature="method#testingConsumePurchase#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#consumeItem#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getCacheEnableAds#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#14606#14654#0" expanded="true" />
+            <element signature="method#initToolbarSpinners#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#setLeaderboardSpinnerVisibility#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="class#16356:17530" expanded="false" />
+            <element signature="method#onItemSelected#0;class#16356:17530" expanded="false" />
+            <element signature="method#onNothingSelected#0;class#16356:17530" expanded="false" />
+            <element signature="class#17593:18637" expanded="false" />
+            <element signature="method#onItemSelected#0;class#17593:18637" expanded="false" />
+            <element signature="method#onNothingSelected#0;class#17593:18637" expanded="false" />
+            <element signature="docComment;method#requestNewInterstitial#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#requestNewInterstitial#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#showInterstitialAd#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#retry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#initRetry#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;field#retryRun#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#21445#21564#0" expanded="true" />
+            <element signature="e#21563#21564#0" expanded="true" />
+            <element signature="method#getPlayGamesEnabledPref#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#21647#21680#0" expanded="true" />
+            <element signature="method#setPlayGamesEnabledPref#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="e#21810#21843#0" expanded="true" />
+            <element signature="docComment;method#getSettingsFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getSettingsFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#loadAchievementFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getLeaderboardMetaFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#loadLeaderboardMetaFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#getLeaderboardFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="docComment;method#loadLeaderboardFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#loadLeaderboardFragment#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onSignInFailed#0;class#BaseAdLauncherActivity#0" expanded="false" />
+            <element signature="method#onSignInSucceeded#0;class#BaseAdLauncherActivity#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>

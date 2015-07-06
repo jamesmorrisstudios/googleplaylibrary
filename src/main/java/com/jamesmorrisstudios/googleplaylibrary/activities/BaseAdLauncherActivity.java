@@ -526,7 +526,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     private void retry() {
         retryCount++;
         if (retryCount <= 3) {
-            handler.postDelayed(retryRun, 1000);
+            handler.postDelayed(retryRun, 250);
         } else {
             retryRunning = false;
         }
@@ -538,7 +538,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     private void initRetry() {
         retryCount = 0;
         retryRunning = true;
-        handler.postDelayed(retryRun, 1000);
+        handler.postDelayed(retryRun, 250);
     }
 
     /**
