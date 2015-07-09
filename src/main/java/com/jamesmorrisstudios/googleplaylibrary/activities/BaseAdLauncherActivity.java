@@ -273,7 +273,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
                     .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
-                    .addTestDevice("5FE0C6962C9C4F8DD6F30B9B11CC0E42") //transformer prime
+                    .addTestDevice("827F16D46E55B979D33C6023E4705F7D") //transformer prime
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Emulator
                     .build();
 
@@ -479,7 +479,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
                     .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
-                    .addTestDevice("5FE0C6962C9C4F8DD6F30B9B11CC0E42") //transformer prime
+                    .addTestDevice("827F16D46E55B979D33C6023E4705F7D") //transformer prime
                     .build();
 
             mInterstitialAd.loadAd(adRequest);
