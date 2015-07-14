@@ -21,8 +21,8 @@ public class LeaderboardAdapter extends BaseRecycleAdapter {
     }
 
     @Override
-    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean b, BaseRecycleViewHolder.cardClickListener cardClickListener) {
-        return new LeaderboardViewHolder(view, b, cardClickListener, imageManager);
+    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean isHeader, boolean isDummyItem, BaseRecycleViewHolder.cardClickListener cardClickListener) {
+        return new LeaderboardViewHolder(view, isHeader, isDummyItem, cardClickListener, imageManager);
     }
 
     @Override

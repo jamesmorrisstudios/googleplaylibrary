@@ -150,7 +150,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
         paramsCard.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
         overlayCard.setLayoutParams(paramsCard);
-        overlayHolder = new AchievementViewHolder(overlayCard, false, null, ImageManager.create(getActivity().getApplicationContext()));
+        overlayHolder = new AchievementViewHolder(overlayCard, false, false, null, ImageManager.create(getActivity().getApplicationContext()));
 
         overlayBackground.setVisibility(View.GONE);
         overlayCard.setVisibility(View.GONE);

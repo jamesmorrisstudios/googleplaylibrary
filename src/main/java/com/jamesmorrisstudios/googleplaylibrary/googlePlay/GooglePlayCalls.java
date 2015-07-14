@@ -82,29 +82,29 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             @Override
             public void onResult(Achievements.LoadAchievementsResult loadAchievementsResult) {
                 Logger.v(Logger.LoggerCategory.MAIN, TAG, "Achievements loaded");
-                if (loadAchievementsResult.getStatus().isSuccess()) {
-                    AchievementBuffer achieve = loadAchievementsResult.getAchievements();
-                    achievements = new ArrayList<>();
-                    for (int i = 0; i < achieve.getCount(); i++) {
-                        Achievement ach = achieve.get(i);
-                        String title = ach.getName();
-                        AchievementItem.AchievementState state = getAchievementState(ach);
-
-                        if (state != AchievementItem.AchievementState.HIDDEN) {
-                            if (ach.getType() == Achievement.TYPE_INCREMENTAL) {
-                                achievements.add(new AchievementItem(title, ach.getDescription(), ach.getRevealedImageUri(), ach.getUnlockedImageUri(),
-                                        ach.getXpValue(), ach.getCurrentSteps(), ach.getTotalSteps(), state));
-                            } else {
-                                achievements.add(new AchievementItem(title, ach.getDescription(), ach.getRevealedImageUri(), ach.getUnlockedImageUri(),
-                                        ach.getXpValue(), -1, -1, state));
-                            }
-                        }
-                    }
-                    achieve.release();
-                    Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_READY);
-                } else {
+                if (!loadAchievementsResult.getStatus().isSuccess()) {
+                    loadAchievementsResult.release();
                     Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_FAIL);
                 }
+                AchievementBuffer achieve = loadAchievementsResult.getAchievements();
+                achievements = new ArrayList<>();
+                for (int i = 0; i < achieve.getCount(); i++) {
+                    Achievement ach = achieve.get(i);
+                    AchievementItem.AchievementState state = getAchievementState(ach);
+                    if (state != AchievementItem.AchievementState.HIDDEN) {
+                        if (ach.getType() == Achievement.TYPE_INCREMENTAL) {
+                            achievements.add(new AchievementItem(ach.getName(), ach.getDescription(), ach.getRevealedImageUri(), ach.getUnlockedImageUri(),
+                                    ach.getXpValue(), ach.getCurrentSteps(), ach.getTotalSteps(), state));
+                        } else {
+                            achievements.add(new AchievementItem(ach.getName(), ach.getDescription(), ach.getRevealedImageUri(), ach.getUnlockedImageUri(),
+                                    ach.getXpValue(), -1, -1, state));
+                        }
+                    }
+                }
+                achieve.close();
+                achieve.release();
+                loadAchievementsResult.release();
+                Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_READY);
             }
         }, timeout, timeUnit);
     }

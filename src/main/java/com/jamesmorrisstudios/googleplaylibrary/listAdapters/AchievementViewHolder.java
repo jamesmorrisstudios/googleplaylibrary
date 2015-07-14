@@ -14,6 +14,7 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementItem;
 import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 import com.jamesmorrisstudios.utilitieslibrary.controls.CircleProgressDeterminate;
 import com.jamesmorrisstudios.utilitieslibrary.controls.ProgressBarDeterminate;
+import com.jamesmorrisstudios.utilitieslibrary.math.UtilsMath;
 
 /**
  * Created by James on 5/27/2015.
@@ -28,8 +29,8 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
     private ImageView image;
     private CircleProgressDeterminate circle;
 
-    public AchievementViewHolder(View view, boolean isHeader, cardClickListener mListener, ImageManager imageManager) {
-        super(view, isHeader, mListener);
+    public AchievementViewHolder(View view, boolean isHeader, boolean isDummyItem, cardClickListener mListener, ImageManager imageManager) {
+        super(view, isHeader, isDummyItem, mListener);
         this.imageManager = imageManager;
     }
 
@@ -69,7 +70,7 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
         this.title.setText(item.title);
         this.description.setText(item.description);
         if(item.xp != 0) {
-            this.xp.setText(Long.toString(item.xp)+AppUtil.getContext().getResources().getString(R.string.xp));
+            this.xp.setText(UtilsMath.formatDisplayNumber(item.xp)+" "+AppUtil.getContext().getResources().getString(R.string.xp));
         } else {
             this.xp.setText("");
         }

@@ -20,8 +20,8 @@ public class LeaderboardViewHolder extends BaseRecycleViewHolder {
     private ImageView icon;
     private TextView name, score, rank;
 
-    public LeaderboardViewHolder(View view, boolean isHeader, cardClickListener mListener, ImageManager imageManager) {
-        super(view, isHeader, mListener);
+    public LeaderboardViewHolder(View view, boolean isHeader, boolean isDummyItem, cardClickListener mListener, ImageManager imageManager) {
+        super(view, isHeader, isDummyItem, mListener);
         this.imageManager = imageManager;
     }
 
