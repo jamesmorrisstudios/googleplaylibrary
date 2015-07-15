@@ -2,13 +2,10 @@
 <resources>
     <!-- Override these to set your ad ids -->
     <string name="banner_id" translatable="false">changeThis</string>
-    <string name="interstitial_id_rare" translatable="false">changeThis</string>
-    <string name="interstitial_id_common" translatable="false">changeThis</string>
+    <string name="interstitial_id" translatable="false">changeThis</string>
 
-    <!-- Minimum amount of time between showing an interstitial add even if requested in seconds.
-    Default is 5 minutes (300 seconds) -->
-    <integer name="interstitial_timeout_rare">300</integer>
-    <integer name="interstitial_timeout_common">30</integer>
+    <!-- Minimum amount of time between showing an interstitial add even if requested in seconds. -->
+    <integer name="interstitial_timeout">30</integer>
 
     <!-- Set this to enable loading of the interstitial ad -->
     <bool name="interstitial_enable">false</bool>
