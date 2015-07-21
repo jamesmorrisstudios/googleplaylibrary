@@ -48,20 +48,19 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        super.onSaveInstanceState(bundle);
-        Log.v("TAG", "LeaderboardId "+leaderboardId);
-        bundle.putString("leaderboardId", leaderboardId);
+    protected void saveState(Bundle bundle) {
+        if(leaderboardId != null) {
+            bundle.putString("leaderboardId", leaderboardId);
+        }
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(savedInstanceState != null) {
-            if(savedInstanceState.containsKey("leaderboardId")) {
-                leaderboardId = savedInstanceState.getString("leaderboardId");
+    protected void restoreState(Bundle bundle) {
+        if(bundle != null) {
+            if(bundle.containsKey("leaderboardId")) {
+                leaderboardId = bundle.getString("leaderboardId");
             }
         }
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     /**

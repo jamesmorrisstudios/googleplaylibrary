@@ -51,7 +51,7 @@ dependencies {
     //compile 'com.google.android.gms:play-services-ads:6.5.87' //For use with emulator
     compile 'com.google.android.gms:play-services-games:7.5.0'
     compile 'com.google.android.gms:play-services-ads:7.5.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.jamesmorrisstudios:appbaselibrary:1.1'
     compile 'com.nineoldandroids:library:2.4.0'
 }

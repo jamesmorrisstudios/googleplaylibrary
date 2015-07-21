@@ -5,7 +5,7 @@
     <string name="settings_google_play_item_0_secondary">Uncheck to show the ad at the top of the screen.</string>
 
     <string name="settings_google_play_item_1_primary">Hide Banner Ads</string>
-    <string name="settings_google_play_item_1_secondary">Uncheck to hide banner ads but will show full page ads instead</string>
+    <string name="settings_google_play_item_1_secondary">Uncheck to hide banner ads but show full page ads instead</string>
 
     <string name="failed_load_achievements">Failed to load Achievements</string>
     <string name="failed_load_leaderboards">Failed to load Leaderboards</string>

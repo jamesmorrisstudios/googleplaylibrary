@@ -39,6 +39,12 @@ public class AchievementFragment extends BaseRecycleListFragment {
     private CardView overlayCard;
     private AchievementViewHolder overlayHolder;
 
+    private String[] achievementIds = null;
+
+    public final void setAchievementIds(@NonNull String[] achievementIds) {
+        this.achievementIds = achievementIds;
+    }
+
     @Override
     protected BaseRecycleAdapter getAdapter(int i, @NonNull BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
         return new AchievementAdapter(i, onItemClickListener);
@@ -63,6 +69,22 @@ public class AchievementFragment extends BaseRecycleListFragment {
     public void onDestroy() {
         super.onDestroy();
         Bus.unregister(this);
+    }
+
+    @Override
+    protected void saveState(Bundle bundle) {
+        if(achievementIds != null) {
+            bundle.putStringArray("achievementIds", achievementIds);
+        }
+    }
+
+    @Override
+    protected void restoreState(Bundle bundle) {
+        if(bundle != null) {
+            if(bundle.containsKey("achievementIds")) {
+                achievementIds = bundle.getStringArray("achievementIds");
+            }
+        }
     }
 
     /**
@@ -99,7 +121,9 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     @Override
     protected void startDataLoad(boolean forced) {
-        GooglePlayCalls.getInstance().loadAchievements(forced);
+        if(achievementIds != null) {
+            GooglePlayCalls.getInstance().loadAchievements(forced, achievementIds);
+        }
     }
 
     @Override

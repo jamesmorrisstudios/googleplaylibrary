@@ -588,10 +588,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     /**
      * Loads the achievements fragment into the main view
      */
-    protected final boolean loadAchievementFragment() {
+    protected final boolean loadAchievementFragment(String[] achievementIds) {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
                 AchievementFragment fragment = getAchievementFragment();
+                fragment.setAchievementIds(achievementIds);
                 loadFragment(fragment, AchievementFragment.TAG, true);
                 getSupportFragmentManager().executePendingTransactions();
                 return true;
@@ -620,10 +621,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     /**
      * Loads the leaderboard fragment into the main view
      */
-    protected final boolean loadLeaderboardMetaFragment() {
+    protected final boolean loadLeaderboardMetaFragment(String[] leaderboardIds) {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
                 LeaderboardMetaFragment fragment = getLeaderboardMetaFragment();
+                fragment.setLeaderboardIds(leaderboardIds);
                 loadFragment(fragment, LeaderboardMetaFragment.TAG, true);
                 getSupportFragmentManager().executePendingTransactions();
                 return true;
@@ -678,7 +680,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onSignInSucceeded() {
         Log.v("Activity", "Sign in Succeeded");
         Bus.postEnum(GooglePlay.GooglePlayEvent.SIGN_IN_SUCCESS);
-        Games.setViewForPopups(GooglePlay.getInstance().getApiClient(), findViewById(R.id.toolbarContainer));
+        //Games.setViewForPopups(GooglePlay.getInstance().getApiClient(), findViewById(R.id.toolbarContainer)); //TODO
         setPlayGamesEnabledPref(true);
     }
 

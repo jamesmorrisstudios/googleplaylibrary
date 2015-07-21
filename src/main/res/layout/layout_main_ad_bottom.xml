@@ -1,61 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/toolbarContainer"
+    <include
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="?attr/actionBarSize"
+        layout="@layout/toolbar_layout_g_play" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/toolbarLight"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:paddingBottom="@dimen/ad_height"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-            <android.support.v7.widget.AppCompatSpinner
-                android:gravity="left|center_vertical"
-                android:layout_gravity="left|center_vertical"
-                android:visibility="gone"
-                android:id="@+id/leaderboard_span"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:saveEnabled="false"/>
-
-            <android.support.v7.widget.AppCompatSpinner
-                android:gravity="right|center_vertical"
-                android:layout_gravity="right|center_vertical"
-                android:visibility="gone"
-                android:layout_marginRight="16dp"
-                android:id="@+id/leaderboard_collection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:saveEnabled="false"/>
-
-        </android.support.v7.widget.Toolbar>
-
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="0dp" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="@string/banner_id" />
-
-    </LinearLayout>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_id" />
 
     <ProgressBar
         android:id="@+id/progressBar"

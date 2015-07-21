@@ -38,6 +38,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     private ArrayList<LeaderboardItem> leaderboards = null;
     private ArrayList<LeaderboardMetaItem> leaderboardsMeta = null;
     private String[] leaderboardIds = null;
+    private String[] achievementIds = null;
 
     //Held Simple Data
     private GooglePlay.Collection leaderboardCollection = GooglePlay.Collection.PUBLIC;
@@ -69,8 +70,8 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
      * Subscribe to GooglePlayEvent.ACHIEVEMENTS_ITEMS_READY to know when data is ready
      * @param forceRefresh True to force a data refresh. Use only for user initiated refresh
      */
-    public synchronized final void loadAchievements(boolean forceRefresh) {
-        if(hasAchievements() && !forceRefresh) {
+    public synchronized final void loadAchievements(boolean forceRefresh, @NonNull final String[] achievementIds) {
+        if(hasAchievements() && !forceRefresh && (this.achievementIds == null || Arrays.equals(achievementIds, this.achievementIds))) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_READY);
             return;
         }
@@ -90,6 +91,9 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
                 achievements = new ArrayList<>();
                 for (int i = 0; i < achieve.getCount(); i++) {
                     Achievement ach = achieve.get(i);
+                    if (!Utils.isInArray(ach.getAchievementId(), achievementIds)) {
+                        continue;
+                    }
                     AchievementItem.AchievementState state = getAchievementState(ach);
                     if (state != AchievementItem.AchievementState.HIDDEN) {
                         if (ach.getType() == Achievement.TYPE_INCREMENTAL) {
@@ -114,6 +118,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
      */
     public synchronized void clearAchievementsCache() {
         achievements = null;
+        achievementIds = null;
     }
 
     /**
@@ -181,17 +186,17 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             @Override
             public void onResult(Leaderboards.LeaderboardMetadataResult leaderboardMetadataResult) {
                 Log.v("GooglePlayCalls", "Load leaderboard Meta Data complete");
-                if(leaderboardMetadataResult.getStatus().isSuccess()) {
+                if (leaderboardMetadataResult.getStatus().isSuccess()) {
                     Log.v("GooglePlayCalls", "Load leaderboard Meta Data complete success");
                     LeaderboardBuffer leaders = leaderboardMetadataResult.getLeaderboards();
                     leaderboardsMeta = new ArrayList<>();
-                    for(int i=0; i<leaders.getCount(); i++) {
+                    for (int i = 0; i < leaders.getCount(); i++) {
                         Leaderboard leaderboard = leaders.get(i);
-                        if(!Utils.isInArray(leaderboard.getLeaderboardId(), leaderboardIds)) {
+                        if (!Utils.isInArray(leaderboard.getLeaderboardId(), leaderboardIds)) {
                             continue;
                         }
                         ArrayList<LeaderboardMetaVariantItem> variants = new ArrayList<>();
-                        for(int j=0; j<leaderboard.getVariants().size(); j++) {
+                        for (int j = 0; j < leaderboard.getVariants().size(); j++) {
                             LeaderboardVariant leaderboardVariant = leaderboard.getVariants().get(j);
                             variants.add(new LeaderboardMetaVariantItem(
                                     GooglePlay.Collection.getFromInt(leaderboardVariant.getCollection()),
@@ -200,7 +205,9 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
                         }
                         leaderboardsMeta.add(new LeaderboardMetaItem(leaderboard.getDisplayName(), leaderboard.getIconImageUri(), leaderboard.getLeaderboardId(), variants));
                     }
+                    leaders.close();
                     leaders.release();
+                    leaderboardMetadataResult.release();
                     loadPlayerScores(leaderboardIds);
                 } else {
                     Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_META_FAIL);
@@ -215,21 +222,21 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
 
         for(String id : leaderboardIds) {
             final String idFinal = id;
-                PendingResult<Leaderboards.LoadPlayerScoreResult> result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(GooglePlay.getInstance().getApiClient(), id, leaderboardSpan.getInt(), leaderboardCollection.getInt());
-                result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-                    @Override
-                    public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                        if(loadPlayerScoreResult.getStatus().isSuccess()) {
-                            LeaderboardScore score = loadPlayerScoreResult.getScore();
-                            LeaderboardMetaItem item = getLeaderboardMetaItem(idFinal);
-                            if(score != null && item != null) {
-                                item.updateVariant(leaderboardCollection, leaderboardSpan, score.getDisplayRank(), score.getDisplayScore(), score.getRank(), score.getRawScore());
-                                //Log.v("GooglePlayCalls", "Collection: "+leaderboardCollection.toString()+" Span: "+leaderboardSpan.toString()+" Score: "+score.getDisplayScore());
-                            }
+            PendingResult<Leaderboards.LoadPlayerScoreResult> result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(GooglePlay.getInstance().getApiClient(), id, leaderboardSpan.getInt(), leaderboardCollection.getInt());
+            result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+                @Override
+                public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                    if(loadPlayerScoreResult.getStatus().isSuccess()) {
+                        LeaderboardScore score = loadPlayerScoreResult.getScore();
+                        LeaderboardMetaItem item = getLeaderboardMetaItem(idFinal);
+                        if(score != null && item != null) {
+                            item.updateVariant(leaderboardCollection, leaderboardSpan, score.getDisplayRank(), score.getDisplayScore(), score.getRank(), score.getRawScore());
+                            //Log.v("GooglePlayCalls", "Collection: "+leaderboardCollection.toString()+" Span: "+leaderboardSpan.toString()+" Score: "+score.getDisplayScore());
                         }
                     }
-                });
-                builder.add(result);
+                }
+            });
+            builder.add(result);
         }
         final Batch batch = builder.build();
         batch.setResultCallback(new ResultCallback<BatchResult>() {

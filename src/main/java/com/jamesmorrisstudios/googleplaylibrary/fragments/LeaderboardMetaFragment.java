@@ -26,6 +26,11 @@ import java.util.ArrayList;
 public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     public static final String TAG = "LeaderboardMetaFragment";
     private OnLeaderboardMetaListener leaderboardMetaListener;
+    private String[] leaderboardIds = null;
+
+    public final void setLeaderboardIds(@NonNull String[] leaderboardIds) {
+        this.leaderboardIds = leaderboardIds;
+    }
 
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -61,6 +66,22 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     }
 
     @Override
+    protected void saveState(Bundle bundle) {
+        if(leaderboardIds != null) {
+            bundle.putStringArray("leaderboardIds", leaderboardIds);
+        }
+    }
+
+    @Override
+    protected void restoreState(Bundle bundle) {
+        if(bundle != null) {
+            if(bundle.containsKey("leaderboardIds")) {
+                leaderboardIds = bundle.getStringArray("leaderboardIds");
+            }
+        }
+    }
+
+    @Override
     protected BaseRecycleAdapter getAdapter(int i, @NonNull BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
         return new LeaderboardMetaAdapter(i, onItemClickListener);
     }
@@ -68,7 +89,9 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     @Override
     protected void startDataLoad(boolean forceRefresh) {
         Log.v("LeaderboardMetaFragment", "Start data load");
-        GooglePlayCalls.getInstance().loadLeaderboardsMeta(forceRefresh, getResources().getStringArray(R.array.leaderboard_ids));
+        if(leaderboardIds != null) {
+            GooglePlayCalls.getInstance().loadLeaderboardsMeta(forceRefresh, leaderboardIds);
+        }
     }
 
     private void applyData() {
