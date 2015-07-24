@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"ERROR: Unable to Setup in App-Abrechnung"</string>
+    <string name="failed_purchase">"Fehler: Fehler beim Element zu kaufen"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Ad On Bottom"</string>
-    <string name="settings_google_play_item_0_secondary">"Deaktivieren Sie die Anzeige am oberen Rand des Bildschirms zeigen."</string>
+    <string name="settings_google_play_item_0_primary">"Ausblenden Banner Ads"</string>
+    <string name="settings_google_play_item_0_secondary">"Deaktivieren Sie die Option, um Werbebanner zu verstecken, sondern zeigen, ganzseitige Anzeigen statt"</string>
 
-    <string name="settings_google_play_item_1_primary">"Ausblenden Banner Ads"</string>
-    <string name="settings_google_play_item_1_secondary">"Deaktivieren Sie die Option, um Werbebanner zu verstecken, sondern zeigen, mehr ganzseitige Anzeigen"</string>
-
-    <string name="failed_load_achievements">"Fehler beim laden Achievements"</string>
-    <string name="failed_load_leaderboards">"Fehler beim Listen laden"</string>
+    <string name="failed_load_google_page">"Fehler beim Laden der Seite"</string>
+    <string name="requires_google_play">"Die Aktion verlangt Google Play Games"</string>
 
 </resources>

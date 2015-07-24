@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"NAPAKA: Ni mogoče, da setup v app obračun"</string>
+    <string name="failed_purchase">"NAPAKA: Ni uspelo kupiti postavko"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Ad Na dnu"</string>
-    <string name="settings_google_play_item_0_secondary">"Počistite za prikaz oglasa na vrhu zaslona."</string>
+    <string name="settings_google_play_item_0_primary">"Skrij oglasne pasice"</string>
+    <string name="settings_google_play_item_0_secondary">"Počistite skriti oglasne pasice, temveč pokazati polni strani oglasov"</string>
 
-    <string name="settings_google_play_item_1_primary">"Skrij oglasne pasice"</string>
-    <string name="settings_google_play_item_1_secondary">"Počistite skriti oglasne pasice, vendar kažejo bolj polne strani oglasov"</string>
-
-    <string name="failed_load_achievements">"Napaka pri nalaganju Dosežki"</string>
-    <string name="failed_load_leaderboards">"Napaka pri nalaganju Lestvice"</string>
+    <string name="failed_load_google_page">"Napaka pri nalaganju strani"</string>
+    <string name="requires_google_play">"Ta ukrep zahteva Google igre Predvajaj"</string>
 
 </resources>

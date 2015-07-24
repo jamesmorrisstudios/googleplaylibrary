@@ -1,5 +1,6 @@
 package com.jamesmorrisstudios.googleplaylibrary.activities;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
@@ -23,6 +25,12 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.Multiplayer;
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
+import com.google.android.gms.games.snapshot.SnapshotMetadata;
+import com.google.android.gms.games.snapshot.Snapshots;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
@@ -46,6 +54,8 @@ import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 import com.jamesmorrisstudios.utilitieslibrary.preferences.Prefs;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
+
 /**
  * Created by James on 5/11/2015.
  */
@@ -59,6 +69,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     private static final String TAG = "BaseAdLauncherActivity";
     private static final String REMOVE_ADS_SKU = "remove_ads_1";
+
+    private final static int RC_LOOK_AT_MATCHES = 10000;
+    private final static int RC_LOOK_AT_SNAPSHOTS = 10001;
+    private final static int RC_SELECT_PLAYERS = 11000;
 
     private boolean playServicesEnabled = false;
 
@@ -133,7 +147,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 }
             }
             startIABHelper();
-            GooglePlay.getInstance().init(this, GooglePlay.CLIENT_GAMES);
+            GooglePlay.getInstance().init(this, getGooglePlayClients());
             if(getPlayGamesEnabledPref()) {
                 if (GooglePlay.getInstance().isFirstLaunch()) {
                     GooglePlay.getInstance().setup(this);
@@ -149,15 +163,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         initToolbarSpinners();
     }
 
+    protected abstract int getGooglePlayClients();
+
     private void setLayout(boolean showAd) {
         if(showAd && !AdUsage.getBannerAdHide()) {
-            String pref = AppUtil.getContext().getString(R.string.settings_pref);
-            String key = AppUtil.getContext().getString(R.string.pref_ad_on_bottom);
-            if (Prefs.getBoolean(pref, key, true)) {
-                setContentView(R.layout.layout_main_ad_bottom);
-            } else {
-                setContentView(R.layout.layout_main_ad_top);
-            }
+            setContentView(R.layout.layout_main_ad);
         } else {
             setContentView(R.layout.layout_main);
         }
@@ -191,6 +201,72 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             super.onActivityResult(requestCode, resultCode, data);
         }
         GooglePlay.getInstance().onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_LOOK_AT_MATCHES) {
+            if(data == null || resultCode != Activity.RESULT_OK) {
+                Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_LOAD_MATCH_ONLINE_FAIL);
+            } else {
+                loadMatchOnline((TurnBasedMatch)data.getParcelableExtra(Multiplayer.EXTRA_TURN_BASED_MATCH));
+            }
+        } else if(requestCode == RC_LOOK_AT_SNAPSHOTS) {
+            if(data == null || resultCode != Activity.RESULT_OK) {
+                Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_LOAD_MATCH_LOCAL_FAIL);
+            } else {
+                loadMatchLocal((SnapshotMetadata)data.getParcelableExtra(Snapshots.EXTRA_SNAPSHOT_METADATA));
+            }
+        } else if(requestCode >= RC_SELECT_PLAYERS && requestCode <= RC_SELECT_PLAYERS + 100) {
+            if(data == null || resultCode != Activity.RESULT_OK) {
+                Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_PLAYERS_ONLINE_FAIL);
+            } else {
+                selectPlayersOnline(data, requestCode - RC_SELECT_PLAYERS);
+            }
+        }
+    }
+
+    private void selectPlayersOnline(@NonNull Intent data, int variant) {
+        // get the invitee list
+        final ArrayList<String> invitees = data.getStringArrayListExtra(Games.EXTRA_PLAYER_IDS);
+
+        // get automatch criteria
+        Bundle autoMatchCriteria = null;
+
+        int minAutoMatchPlayers = data.getIntExtra(Multiplayer.EXTRA_MIN_AUTOMATCH_PLAYERS, 0);
+        int maxAutoMatchPlayers = data.getIntExtra(Multiplayer.EXTRA_MAX_AUTOMATCH_PLAYERS, 0);
+
+        if (minAutoMatchPlayers > 0) {
+            autoMatchCriteria = RoomConfig.createAutoMatchCriteria(minAutoMatchPlayers, maxAutoMatchPlayers, 0);
+        } else {
+            autoMatchCriteria = null;
+        }
+
+        TurnBasedMatchConfig matchConfig = TurnBasedMatchConfig.builder()
+                .setVariant(variant)
+                .addInvitedPlayers(invitees)
+                .setAutoMatchCriteria(autoMatchCriteria).build();
+
+        GooglePlayCalls.getInstance().startMatchOnline(matchConfig);
+    }
+
+    private void loadMatchLocal(@Nullable SnapshotMetadata snapshotMetadata) {
+        if(snapshotMetadata != null) {
+            Log.v("Activity", "Load Local");
+            GooglePlayCalls.getInstance().loadGameLocal(snapshotMetadata.getUniqueName());
+        } else {
+            Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_LOAD_MATCH_LOCAL_FAIL);
+        }
+    }
+
+    private void loadMatchOnline(@Nullable TurnBasedMatch match) {
+        if(match != null) {
+            if (match.getData() == null) {
+                //This is a rematch
+                Log.v("Activity", "Load online Rematch");
+            } else {
+                //We are loading an existing match
+                Log.v("Activity", "Load online Existing");
+            }
+        } else {
+            Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_LOAD_MATCH_ONLINE_FAIL);
+        }
     }
 
     // Get already purchased response
@@ -223,12 +299,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     };
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         Bus.register(busListener);
@@ -238,6 +308,22 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     GooglePlay.getInstance().onStart(this);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mAdView != null) {
+            mAdView.pause();
         }
     }
 
@@ -317,21 +403,20 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     public void purchaseRemoveAds() {
         if(mHelper == null) {
-            Utils.toastShort("Unable to setup In App Billing");
+            Utils.toastShort(AppUtil.getContext().getString(R.string.unable_setup_iap));
             return;
         }
         Utils.lockOrientationCurrent(this);
         mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
             public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-                if (result.isFailure()) {
-                    // Handle error
-                    Utils.toastShort("Failed to purchase item");
-                } else if (purchase.getSku().equals(REMOVE_ADS_SKU)) {
-                    //TODO inspect that the payload and signature match!
+                if (result.isSuccess() && purchase.getSku().equals(REMOVE_ADS_SKU) && purchase.getDeveloperPayload().equals("REMOVE_ADS_PURCHASE_TOKEN")) {
                     Prefs.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
                     Utils.toastShort(getString(R.string.ads_removed));
                     disableAds();
                     restartActivity();
+                } else {
+                    // Handle error
+                    Utils.toastShort(AppUtil.getContext().getString(R.string.failed_purchase));
                 }
                 Utils.unlockOrientation(BaseAdLauncherActivity.this);
             }
@@ -340,15 +425,15 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     @Override
     public void testingConsumePurchase() {
-        Utils.toastShort("Testing consume purchase");
-        enableAds();
-        consumeItem();
+        //Utils.toastShort("Testing consume purchase");
+        //enableAds();
+        //consumeItem();
     }
 
     public void consumeItem() {
-        if(mHelper != null) {
-            mHelper.queryInventoryAsync(mReceivedInventoryListener);
-        }
+        //if(mHelper != null) {
+        //    mHelper.queryInventoryAsync(mReceivedInventoryListener);
+        //}
     }
 
     IabHelper.QueryInventoryFinishedListener mReceivedInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -603,7 +688,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 GooglePlay.getInstance().beginUserInitiatedSignIn();
             }
         } else {
-            Utils.toastShort("Achievements requires Google Play Games");
+            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
         }
         return false;
     }
@@ -636,7 +721,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 GooglePlay.getInstance().beginUserInitiatedSignIn();
             }
         } else {
-            Utils.toastShort("Leaderboards require Google Play Games");
+            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
         }
         return false;
     }
@@ -659,6 +744,60 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         fragment.setLeaderboardId(leaderboardId);
         loadFragment(fragment, LeaderboardFragment.TAG, true);
         getSupportFragmentManager().executePendingTransactions();
+    }
+
+    //Variant max of 100 (normally 0)
+    protected final boolean loadPlayerPickerFragment(int minPlayers, int maxPlayers, boolean allowAutomatch, int variant) {
+        if(isGooglePlayServicesEnabled()) {
+            if (GooglePlay.getInstance().isSignedIn()) {
+               startActivityForResult(Games.TurnBasedMultiplayer.getSelectOpponentsIntent(GooglePlay.getInstance().getApiClient(), minPlayers, maxPlayers, allowAutomatch), RC_SELECT_PLAYERS + variant);
+
+                return true;
+            } else {
+                if(!GooglePlay.getInstance().getHasSetup()) {
+                    GooglePlay.getInstance().setup(this);
+                }
+                GooglePlay.getInstance().beginUserInitiatedSignIn();
+            }
+        } else {
+            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+        }
+        return false;
+    }
+
+    protected final boolean loadOnlineInboxFragment() {
+        if(isGooglePlayServicesEnabled()) {
+            if (GooglePlay.getInstance().isSignedIn()) {
+                startActivityForResult(Games.TurnBasedMultiplayer.getInboxIntent(GooglePlay.getInstance().getApiClient()), RC_LOOK_AT_MATCHES);
+
+                return true;
+            } else {
+                if(!GooglePlay.getInstance().getHasSetup()) {
+                    GooglePlay.getInstance().setup(this);
+                }
+                GooglePlay.getInstance().beginUserInitiatedSignIn();
+            }
+        } else {
+            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+        }
+        return false;
+    }
+
+    protected final boolean loadOfflineInboxFragment() {
+        if(isGooglePlayServicesEnabled()) {
+            if (GooglePlay.getInstance().isSignedIn()) {
+                startActivityForResult(Games.Snapshots.getSelectSnapshotIntent(GooglePlay.getInstance().getApiClient(), getString(R.string.select_save), false, true, Snapshots.DISPLAY_LIMIT_NONE), RC_LOOK_AT_SNAPSHOTS);
+                return true;
+            } else {
+                if(!GooglePlay.getInstance().getHasSetup()) {
+                    GooglePlay.getInstance().setup(this);
+                }
+                GooglePlay.getInstance().beginUserInitiatedSignIn();
+            }
+        } else {
+            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+        }
+        return false;
     }
 
     @Override

@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"EROARE: Nu se poate să setați în facturare aplicație"</string>
+    <string name="failed_purchase">"EROARE: Nu a reușit să cumpere articol"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Ad Pe jos"</string>
-    <string name="settings_google_play_item_0_secondary">"Debifați pentru a arăta anunțul în partea de sus a ecranului."</string>
+    <string name="settings_google_play_item_0_primary">"Ascunde Anunturi Banner"</string>
+    <string name="settings_google_play_item_0_secondary">"Debifați pentru a ascunde banner dar afișa anunțuri complete pagina schimb"</string>
 
-    <string name="settings_google_play_item_1_primary">"Ascunde Anunturi Banner"</string>
-    <string name="settings_google_play_item_1_secondary">"Debifați pentru a ascunde banner, dar arată mai multe anunțuri complete pagina"</string>
-
-    <string name="failed_load_achievements">"Nu a reușit să se încarce Realizări"</string>
-    <string name="failed_load_leaderboards">"Nu a reușit să se încarce Clasamente"</string>
+    <string name="failed_load_google_page">"Nu a reușit să se încarce pagina"</string>
+    <string name="requires_google_play">"Această acțiune necesită Jocuri Google Play"</string>
 
 </resources>

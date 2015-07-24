@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"KĻŪDA: Nevar setup app rēķinu"</string>
+    <string name="failed_purchase">"KĻŪDA: Neizdevās iegādāties posteni"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Reklāmas apakšā"</string>
-    <string name="settings_google_play_item_0_secondary">"Noņemiet atzīmi, lai parādītu reklāmu pie ekrāna augšpusē."</string>
+    <string name="settings_google_play_item_0_primary">"Slēpt Banner Ads"</string>
+    <string name="settings_google_play_item_0_secondary">"Noņemiet atzīmi, lai slēptu reklāmas bannerus, bet gan parādīt pilnu lapu reklāmas"</string>
 
-    <string name="settings_google_play_item_1_primary">"Slēpt Banner Ads"</string>
-    <string name="settings_google_play_item_1_secondary">"Noņemiet atzīmi, lai slēptu reklāmas bannerus, bet parādīt vairāk pilnu lapu reklāmas"</string>
-
-    <string name="failed_load_achievements">"Neizdevās ielādēt sasniegumi"</string>
-    <string name="failed_load_leaderboards">"Neizdevās ielādēt līderu"</string>
+    <string name="failed_load_google_page">"Neizdevās ielādēt lapu"</string>
+    <string name="requires_google_play">"Šī darbība ir nepieciešama Google Play spēles"</string>
 
 </resources>

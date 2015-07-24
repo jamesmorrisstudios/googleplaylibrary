@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"Klaida: nepavyko sukonfigūruoti App sąskaitų"</string>
+    <string name="failed_purchase">"KLAIDA: nepavyko įsigyti daiktą"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Reklamos apačioje"</string>
-    <string name="settings_google_play_item_0_secondary">"Atžymėti parodyti skelbimą į ekrano viršuje."</string>
+    <string name="settings_google_play_item_0_primary">"Slėpti banerių"</string>
+    <string name="settings_google_play_item_0_secondary">"Nuimkite paslėpti banerių, bet parodyti visą puslapį reklamos, o ne"</string>
 
-    <string name="settings_google_play_item_1_primary">"Slėpti banerių"</string>
-    <string name="settings_google_play_item_1_secondary">"Nuimkite paslėpti banerių, bet parodyti daugiau visą puslapį skelbimus"</string>
-
-    <string name="failed_load_achievements">"Nepavyko įkelti pasiekimai"</string>
-    <string name="failed_load_leaderboards">"Nepavyko įkelti Lyderių"</string>
+    <string name="failed_load_google_page">"Nepavyko įkelti puslapį"</string>
+    <string name="requires_google_play">"Šis veiksmas reikalauja \"Google Play žaidimai"</string>
 
 </resources>

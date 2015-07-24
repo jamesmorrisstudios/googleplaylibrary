@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"FEIL: Kan ikke oppsettet i app fakturering"</string>
+    <string name="failed_purchase">"FEIL: Kunne ikke kjøpe varen"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Ad På Bottom"</string>
-    <string name="settings_google_play_item_0_secondary">"Fjern merkingen for å vise annonsen på toppen av skjermen."</string>
+    <string name="settings_google_play_item_0_primary">"Skjule bannerannonser"</string>
+    <string name="settings_google_play_item_0_secondary">"Fjern haken ved å skjule bannerannonser, men viser helsides annonser i stedet"</string>
 
-    <string name="settings_google_play_item_1_primary">"Skjule bannerannonser"</string>
-    <string name="settings_google_play_item_1_secondary">"Fjern haken ved å skjule bannerannonser, men viser mer helsides annonser"</string>
-
-    <string name="failed_load_achievements">"Kunne ikke laste prestasjoner"</string>
-    <string name="failed_load_leaderboards">"Kunne ikke laste Topplister"</string>
+    <string name="failed_load_google_page">"Kunne ikke laste siden"</string>
+    <string name="requires_google_play">"Denne handlingen krever Google Play Games"</string>
 
 </resources>

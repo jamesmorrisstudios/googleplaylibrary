@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"HATA: app fatura kurulum yapılamıyor"</string>
+    <string name="failed_purchase">"HATA: Öğeyi satın almak için başarısız oldu"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Bottom On Reklam"</string>
-    <string name="settings_google_play_item_0_secondary">"Ekranın üst kısmındaki reklamı göstermeye işaretini kaldırın."</string>
+    <string name="settings_google_play_item_0_primary">"Banner Reklamları gizle"</string>
+    <string name="settings_google_play_item_0_secondary">"Banner reklamları gizlemek yerine tam sayfa reklamları göstermek için işareti kaldırın"</string>
 
-    <string name="settings_google_play_item_1_primary">"Banner Reklamları gizle"</string>
-    <string name="settings_google_play_item_1_secondary">"Banner reklamları gizlemek ama daha tam sayfa reklamları göstermek için işareti kaldırın"</string>
-
-    <string name="failed_load_achievements">"Madalyalar yüklenemedi"</string>
-    <string name="failed_load_leaderboards">"Liderler yüklenemedi"</string>
+    <string name="failed_load_google_page">"Sayfa yüklenemedi"</string>
+    <string name="requires_google_play">"Bu eylem Google Play Games gerektirir"</string>
 
 </resources>

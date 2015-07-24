@@ -62,6 +62,16 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         ACHIEVEMENTS_ITEMS_FAIL, ACHIEVEMENTS_ITEMS_READY,
         LEADERBOARDS_META_FAIL, LEADERBOARDS_META_READY,
         LEADERBOARDS_FAIL, LEADERBOARDS_READY,
+
+        SAVE_MATCH_LOCAL_FAIL, SAVE_MATCH_LOCAL_SUCCESS,
+        LOAD_MATCH_LOCAL_FAIL, LOAD_MATCH_LOCAL_SUCCESS, SELECT_LOAD_MATCH_LOCAL_FAIL,
+        FINISH_MATCH_ONLINE_FAIL, FINISH_MATCH_ONLINE_SUCCESS,
+        LOAD_MATCH_ONLINE_FAIL, LOAD_MATCH_ONLINE_SUCCESS, SELECT_LOAD_MATCH_ONLINE_FAIL, SELECT_PLAYERS_ONLINE_FAIL,
+        TAKE_TURN_ONLINE_FAIL, TAKE_TURN_ONLINE_SUCCESS,
+        START_MATCH_ONLINE_FAIL, START_MATCH_ONLINE_SUCCESS,
+        REMATCH_ONLINE_FAIL, REMATCH_ONLINE_SUCCESS,
+        ACCEPT_INVITATION_ONLINE_FAIL, ACCEPT_INVITATION_ONLINE_SUCCESS,
+
         LEADERBOARD_SPINNER_CHANGE
     }
 
@@ -818,7 +828,7 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         SharedPreferences.Editor editor = mAppContext.getSharedPreferences(
                 GAMEHELPER_SHARED_PREFS, Context.MODE_PRIVATE).edit();
         editor.putInt(KEY_SIGN_IN_CANCELLATIONS, cancellations + 1);
-        editor.commit();
+        editor.apply();
         return cancellations + 1;
     }
 
@@ -828,7 +838,7 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         SharedPreferences.Editor editor = mAppContext.getSharedPreferences(
                 GAMEHELPER_SHARED_PREFS, Context.MODE_PRIVATE).edit();
         editor.putInt(KEY_SIGN_IN_CANCELLATIONS, 0);
-        editor.commit();
+        editor.apply();
     }
 
     /** Handles a connection failure. */

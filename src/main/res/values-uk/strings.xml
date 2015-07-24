@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"ПОМИЛКА: Не вдається встановити програму в білінг"</string>
+    <string name="failed_purchase">"ПОМИЛКА: Чи не вдалося придбати пункт"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Оголошення внизу"</string>
-    <string name="settings_google_play_item_0_secondary">"Зніміть, щоб показати оголошення в верхній частині екрана."</string>
+    <string name="settings_google_play_item_0_primary">"Приховати Банери"</string>
+    <string name="settings_google_play_item_0_secondary">"Зніміть, щоб приховати банери, але показати повні сторінки оголошень, а"</string>
 
-    <string name="settings_google_play_item_1_primary">"Приховати Банери"</string>
-    <string name="settings_google_play_item_1_secondary">"Зніміть, щоб приховати банери, але показати більш повні сторінки оголошення"</string>
-
-    <string name="failed_load_achievements">"Не вдалося завантажити Досягнення"</string>
-    <string name="failed_load_leaderboards">"Не вдалося завантажити лідерів"</string>
+    <string name="failed_load_google_page">"Не вдалося завантажити сторінку"</string>
+    <string name="requires_google_play">"Ця дія потрібна грати в ігри Google"</string>
 
 </resources>

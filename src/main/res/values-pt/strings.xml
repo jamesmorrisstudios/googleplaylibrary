@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"ERRO: Não é possível a instalação no faturamento app"</string>
+    <string name="failed_purchase">"ERRO: Falha ao comprar artigo"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Anúncio na parte inferior"</string>
-    <string name="settings_google_play_item_0_secondary">"Desmarque para mostrar a publicidade na parte superior da tela."</string>
+    <string name="settings_google_play_item_0_primary">"Esconder Banners"</string>
+    <string name="settings_google_play_item_0_secondary">"Desmarque a opção para esconder banners mas mostrar anúncios de página inteira em vez"</string>
 
-    <string name="settings_google_play_item_1_primary">"Esconder Banners"</string>
-    <string name="settings_google_play_item_1_secondary">"Desmarque a opção para esconder banners mas mostrar anúncios de página mais completos"</string>
-
-    <string name="failed_load_achievements">"Falha ao carregar Conquistas"</string>
-    <string name="failed_load_leaderboards">"Falha ao carregar Leaderboards"</string>
+    <string name="failed_load_google_page">"Falha ao carregar a página"</string>
+    <string name="requires_google_play">"A ação requer Jogos Google Play"</string>
 
 </resources>

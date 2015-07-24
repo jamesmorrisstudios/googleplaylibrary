@@ -3,11 +3,7 @@ package com.jamesmorrisstudios.googleplaylibrary.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
@@ -129,7 +125,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case LEADERBOARDS_FAIL:
-                Utils.toastShort(getString(R.string.failed_load_leaderboards));
+                Utils.toastShort(getString(R.string.failed_load_google_page));
                 applyData();
                 break;
         }

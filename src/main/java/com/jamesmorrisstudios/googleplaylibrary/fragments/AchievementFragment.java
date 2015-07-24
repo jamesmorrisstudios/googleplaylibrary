@@ -98,7 +98,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case ACHIEVEMENTS_ITEMS_FAIL:
-                Utils.toastShort(getString(R.string.failed_load_achievements));
+                Utils.toastShort(getString(R.string.failed_load_google_page));
                 applyData();
                 break;
         }

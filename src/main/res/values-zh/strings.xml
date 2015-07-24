@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"错误：无法安装在app计费"</string>
+    <string name="failed_purchase">"错误：无法购买项目"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"广告底部"</string>
-    <string name="settings_google_play_item_0_secondary">"取消显示广告在屏幕的顶部。"</string>
+    <string name="settings_google_play_item_0_primary">"隐藏横幅广告"</string>
+    <string name="settings_google_play_item_0_secondary">"取消选中要隐藏的横幅广告，但显示完整的页面，而不是广告"</string>
 
-    <string name="settings_google_play_item_1_primary">"隐藏横幅广告"</string>
-    <string name="settings_google_play_item_1_secondary">"取消选中要隐藏的横幅广告，但表现出更多的整版广告"</string>
-
-    <string name="failed_load_achievements">"无法加载成就"</string>
-    <string name="failed_load_leaderboards">"无法加载排行榜"</string>
+    <string name="failed_load_google_page">"无法加载页面"</string>
+    <string name="requires_google_play">"此操作需要谷歌玩游戏"</string>
 
 </resources>

@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"ERROR: Tidak dapat setup dalam penagihan app"</string>
+    <string name="failed_purchase">"ERROR: Gagal untuk membeli item"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"Iklan Di Bawah"</string>
-    <string name="settings_google_play_item_0_secondary">"Hapus tanda centang untuk menampilkan iklan di bagian atas layar."</string>
+    <string name="settings_google_play_item_0_primary">"Sembunyikan Iklan Banner"</string>
+    <string name="settings_google_play_item_0_secondary">"Hapus tanda centang untuk menyembunyikan iklan banner tetapi menampilkan iklan halaman penuh bukan"</string>
 
-    <string name="settings_google_play_item_1_primary">"Sembunyikan Iklan Banner"</string>
-    <string name="settings_google_play_item_1_secondary">"Hapus tanda centang untuk menyembunyikan iklan banner tetapi menampilkan iklan halaman lebih lengkap"</string>
-
-    <string name="failed_load_achievements">"Gagal memuat Medali"</string>
-    <string name="failed_load_leaderboards">"Gagal memuat leaderboards"</string>
+    <string name="failed_load_google_page">"Gagal memuat halaman"</string>
+    <string name="requires_google_play">"Tindakan ini memerlukan Google Play Game"</string>
 
 </resources>

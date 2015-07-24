@@ -1,5 +1,6 @@
 package com.jamesmorrisstudios.googleplaylibrary.googlePlay;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,6 +10,7 @@ import com.google.android.gms.common.api.BatchResult;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.achievement.Achievement;
 import com.google.android.gms.games.achievement.AchievementBuffer;
 import com.google.android.gms.games.achievement.Achievements;
@@ -18,12 +20,22 @@ import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
+import com.google.android.gms.games.multiplayer.Invitation;
+import com.google.android.gms.games.multiplayer.ParticipantResult;
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.games.snapshot.Snapshots;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Logger;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,6 +51,12 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     private ArrayList<LeaderboardMetaItem> leaderboardsMeta = null;
     private String[] leaderboardIds = null;
     private String[] achievementIds = null;
+
+    //Local save cache
+    private byte[] localSaveData = null;
+
+    //Online save cache
+    private TurnBasedMatch onlineMatch;
 
     //Held Simple Data
     private GooglePlay.Collection leaderboardCollection = GooglePlay.Collection.PUBLIC;
@@ -347,6 +365,204 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
 
     public final void updateLeaderboard(@NonNull String leaderboardId, long value) {
         Games.Leaderboards.submitScore(GooglePlay.getInstance().getApiClient(), leaderboardId, value);
+    }
+
+    public final void acceptInvitationOnline(@NonNull Invitation invitation) {
+        Games.TurnBasedMultiplayer.acceptInvitation(GooglePlay.getInstance().getApiClient(), invitation.getInvitationId()).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
+            @Override
+            public void onResult(TurnBasedMultiplayer.InitiateMatchResult initiateMatchResult) {
+                if(initiateMatchResult.getStatus().isSuccess()) {
+                    onlineMatch = initiateMatchResult.getMatch();
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.ACCEPT_INVITATION_ONLINE_SUCCESS);
+                } else {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.ACCEPT_INVITATION_ONLINE_FAIL);
+                }
+            }
+        });
+    }
+
+    public final void rematchOnline(@NonNull TurnBasedMatch match) {
+        Games.TurnBasedMultiplayer.rematch(GooglePlay.getInstance().getApiClient(), match.getMatchId()).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
+            @Override
+            public void onResult(TurnBasedMultiplayer.InitiateMatchResult initiateMatchResult) {
+                if(initiateMatchResult.getStatus().isSuccess()) {
+                    onlineMatch = initiateMatchResult.getMatch();
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.REMATCH_ONLINE_SUCCESS);
+                } else {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.REMATCH_ONLINE_FAIL);
+                }
+            }
+        });
+    }
+
+    public final void startMatchOnline(@NonNull TurnBasedMatchConfig matchConfig) {
+        Games.TurnBasedMultiplayer.createMatch(GooglePlay.getInstance().getApiClient(), matchConfig).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
+            @Override
+            public void onResult(TurnBasedMultiplayer.InitiateMatchResult initiateMatchResult) {
+                if(initiateMatchResult.getStatus().isSuccess()) {
+                    onlineMatch = initiateMatchResult.getMatch();
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.START_MATCH_ONLINE_SUCCESS);
+                } else {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.START_MATCH_ONLINE_FAIL);
+                }
+            }
+        });
+    }
+
+    public final void finishMatchOnline(@NonNull TurnBasedMatch match, @NonNull byte[] data, @Nullable List<ParticipantResult> results) {
+        if(results != null) {
+            Games.TurnBasedMultiplayer.finishMatch(GooglePlay.getInstance().getApiClient(), match.getMatchId(), data, results).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
+                @Override
+                public void onResult(TurnBasedMultiplayer.UpdateMatchResult updateMatchResult) {
+                    if(updateMatchResult.getStatus().isSuccess()) {
+                        onlineMatch = updateMatchResult.getMatch();
+                        Bus.postEnum(GooglePlay.GooglePlayEvent.FINISH_MATCH_ONLINE_SUCCESS);
+                    } else {
+                        Bus.postEnum(GooglePlay.GooglePlayEvent.FINISH_MATCH_ONLINE_FAIL);
+                    }
+                }
+            });
+        } else {
+            Games.TurnBasedMultiplayer.finishMatch(GooglePlay.getInstance().getApiClient(), match.getMatchId(), data).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
+                @Override
+                public void onResult(TurnBasedMultiplayer.UpdateMatchResult updateMatchResult) {
+                    if(updateMatchResult.getStatus().isSuccess()) {
+                        onlineMatch = updateMatchResult.getMatch();
+                        Bus.postEnum(GooglePlay.GooglePlayEvent.FINISH_MATCH_ONLINE_SUCCESS);
+                    } else {
+                        Bus.postEnum(GooglePlay.GooglePlayEvent.FINISH_MATCH_ONLINE_FAIL);
+                    }
+                }
+            });
+        }
+    }
+
+    public final void takeTurnOnline(@NonNull TurnBasedMatch match, @NonNull String nextParticipantId, @NonNull byte[] data) {
+        Games.TurnBasedMultiplayer.takeTurn(GooglePlay.getInstance().getApiClient(), match.getMatchId(), data, nextParticipantId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
+            @Override
+            public void onResult(TurnBasedMultiplayer.UpdateMatchResult updateMatchResult) {
+                if(updateMatchResult.getStatus().isSuccess()) {
+                    onlineMatch = updateMatchResult.getMatch();
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.TAKE_TURN_ONLINE_SUCCESS);
+                } else {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.TAKE_TURN_ONLINE_FAIL);
+                }
+            }
+        });
+    }
+
+    public final void loadMatchOnline(@NonNull String matchId) {
+        Games.TurnBasedMultiplayer.loadMatch(GooglePlay.getInstance().getApiClient(), matchId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.LoadMatchResult>() {
+            @Override
+            public void onResult(TurnBasedMultiplayer.LoadMatchResult loadMatchResult) {
+                if(loadMatchResult.getStatus().isSuccess()) {
+                    onlineMatch = loadMatchResult.getMatch();
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_ONLINE_SUCCESS);
+                } else {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_ONLINE_FAIL);
+                }
+            }
+        });
+    }
+
+    public final void saveGameLocal(@NonNull final byte[] data, @NonNull final Bitmap screenshot, @NonNull final String description, @NonNull String saveName) {
+        if(!GooglePlay.getInstance().isSignedIn()) {
+            Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
+            return;
+        }
+        Games.Snapshots.open(GooglePlay.getInstance().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
+            @Override
+            public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
+                processAndWriteSnapshotResult(openSnapshotResult, 0, data, screenshot, description);
+            }
+        }, timeout, timeUnit);
+    }
+
+    public final void loadGameLocal(@NonNull String saveName) {
+        if(!GooglePlay.getInstance().isSignedIn()) {
+            Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_FAIL);
+            return;
+        }
+        Games.Snapshots.open(GooglePlay.getInstance().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
+            @Override
+            public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
+                if(openSnapshotResult.getStatus().isSuccess()){
+                    Snapshot snapshot = openSnapshotResult.getSnapshot();
+                    try {
+                        localSaveData = snapshot.getSnapshotContents().readFully();
+                        Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_SUCCESS);
+                    } catch (IOException e) {
+                        Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_FAIL);
+                    }
+                } else {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_FAIL);
+                }
+            }
+        }, timeout, timeUnit);
+    }
+
+    /**
+     * Conflict resolution for when Snapshots are opened.
+     *
+     * @param result The open snapshot result to resolve on open.
+     */
+    private void processAndWriteSnapshotResult(@NonNull Snapshots.OpenSnapshotResult result, final int retryCount,
+                                               @NonNull final byte[] data, @NonNull final Bitmap screenshot, @NonNull final String description) {
+        Snapshot mResolvedSnapshot;
+        int status = result.getStatus().getStatusCode();
+
+        if (status == GamesStatusCodes.STATUS_OK) {
+            writeSnapshot(result.getSnapshot(), data, screenshot, description);
+        } else if (status == GamesStatusCodes.STATUS_SNAPSHOT_CONTENTS_UNAVAILABLE) {
+            writeSnapshot(result.getSnapshot(), data, screenshot, description);
+        } else if (status == GamesStatusCodes.STATUS_SNAPSHOT_CONFLICT) {
+            Snapshot snapshot = result.getSnapshot();
+            Snapshot conflictSnapshot = result.getConflictingSnapshot();
+
+            // Resolve between conflicts by selecting the newest of the conflicting snapshots.
+            mResolvedSnapshot = snapshot;
+
+            if (snapshot.getMetadata().getLastModifiedTimestamp() < conflictSnapshot.getMetadata().getLastModifiedTimestamp()) {
+                mResolvedSnapshot = conflictSnapshot;
+            }
+
+            Games.Snapshots.resolveConflict(GooglePlay.getInstance().getApiClient(), result.getConflictId(), mResolvedSnapshot).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
+                @Override
+                public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
+                    if (retryCount < 3) {
+                        processAndWriteSnapshotResult(openSnapshotResult, retryCount + 1, data, screenshot, description);
+                    } else {
+                        Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
+                    }
+                }
+            }, timeout, timeUnit);
+        } else {
+            Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
+        }
+    }
+
+    /**
+     * Generates metadata, takes a screenshot, and performs the write operation for saving a snapshot.
+     */
+    private void writeSnapshot(@NonNull Snapshot snapshot, @NonNull byte[] data, @NonNull Bitmap screenshot, @NonNull String description) {
+        // Set the data payload for the snapshot.
+        snapshot.getSnapshotContents().writeBytes(data);
+        // Save the snapshot.
+        SnapshotMetadataChange metadataChange;
+        metadataChange = new SnapshotMetadataChange.Builder()
+                .setCoverImage(screenshot)
+                .setDescription(description)
+                .build();
+        Games.Snapshots.commitAndClose(GooglePlay.getInstance().getApiClient(), snapshot, metadataChange).setResultCallback(new ResultCallback<Snapshots.CommitSnapshotResult>() {
+            @Override
+            public void onResult(Snapshots.CommitSnapshotResult commitSnapshotResult) {
+                if(commitSnapshotResult.getStatus().isSuccess()) {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_SUCCESS);
+                } else {
+                    Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
+                }
+            }
+        }, timeout, timeUnit);
     }
 
 }

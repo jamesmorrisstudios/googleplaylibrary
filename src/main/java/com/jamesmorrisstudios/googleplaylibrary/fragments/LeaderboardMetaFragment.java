@@ -127,7 +127,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case LEADERBOARDS_META_FAIL:
-                Utils.toastShort(getString(R.string.failed_load_leaderboards));
+                Utils.toastShort(getString(R.string.failed_load_google_page));
                 applyData();
                 break;
         }

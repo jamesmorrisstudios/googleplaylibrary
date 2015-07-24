@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"त्रुटि: एप्लिकेशन बिलिंग में सेटअप करने में असमर्थ"</string>
+    <string name="failed_purchase">"त्रुटि: आइटम खरीद करने में विफल"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"तल पर विज्ञापन"</string>
-    <string name="settings_google_play_item_0_secondary">"स्क्रीन के शीर्ष पर विज्ञापन दिखाने के लिए अनचेक करें।"</string>
+    <string name="settings_google_play_item_0_primary">"बैनर विज्ञापन छुपाएं"</string>
+    <string name="settings_google_play_item_0_secondary">"बैनर विज्ञापन छिपाने लेकिन इसके बजाय पूरे पृष्ठ का विज्ञापन दिखाने के लिए अचयनित"</string>
 
-    <string name="settings_google_play_item_1_primary">"बैनर विज्ञापन छुपाएं"</string>
-    <string name="settings_google_play_item_1_secondary">"बैनर विज्ञापन छिपाने लेकिन अधिक पूरे पृष्ठ का विज्ञापन दिखाने के लिए अचयनित"</string>
-
-    <string name="failed_load_achievements">"उपलब्धियां लोड करने में असफल"</string>
-    <string name="failed_load_leaderboards">"लीडरबोर्ड लोड करने में असफल"</string>
+    <string name="failed_load_google_page">"पेज लोड करने में असफल"</string>
+    <string name="requires_google_play">"इस क्रिया को गूगल प्ले खेलों की आवश्यकता है"</string>
 
 </resources>

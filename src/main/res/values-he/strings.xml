@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"שגיאה: אין אפשרות להתקנה בחיוב אפליקציה"</string>
+    <string name="failed_purchase">"שגיאה: נכשל ניסיון לרכוש פריט"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"מודעה בתחתית"</string>
-    <string name="settings_google_play_item_0_secondary">"בטל להראות את המודעה בחלק העליון של המסך."</string>
+    <string name="settings_google_play_item_0_primary">"להסתיר מודעות באנר"</string>
+    <string name="settings_google_play_item_0_secondary">"בטל להסתיר מודעות באנר, אבל להציג את מודעות של עמוד שלמות במקום"</string>
 
-    <string name="settings_google_play_item_1_primary">"להסתיר מודעות באנר"</string>
-    <string name="settings_google_play_item_1_secondary">"בטל להסתיר מודעות באנר, אבל להציג את מודעות של עמוד שלמות יותר"</string>
-
-    <string name="failed_load_achievements">"נכשל ניסיון לטעון הישגים"</string>
-    <string name="failed_load_leaderboards">"נכשל ניסיון לטעון Leaderboards"</string>
+    <string name="failed_load_google_page">"נכשל ניסיון לטעון את הדף"</string>
+    <string name="requires_google_play">"פעולה זו דורשת משחקי-Google Play"</string>
 
 </resources>

@@ -1,13 +1,13 @@
 <resources>
 
+    <string name="unable_setup_iap">"오류 : 앱 결제에 설치 할 수 없음"</string>
+    <string name="failed_purchase">"오류 : 항목을 구입하는 데 실패했습니다"</string>
+
     <!-- Settings -->
-    <string name="settings_google_play_item_0_primary">"하단에 광고"</string>
-    <string name="settings_google_play_item_0_secondary">"화면 상단에 광고를 게재 취소합니다."</string>
+    <string name="settings_google_play_item_0_primary">"배너 광고 숨기기"</string>
+    <string name="settings_google_play_item_0_secondary">"배너 광고를 숨기 대신 전체 페이지 광고를 게재하려면 선택 해제"</string>
 
-    <string name="settings_google_play_item_1_primary">"배너 광고 숨기기"</string>
-    <string name="settings_google_play_item_1_secondary">"배너 광고를 숨기하지만 더 전체 페이지 광고를 게재하려면 선택 해제"</string>
-
-    <string name="failed_load_achievements">"성과를로드하지 못했습니다"</string>
-    <string name="failed_load_leaderboards">"리더를로드하지 못했습니다"</string>
+    <string name="failed_load_google_page">"페이지를로드하지 못했습니다"</string>
+    <string name="requires_google_play">"이 작업은 구글 플레이 게임이 필요합니다"</string>
 
 </resources>
