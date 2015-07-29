@@ -3,8 +3,11 @@ package com.jamesmorrisstudios.googleplaylibrary.activities;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,6 +19,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.vending.billing.IInAppBillingService;
 import com.google.android.gms.ads.AdListener;
@@ -42,7 +48,9 @@ import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardMetaFragment;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
+import com.jamesmorrisstudios.googleplaylibrary.house_ads.HouseAdInterstitial;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
+import com.jamesmorrisstudios.googleplaylibrary.house_ads.HouseAd;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabHelper;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabResult;
 import com.jamesmorrisstudios.googleplaylibrary.util.Inventory;
@@ -65,7 +73,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         BaseGooglePlayFragment.OnGooglePlayListener,
         BaseGooglePlayMainFragment.OnGooglePlayListener,
         LeaderboardMetaFragment.OnLeaderboardMetaListener,
-        LeaderboardFragment.OnLeaderboardListener {
+        LeaderboardFragment.OnLeaderboardListener,
+        DialogInterface.OnDismissListener{
 
     private static final String TAG = "BaseAdLauncherActivity";
     private static final String REMOVE_ADS_SKU = "remove_ads_1";
@@ -82,9 +91,13 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     //ad management
     private AdView mAdView;
     private InterstitialAd mInterstitialAd = null;
-    private Handler handler = new Handler();
-    private int retryCount = 0;
-    private boolean retryRunning = false;
+
+    //House ads
+    private Handler houseAdHandler = new Handler();
+    private ArrayList<HouseAd> houseAdList = new ArrayList<>();
+    private RelativeLayout houseAd;
+    private ImageView houseAdLogo;
+    private TextView houseAdTitle, houseAdText;
 
     private final Object busListener = new Object() {
         @Subscribe
@@ -115,6 +128,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onRestoreState(savedInstanceState);
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS){
             playServicesEnabled = true;
@@ -163,6 +177,16 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         initToolbarSpinners();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+    }
+
+    //Not the override
+    private void onRestoreState(Bundle bundle) {
+
+    }
+
     protected abstract int getGooglePlayClients();
 
     private void setLayout(boolean showAd) {
@@ -172,6 +196,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             setContentView(R.layout.layout_main);
         }
     }
+
 
     private void startIABHelper() {
         //Start the IAP service connection
@@ -314,6 +339,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     public void onResume() {
         super.onResume();
+        houseAdHandler.post(updateHouseAd);
         if(mAdView != null) {
             mAdView.resume();
         }
@@ -322,6 +348,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     public void onPause() {
         super.onPause();
+        houseAdHandler.removeCallbacks(updateHouseAd);
         if(mAdView != null) {
             mAdView.pause();
         }
@@ -351,21 +378,37 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         Log.v("TAG", "Showing ads");
         Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
         AdUsage.setAdsEnabled(true);
+        //Init house ads
+        initHouseAd();
         //Init Banner
         mAdView = (AdView) findViewById(R.id.adView);
         if (mAdView != null) {
             // Create an ad request. Check logcat output for the hashed device ID to
             // get test ads on a physical device. e.g.
-            AdRequest adRequest = new AdRequest.Builder()
+            final AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
                     .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
                     .addTestDevice("827F16D46E55B979D33C6023E4705F7D") //transformer prime
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Emulator
                     .build();
 
+            mAdView.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    mAdView.setVisibility(View.VISIBLE);
+                }
+            });
+
             // Start loading the ad in the background.
-            mAdView.resume();
-            mAdView.loadAd(adRequest);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mAdView.resume();
+                    mAdView.loadAd(adRequest);
+                }
+            }, 1000 * 15);
         }
         //Init Interstitial
         if(getResources().getBoolean(R.bool.interstitial_enable) && AdUsage.getBannerAdHide()) {
@@ -381,6 +424,71 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             requestNewInterstitial();
         }
     }
+
+    private void initHouseAd() {
+        //Get references to items
+        houseAd = (RelativeLayout) findViewById(R.id.house_ad);
+        houseAdLogo = (ImageView) findViewById(R.id.ad_logo);
+        houseAdTitle = (TextView) findViewById(R.id.ad_title);
+        houseAdText = (TextView) findViewById(R.id.ad_text);
+        if(houseAdText != null) {
+            //Set the layout params based on the ad size
+            RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            if (Utils.getOrientation() == Utils.Orientation.LANDSCAPE) {
+                //Landscape
+                paramsText.addRule(RelativeLayout.RIGHT_OF, R.id.ad_title);
+                paramsText.leftMargin = Utils.getDipInt(4);
+                paramsText.topMargin = Utils.getDipInt(6);
+            } else {
+                //Portrait
+                paramsText.addRule(RelativeLayout.RIGHT_OF, R.id.ad_logo);
+                paramsText.addRule(RelativeLayout.BELOW, R.id.ad_title);
+            }
+            houseAdText.setLayoutParams(paramsText);
+        }
+        //Read in all the house ad apps from the xml
+        houseAdList.clear();
+        TypedArray houseAdArray = getResources().obtainTypedArray(R.array.house_ads);
+        for (int i = 0; i < houseAdArray.length(); i++) {
+            int id = houseAdArray.getResourceId(i, 0);
+            if (id > 0) {
+                TypedArray item = getResources().obtainTypedArray(id);
+                if (item.length() == 5) {
+                    int idLogo = item.getResourceId(0, 0);
+                    int idTitle = item.getResourceId(1, 0);
+                    int idText = item.getResourceId(2, 0);
+                    int idCost = item.getResourceId(3, 0);
+                    int idPackage = item.getResourceId(4, 0);
+                    if(!getString(R.string.app_package).equals(getString(idPackage))) {
+                        houseAdList.add(new HouseAd(idLogo, idTitle, idText, idCost, idPackage));
+                    }
+                }
+                item.recycle();
+            }
+        }
+        houseAdArray.recycle();
+    }
+
+    private Runnable updateHouseAd = new Runnable() {
+        @Override
+        public void run() {
+            if(houseAdList == null || houseAdList.isEmpty() || houseAd == null || houseAdLogo == null) {
+                return;
+            }
+            final int currentHouseAd = incrementCurrentHouseAd();
+            houseAdLogo.setImageResource(houseAdList.get(currentHouseAd).logoRes);
+            houseAdTitle.setText(houseAdList.get(currentHouseAd).titleRes);
+            houseAdText.setText(houseAdList.get(currentHouseAd).textRes);
+            houseAd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(TAG, "Clicked house ad");
+                    Utils.openLink(getString(R.string.base_store_link) + getString(houseAdList.get(currentHouseAd).packageRes));
+                }
+            });
+            houseAdHandler.postDelayed(updateHouseAd, 1000 * 30);
+        }
+    };
 
     private void disableAds() {
         Log.v("TAG", "Hiding ads");
@@ -463,6 +571,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public final void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
         switch(event) {
             case SHOW_INTERSTITIAL:
+                Log.v(TAG, "Showing interstitial ad");
                 showInterstitialAd();
                 break;
         }
@@ -553,7 +662,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
      * Request an interstitial ad be loaded (not shown)
      */
     private void requestNewInterstitial() {
-        if (mInterstitialAd != null) {
+        if (mInterstitialAd != null && !mInterstitialAd.isLoaded()) {
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
                     .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
@@ -565,17 +674,41 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     }
 
+    private void showHouseInterstitial() {
+        if(houseAdList == null || houseAdList.isEmpty()) {
+            return;
+        }
+        int currentHouseAd = incrementCurrentHouseAd();
+        FragmentManager fm = getSupportFragmentManager();
+        HouseAdInterstitial houseAdInterstitial = new HouseAdInterstitial();
+        houseAdInterstitial.setData(houseAdList.get(currentHouseAd));
+        houseAdInterstitial.show(fm, "fragment_house_ad");
+    }
+
+    private int getCurrentHouseAd() {
+        return Prefs.getInt(getString(R.string.settings_pref), "CurrentHouseAd", 0);
+    }
+
+    private int incrementCurrentHouseAd() {
+        int currentHouseAd = getCurrentHouseAd() + 1;
+        if(currentHouseAd >= houseAdList.size()) {
+            currentHouseAd = 0;
+        }
+        Prefs.putInt(getString(R.string.settings_pref), "CurrentHouseAd", currentHouseAd);
+        return currentHouseAd;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        Log.v(TAG, "House ad closed.");
+        requestNewInterstitial();
+    }
+
     /**
      * Show the interstitial ad if we have one loaded and retry if not
      */
-    protected final void showInterstitialAd() {
+    private void showInterstitialAd() {
         if(!AdUsage.getBannerAdHide()) {
-            return;
-        }
-        //Make sure we are using the interstitial ad and that its loaded
-        Log.v(TAG, "Requested interstitial");
-        if (mInterstitialAd == null) {
-            Log.v(TAG, "No interstitial loaded");
             return;
         }
         //See if its too shown to show another ad
@@ -583,52 +716,18 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             Log.v(TAG, "Not enough time since last shown an add");
             return;
         }
-        //Try and load the ad or retry as needed
-        if (mInterstitialAd.isLoaded()) {
+        //Make sure we are using the interstitial ad and that its loaded
+        Log.v(TAG, "Requested interstitial");
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
             Logger.v(Logger.LoggerCategory.MAIN, TAG, "Showing the interstitial ad");
             mInterstitialAd.show();
             AdUsage.updateAdShowTimeStamp();
         } else {
-            if (!retryRunning) {
-                Logger.v(Logger.LoggerCategory.MAIN, TAG, "interstitial ad not ready. Starting retry timer");
-                initRetry();
-            } else {
-                retry();
-                Logger.v(Logger.LoggerCategory.MAIN, TAG, "interstitial ad not ready. Retry Count: " + retryCount);
-            }
+            Log.v(TAG, "No interstitial loaded. Showing house ad");
+            showHouseInterstitial();
+            AdUsage.updateAdShowTimeStamp();
         }
     }
-
-    /**
-     * Increment our retries
-     */
-    private void retry() {
-        retryCount++;
-        if (retryCount <= 3) {
-            handler.postDelayed(retryRun, 250);
-        } else {
-            retryRunning = false;
-        }
-    }
-
-    /**
-     * Start retrying to show the ad
-     */
-    private void initRetry() {
-        retryCount = 0;
-        retryRunning = true;
-        handler.postDelayed(retryRun, 250);
-    }
-
-    /**
-     * Runnable that handles retries
-     */
-    @NonNull
-    private Runnable retryRun = new Runnable() {
-        public void run() {
-            showInterstitialAd();
-        }
-    };
 
     private boolean getPlayGamesEnabledPref() {
         return Prefs.getBoolean(getString(R.string.settings_pref), "PlayGamesEnabled", true);
@@ -827,5 +926,4 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public final boolean isGooglePlayServicesEnabled() {
         return playServicesEnabled;
     }
-
 }
