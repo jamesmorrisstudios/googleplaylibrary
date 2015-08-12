@@ -18,7 +18,7 @@ public class LeaderboardViewHolder extends BaseRecycleViewHolder {
     private ImageManager imageManager;
 
     private ImageView icon;
-    private TextView name, score, rank;
+    private TextView name, score, rank, level;
 
     public LeaderboardViewHolder(View view, boolean isHeader, boolean isDummyItem, cardClickListener mListener, ImageManager imageManager) {
         super(view, isHeader, isDummyItem, mListener);
@@ -38,6 +38,7 @@ public class LeaderboardViewHolder extends BaseRecycleViewHolder {
         name = (TextView) view.findViewById(R.id.leaderboard_name);
         score = (TextView) view.findViewById(R.id.leaderboard_score);
         rank = (TextView) view.findViewById(R.id.leaderboard_rank);
+        level = (TextView) view.findViewById(R.id.leaderboard_level);
     }
 
     @Override
@@ -48,9 +49,14 @@ public class LeaderboardViewHolder extends BaseRecycleViewHolder {
     @Override
     protected void bindItem(BaseRecycleItem baseRecycleItem, boolean b) {
         LeaderboardItem item = (LeaderboardItem) baseRecycleItem;
-        imageManager.loadImage(icon, item.icon);
+        if(item.icon != null) {
+            imageManager.loadImage(icon, item.icon, R.drawable.leaderboard_blank);
+        } else {
+            imageManager.loadImage(icon, R.drawable.leaderboard_blank);
+        }
         name.setText(item.displayName);
         rank.setText(Long.toString(item.playerRank));
         score.setText(item.displayPlayerScore);
+        level.setText(Integer.toString(item.player.getLevelInfo().getCurrentLevel().getLevelNumber()));
     }
 }

@@ -32,28 +32,52 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_centerVertical="true"
             android:id="@+id/leaderboard_icon_container"
             android:layout_marginRight="8dp"
             android:layout_toRightOf="@+id/leaderboard_rank"
-            android:layout_width="40dp"
-            android:layout_height="40dp">
+            android:layout_width="50dp"
+            android:layout_height="50dp">
 
             <ImageView
+                android:padding="4dp"
                 android:id="@+id/leaderboard_icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"/>
 
             <com.jamesmorrisstudios.utilitieslibrary.controls.TintedImageView
+                android:padding="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"
                 android:src="@drawable/circle_mask"
                 android:tint="@color/primaryLight" />
 
-        </FrameLayout>
+            <FrameLayout
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_width="20dp"
+                android:layout_height="20dp">
+
+                <ImageView
+                    android:src="@drawable/leaderboard_hex"
+                    android:scaleType="fitCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/leaderboard_level"
+                    android:textSize="10sp"
+                    android:textColor="@color/textLightMain"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/leaderboard_name"

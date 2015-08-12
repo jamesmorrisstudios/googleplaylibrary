@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.TypedArray;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,6 +30,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
@@ -40,17 +40,25 @@ import com.google.android.gms.games.snapshot.Snapshots;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.R;
+import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.AchievementOverlayDialogRequest;
+import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.CompareProfilesRequest;
+import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.PlayerDetailsDialogRequest;
+import com.jamesmorrisstudios.googleplaylibrary.dialogs.AchievementOverlayDialogBuilder;
+import com.jamesmorrisstudios.googleplaylibrary.dialogs.PlayerDetailsDialogBuilder;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.AchievementFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayMainFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.GooglePlaySettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardMetaFragment;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.OnlineLoadGameFragment;
+import com.jamesmorrisstudios.googleplaylibrary.fragments.PlayerPickerFragment;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.googleplaylibrary.house_ads.HouseAdInterstitial;
-import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.googleplaylibrary.house_ads.HouseAd;
+import com.jamesmorrisstudios.googleplaylibrary.house_ads.HouseAdInterstitial;
+import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementContainer;
+import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabHelper;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabResult;
 import com.jamesmorrisstudios.googleplaylibrary.util.Inventory;
@@ -103,6 +111,18 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         @Subscribe
         public void onSettingEvent(final GooglePlay.GooglePlayEvent event) {
             BaseAdLauncherActivity.this.onGooglePlayEvent(event);
+        }
+        @Subscribe
+        public void onPlayerDetailsDialogRequest(PlayerDetailsDialogRequest request) {
+                createPlayerDetailsDialog(request.player);
+        }
+        @Subscribe
+        public void onAchievementOverlayDialogRequest(AchievementOverlayDialogRequest request) {
+            createAchievementsOverlayDialog(request.item);
+        }
+        @Subscribe
+        public void onCompareProfilesRequest(CompareProfilesRequest request) {
+            loadCompareProfiles(request.player);
         }
     };
 
@@ -248,6 +268,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     private void selectPlayersOnline(@NonNull Intent data, int variant) {
+        Log.v("BaseActivity", "Select players online");
+
         // get the invitee list
         final ArrayList<String> invitees = data.getStringArrayListExtra(Games.EXTRA_PLAYER_IDS);
 
@@ -845,13 +867,27 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         getSupportFragmentManager().executePendingTransactions();
     }
 
-    //Variant max of 100 (normally 0)
-    protected final boolean loadPlayerPickerFragment(int minPlayers, int maxPlayers, boolean allowAutomatch, int variant) {
+    @NonNull
+    protected final OnlineLoadGameFragment getOnlineLoadGameFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        OnlineLoadGameFragment fragment = (OnlineLoadGameFragment) fragmentManager.findFragmentByTag(OnlineLoadGameFragment.TAG);
+        if (fragment == null) {
+            fragment = new OnlineLoadGameFragment();
+        }
+        return fragment;
+    }
+
+    /**
+     * Loads the
+     */
+    protected final void loadOnlineLoadGameFragment() {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
-               startActivityForResult(Games.TurnBasedMultiplayer.getSelectOpponentsIntent(GooglePlay.getInstance().getApiClient(), minPlayers, maxPlayers, allowAutomatch), RC_SELECT_PLAYERS + variant);
+                OnlineLoadGameFragment fragment = getOnlineLoadGameFragment();
+                loadFragment(fragment, OnlineLoadGameFragment.TAG, true);
+                getSupportFragmentManager().executePendingTransactions();
 
-                return true;
+                //startActivityForResult(Games.TurnBasedMultiplayer.getInboxIntent(GooglePlay.getInstance().getApiClient()), RC_LOOK_AT_MATCHES);
             } else {
                 if(!GooglePlay.getInstance().getHasSetup()) {
                     GooglePlay.getInstance().setup(this);
@@ -861,13 +897,27 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         } else {
             Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
         }
-        return false;
     }
 
-    protected final boolean loadOnlineInboxFragment() {
+    @NonNull
+    protected final PlayerPickerFragment getPlayerPickerFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        PlayerPickerFragment fragment = (PlayerPickerFragment) fragmentManager.findFragmentByTag(PlayerPickerFragment.TAG);
+        if (fragment == null) {
+            fragment = new PlayerPickerFragment();
+        }
+        return fragment;
+    }
+
+    //Variant max of 100 (normally 1)
+    protected final boolean loadPlayerPickerFragment(int minPlayers, int maxPlayers, boolean allowAutomatch, int variant) {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
-                startActivityForResult(Games.TurnBasedMultiplayer.getInboxIntent(GooglePlay.getInstance().getApiClient()), RC_LOOK_AT_MATCHES);
+               //startActivityForResult(Games.TurnBasedMultiplayer.getSelectOpponentsIntent(GooglePlay.getInstance().getApiClient(), minPlayers, maxPlayers, allowAutomatch), RC_SELECT_PLAYERS + variant);
+                PlayerPickerFragment fragment = getPlayerPickerFragment();
+                loadFragment(fragment, PlayerPickerFragment.TAG, true);
+                getSupportFragmentManager().executePendingTransactions();
+
 
                 return true;
             } else {
@@ -905,6 +955,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         GooglePlayCalls.getInstance().clearLeaderboardsMetaCache();
         GooglePlayCalls.getInstance().clearAchievementsCache();
         GooglePlayCalls.getInstance().clearLeaderboardsCache();
+        GooglePlayCalls.getInstance().clearPlayersCache();
     }
 
     @Override
@@ -926,4 +977,22 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public final boolean isGooglePlayServicesEnabled() {
         return playServicesEnabled;
     }
+
+    public final void loadCompareProfiles(@NonNull Player player) {
+        Intent intent = Games.Players.getCompareProfileIntent(GooglePlay.getInstance().getApiClient(), player);
+        startActivityForResult(intent, 2000);
+    }
+
+    public void createPlayerDetailsDialog(@NonNull Player player) {
+        PlayerDetailsDialogBuilder builder = PlayerDetailsDialogBuilder.with(this);
+        builder.setPlayer(player);
+        builder.build().show();
+    }
+
+    public void createAchievementsOverlayDialog(@NonNull AchievementContainer item) {
+        AchievementOverlayDialogBuilder builder = AchievementOverlayDialogBuilder.with(this);
+        builder.setAchievement(item);
+        builder.build().show();
+    }
+
 }

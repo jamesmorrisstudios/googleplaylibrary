@@ -10,4 +10,7 @@
     <string name="failed_load_google_page">Failed to load page</string>
     <string name="requires_google_play">This action requires Google Play Games</string>
 
+    <string name="compare_profiles">Compare Play Games Profiles</string>
+    <string name="view_profile">View Play Games Profile</string>
+
 </resources>

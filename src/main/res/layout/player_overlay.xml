@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_gravity="center_horizontal"
+        android:layout_width="100dp"
+        android:layout_height="100dp">
+
+        <ImageView
+            android:layout_margin="4dp"
+            android:id="@+id/icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"/>
+
+        <com.jamesmorrisstudios.utilitieslibrary.controls.TintedImageView
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/circle_mask"
+            android:tint="@color/primaryLight" />
+
+        <FrameLayout
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp">
+
+            <ImageView
+                android:src="@drawable/leaderboard_hex"
+                android:scaleType="fitCenter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/level"
+                android:textSize="16sp"
+                android:textColor="@color/textLightMain"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:textSize="18sp"
+        android:textColor="@color/textDarkMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/level_name"
+        android:textSize="14sp"
+        android:textColor="@color/textDarkSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.jamesmorrisstudios.utilitieslibrary.controls.ButtonFlat
+        android:id="@+id/profile_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/textAccent"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/item_size" />
+
+</LinearLayout>

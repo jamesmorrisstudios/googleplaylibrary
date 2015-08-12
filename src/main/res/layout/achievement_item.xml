@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/achievement_card"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
     android:layout_marginTop="1dp"
@@ -18,12 +18,14 @@
     <!-- Primary layout container -->
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="8dip">
 
         <!-- Left side is image -->
         <FrameLayout
             android:id="@+id/achievement_icon_container"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             android:layout_width="86dp"
             android:layout_height="86dp">
 
@@ -31,10 +33,7 @@
             <ImageView
                 android:id="@+id/achievement_icon"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true" />
+                android:layout_height="match_parent" />
 
             <!-- Achievement icon progress bar for uncompleted incrementals -->
             <com.jamesmorrisstudios.utilitieslibrary.controls.CircleProgressDeterminate
@@ -84,7 +83,8 @@
             android:id="@+id/achievement_xp_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@id/achievement_description_text"
+
             android:layout_toRightOf="@id/achievement_icon_container"
             android:textColor="@color/accent"
             android:textSize="12sp" />

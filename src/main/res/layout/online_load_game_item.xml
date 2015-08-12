@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/online_load_card"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
+    card_view:cardBackgroundColor="@color/primaryLight"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true">
+
+    <!-- Primary layout container -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dip">
+
+        <ImageView
+            android:id="@+id/game_image"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="64dp"
+            android:layout_height="64dp" />
+
+        <ImageView
+            android:id="@+id/match_variant"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/game_image"
+            android:layout_alignParentTop="true"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <ImageView
+            android:id="@+id/match_teams"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/match_variant"
+            android:layout_alignParentTop="true"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:text="Mon 26, July 2015"
+            android:textColor="@color/textDarkSecondary"
+            android:gravity="center_vertical"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@+id/toolbar"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp" />
+
+
+        <android.support.v7.widget.Toolbar
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@color/primaryLight"
+            android:minHeight="32dp"
+            android:theme="@style/toolbarDark"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <!-- Addons -->
+        <ImageView
+            android:id="@+id/match_addon_1"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/game_image"
+            android:layout_below="@+id/match_variant"
+            android:background="@drawable/addon_1"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <ImageView
+            android:id="@+id/match_addon_2"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/match_addon_1"
+            android:layout_below="@+id/match_variant"
+            android:background="@drawable/addon_2"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <ImageView
+            android:id="@+id/match_addon_3"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/match_addon_2"
+            android:layout_below="@+id/match_variant"
+            android:background="@drawable/addon_3"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <ImageView
+            android:id="@+id/match_addon_4"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/match_addon_3"
+            android:layout_below="@+id/match_variant"
+            android:background="@drawable/addon_4"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <ImageView
+            android:id="@+id/match_addon_5"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/match_addon_4"
+            android:layout_below="@+id/match_variant"
+            android:background="@drawable/addon_5"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <ImageView
+            android:id="@+id/match_addon_6"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/match_addon_5"
+            android:layout_below="@+id/match_variant"
+            android:background="@drawable/addon_6"
+            android:layout_width="28dp"
+            android:layout_height="28dp" />
+
+        <!-- Names -->
+        <LinearLayout
+            android:id="@+id/names_row_1"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/match_addon_1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/name_1"
+                android:textColor="@color/textDarkSecondary"
+                android:text="Name 1"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/name_2"
+                android:textColor="@color/textDarkSecondary"
+                android:text="Name 2"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/name_3"
+                android:textColor="@color/textDarkSecondary"
+                android:text="Name 3"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/names_row_2"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/names_row_1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/name_4"
+                android:textColor="@color/textDarkSecondary"
+                android:text="Name 4"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/name_5"
+                android:textColor="@color/textDarkSecondary"
+                android:text="Name 5"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/name_6"
+                android:textColor="@color/textDarkSecondary"
+                android:text="Name 6"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_weight=".33"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

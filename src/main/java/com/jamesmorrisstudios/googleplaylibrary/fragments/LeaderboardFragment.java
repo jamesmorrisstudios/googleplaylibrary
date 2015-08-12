@@ -9,6 +9,7 @@ import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.googleplaylibrary.R;
+import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.PlayerDetailsDialogRequest;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardItem;
@@ -93,6 +94,12 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
         GooglePlayCalls.getInstance().loadLeaderboards(forceRefresh, leaderboardId);
     }
 
+    @Override
+    protected void startMoreDataLoad() {
+        Log.v("LeaderboardFragment", "Start more data load");
+        GooglePlayCalls.getInstance().loadLeaderboardsMore();
+    }
+
     private void applyData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
         if(GooglePlayCalls.getInstance().hasLeaderboards()) {
@@ -104,15 +111,26 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
         applyData(data);
     }
 
+    private void appendData() {
+        ArrayList<BaseRecycleContainer> data = new ArrayList<>();
+        if(GooglePlayCalls.getInstance().hasLeaderboardsMore()) {
+            ArrayList<LeaderboardItem> items = GooglePlayCalls.getInstance().getLeaderboardsMore();
+            for(LeaderboardItem item : items) {
+                data.add(new LeaderboardContainer(item));
+            }
+        }
+        appendData(data, false);
+    }
+
     @Override
     protected void itemClick(@NonNull BaseRecycleContainer baseRecycleContainer) {
-
+        LeaderboardItem item = (LeaderboardItem)baseRecycleContainer.getItem();
+        Bus.postObject(new PlayerDetailsDialogRequest(item.player));
     }
 
     @Override
     public void onBack() {
         leaderboardListener.setLeaderboardSpinnerVisibility(false);
-        GooglePlayCalls.getInstance().clearLeaderboardsCache();
     }
 
     @Subscribe
@@ -127,6 +145,12 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
             case LEADERBOARDS_FAIL:
                 Utils.toastShort(getString(R.string.failed_load_google_page));
                 applyData();
+                break;
+            case LEADERBOARDS_MORE_READY:
+                appendData();
+                break;
+            case LEADERBOARDS_MORE_FAIL:
+                Utils.toastShort(getString(R.string.failed_load_google_page));
                 break;
         }
     }

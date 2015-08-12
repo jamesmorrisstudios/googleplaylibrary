@@ -94,6 +94,11 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
         }
     }
 
+    @Override
+    protected void startMoreDataLoad() {
+
+    }
+
     private void applyData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
         if(GooglePlayCalls.getInstance().hasLeaderboardsMeta()) {

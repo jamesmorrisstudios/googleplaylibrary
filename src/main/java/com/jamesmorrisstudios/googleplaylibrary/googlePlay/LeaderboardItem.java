@@ -1,8 +1,11 @@
 package com.jamesmorrisstudios.googleplaylibrary.googlePlay;
 
 import android.net.Uri;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.google.android.gms.games.Player;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 
 /**
@@ -14,14 +17,14 @@ public class LeaderboardItem extends BaseRecycleItem {
     public final String displayPlayerRank;
     public final String displayPlayerScore;
     public final long playerRank;
-    public final long playerScore;
+    public final Player player;
 
-    public LeaderboardItem(@NonNull String displayName, @NonNull Uri icon, @NonNull String displayPlayerRank, @NonNull String displayPlayerScore, long playerRank, long playerScore) {
+    public LeaderboardItem(@NonNull String displayName, @Nullable Uri icon, @NonNull String displayPlayerRank, @NonNull String displayPlayerScore, long playerRank, @NonNull Player player) {
         this.displayName = displayName;
         this.icon = icon;
         this.displayPlayerRank = displayPlayerRank;
         this.displayPlayerScore = displayPlayerScore;
         this.playerRank = playerRank;
-        this.playerScore = playerScore;
+        this.player = player;
     }
 }

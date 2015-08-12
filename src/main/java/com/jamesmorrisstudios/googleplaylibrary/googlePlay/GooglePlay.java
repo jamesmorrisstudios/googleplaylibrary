@@ -62,6 +62,14 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         ACHIEVEMENTS_ITEMS_FAIL, ACHIEVEMENTS_ITEMS_READY,
         LEADERBOARDS_META_FAIL, LEADERBOARDS_META_READY,
         LEADERBOARDS_FAIL, LEADERBOARDS_READY,
+        LEADERBOARDS_MORE_FAIL, LEADERBOARDS_MORE_READY,
+
+        ONLINE_SAVE_ITEM_LOAD_FAIL, ONLINE_SAVE_ITEM_LOAD_READY,
+
+        PLAYERS_ACTIVE_FAIL, PLAYERS_ACTIVE_READY,
+        PLAYERS_ALL_FAIL, PLAYERS_ALL_READY,
+        PLAYERS_ALL_MORE_FAIL, PLAYERS_ALL_MORE_READY,
+
 
         SAVE_MATCH_LOCAL_FAIL, SAVE_MATCH_LOCAL_SUCCESS,
         LOAD_MATCH_LOCAL_FAIL, LOAD_MATCH_LOCAL_SUCCESS, SELECT_LOAD_MATCH_LOCAL_FAIL,
@@ -73,6 +81,10 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         ACCEPT_INVITATION_ONLINE_FAIL, ACCEPT_INVITATION_ONLINE_SUCCESS,
 
         LEADERBOARD_SPINNER_CHANGE
+    }
+
+    public enum SaveType {
+        INVITATION, ONGOING, YOUR_TURN, THEIR_TURN, COMPLETE
     }
 
     public enum Span {
@@ -195,7 +207,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     GoogleApiClient.Builder mGoogleApiClientBuilder = null;
 
     // Api options to use when adding each API, null for none
-    Games.GamesOptions mGamesApiOptions = Games.GamesOptions.builder().build();
+    Games.GamesOptions mGamesApiOptions = Games.GamesOptions.builder()
+            .setShowConnectingPopup(false)
+            .build();
     Api.ApiOptions.NoOptions mAppStateApiOptions = null;
 
     // Google API client object we manage.
