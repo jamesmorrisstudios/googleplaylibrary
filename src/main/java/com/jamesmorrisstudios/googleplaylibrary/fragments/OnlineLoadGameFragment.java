@@ -2,6 +2,9 @@ package com.jamesmorrisstudios.googleplaylibrary.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
@@ -11,10 +14,14 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineLoadHeader;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineSaveItem;
+import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.OnlineLoadGameAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.OnlineLoadGameContainer;
+import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.mopub.nativeads.MoPubRecyclerAdapter;
+import com.mopub.nativeads.ViewBinder;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -25,10 +32,61 @@ import java.util.ArrayList;
 public class OnlineLoadGameFragment extends BaseRecycleListFragment {
     public static final String TAG = "OnlineLoadGameFragment";
 
+    private MoPubRecyclerAdapter myMoPubAdapter;
+    private BaseRecycleAdapter adapter;
 
     @Override
-    protected BaseRecycleAdapter getAdapter(int i, @NonNull BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
-        return new OnlineLoadGameAdapter(i, onItemClickListener);
+    protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
+        adapter = new OnlineLoadGameAdapter(onItemClickListener);
+        if(AdUsage.getAdsEnabled()) {
+            // Pass the recycler Adapter your original adapter.
+            myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
+            // Create a view binder that describes your native ad layout.
+            myMoPubAdapter.registerViewBinder(new ViewBinder.Builder(R.layout.list_native_ad)
+                    .titleId(R.id.title)
+                    .textId(R.id.text)
+                    .iconImageId(R.id.icon)
+                            //.callToActionId(R.id.my_call_to_action)
+                            //.addExtra("Sponsored", R.id.sponsored)
+                    .build());
+        }
+        return adapter;
+    }
+
+    @Override
+    protected final RecyclerView.Adapter getAdapterToSet() {
+        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+            return myMoPubAdapter;
+        }
+        return adapter;
+    }
+
+    /**
+     * View creation done
+     *
+     * @param view               This fragments main view
+     * @param savedInstanceState Saved instance state
+     */
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+            myMoPubAdapter.loadAds(AdUsage.getMopubAdId());
+        }
+    }
+
+    @Override
+    public void itemClicked(@NonNull BaseRecycleContainer item) {
+        //Override to prevent use
+    }
+
+    @Override
+    public void itemClicked(int position) {
+        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+            itemClick(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
+        } else {
+            itemClick(adapter.getItems().get(position).data);
+        }
     }
 
     @Override

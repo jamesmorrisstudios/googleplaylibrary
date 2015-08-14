@@ -27,7 +27,7 @@ public class LeaderboardContainer extends BaseRecycleContainer {
     }
 
     @Override
-    public BaseRecycleItem getHeaderItem() {
+    public BaseRecycleItem getHeader() {
         return header;
     }
 

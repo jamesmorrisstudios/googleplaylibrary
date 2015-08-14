@@ -25,7 +25,7 @@ public class OnlineLoadGameContainer extends BaseRecycleContainer {
     }
 
     @Override
-    public BaseRecycleItem getHeaderItem() {
+    public BaseRecycleItem getHeader() {
         return header;
     }
 

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,15 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.android.vending.billing.IInAppBillingService;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.games.Games;
@@ -64,11 +56,11 @@ import com.jamesmorrisstudios.googleplaylibrary.util.IabResult;
 import com.jamesmorrisstudios.googleplaylibrary.util.Inventory;
 import com.jamesmorrisstudios.googleplaylibrary.util.Purchase;
 import com.jamesmorrisstudios.utilitieslibrary.Bus;
-import com.jamesmorrisstudios.utilitieslibrary.Logger;
 import com.jamesmorrisstudios.utilitieslibrary.Utils;
 import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 import com.jamesmorrisstudios.utilitieslibrary.preferences.Prefs;
 import com.squareup.otto.Subscribe;
+import com.chartboost.sdk.*;
 
 import java.util.ArrayList;
 
@@ -96,16 +88,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     private AppCompatSpinner spinnerSpan;
     private AppCompatSpinner spinnerCollection;
 
-    //ad management
-    private AdView mAdView;
-    private InterstitialAd mInterstitialAd = null;
-
     //House ads
-    private Handler houseAdHandler = new Handler();
     private ArrayList<HouseAd> houseAdList = new ArrayList<>();
-    private RelativeLayout houseAd;
-    private ImageView houseAdLogo;
-    private TextView houseAdTitle, houseAdText;
 
     private final Object busListener = new Object() {
         @Subscribe
@@ -149,6 +133,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         onRestoreState(savedInstanceState);
+        setContentView(R.layout.layout_main);
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS){
             playServicesEnabled = true;
@@ -158,11 +143,9 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 //App is already open
                 if(AdUsage.getAdsEnabled()) {
                     //Ads enabled
-                    setLayout(true);
                     enableAds();
                 } else {
                     //Ads disabled
-                    setLayout(false);
                     disableAds();
                 }
             } else {
@@ -172,11 +155,9 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 //overwrite it after checking the IAP helper
                 if(getCacheEnableAds()) {
                     //Ads Enabled
-                    setLayout(true);
                     enableAds();
                 } else {
                     //Ads Disabled
-                    setLayout(false);
                     disableAds();
                 }
             }
@@ -190,7 +171,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             }
         } else {
             //Ads still work without google play services but the user cant remove them with an IAP
-            setLayout(true);
             enableAds();
         }
         initOnCreate();
@@ -207,16 +187,17 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     }
 
+    protected abstract String getPublicKey();
+
     protected abstract int getGooglePlayClients();
 
-    private void setLayout(boolean showAd) {
-        if(showAd && !AdUsage.getBannerAdHide()) {
-            setContentView(R.layout.layout_main_ad);
-        } else {
-            setContentView(R.layout.layout_main);
-        }
-    }
+    protected abstract boolean useInterstitial();
 
+    protected abstract String getMopubAdId();
+
+    protected abstract String getChartBoostAppId();
+
+    protected abstract String getChartBoostSignature();
 
     private void startIABHelper() {
         //Start the IAP service connection
@@ -237,8 +218,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             }
         });
     }
-
-    protected abstract String getPublicKey();
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -356,30 +335,26 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 }
             }
         }
+        Chartboost.onStart(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        houseAdHandler.post(updateHouseAd);
-        if(mAdView != null) {
-            mAdView.resume();
-        }
+        Chartboost.onResume(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        houseAdHandler.removeCallbacks(updateHouseAd);
-        if(mAdView != null) {
-            mAdView.pause();
-        }
+        Chartboost.onPause(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Bus.unregister(busListener);
+        Chartboost.onStop(this);
     }
 
     @Override
@@ -394,80 +369,37 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             }
             mHelper = null;
         }
+        Chartboost.onDestroy(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If an interstitial is on screen, close it.
+        if (Chartboost.onBackPressed()) {
+            return;
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void enableAds() {
         Log.v("TAG", "Showing ads");
         Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
         AdUsage.setAdsEnabled(true);
-        //Init house ads
-        initHouseAd();
-        //Init Banner
-        mAdView = (AdView) findViewById(R.id.adView);
-        if (mAdView != null) {
-            // Create an ad request. Check logcat output for the hashed device ID to
-            // get test ads on a physical device. e.g.
-            final AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
-                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
-                    .addTestDevice("827F16D46E55B979D33C6023E4705F7D") //transformer prime
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Emulator
-                    .build();
 
-            mAdView.setAdListener(new AdListener() {
-                @Override
-                public void onAdLoaded() {
-                    super.onAdLoaded();
-                    mAdView.setVisibility(View.VISIBLE);
-                }
-            });
+        if(useInterstitial()) {
+            //Init house ads
+            initHouseAd();
 
-            // Start loading the ad in the background.
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mAdView.resume();
-                    mAdView.loadAd(adRequest);
-                }
-            }, 1000 * 15);
+            //Init Interstitial
+            Chartboost.startWithAppId(this, getChartBoostAppId(), getChartBoostSignature());
+            Chartboost.onCreate(this);
         }
-        //Init Interstitial
-        if(getResources().getBoolean(R.bool.interstitial_enable) && AdUsage.getBannerAdHide()) {
-            mInterstitialAd = new InterstitialAd(getApplicationContext());
-            mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_id));
-            mInterstitialAd.setAdListener(new AdListener() {
-                @Override
-                public void onAdClosed() {
-                    super.onAdClosed();
-                    requestNewInterstitial();
-                }
-            });
-            requestNewInterstitial();
-        }
+
+        AdUsage.setMopubAdId(getMopubAdId());
     }
 
     private void initHouseAd() {
-        //Get references to items
-        houseAd = (RelativeLayout) findViewById(R.id.house_ad);
-        houseAdLogo = (ImageView) findViewById(R.id.ad_logo);
-        houseAdTitle = (TextView) findViewById(R.id.ad_title);
-        houseAdText = (TextView) findViewById(R.id.ad_text);
-        if(houseAdText != null) {
-            //Set the layout params based on the ad size
-            RelativeLayout.LayoutParams paramsText = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            if (Utils.getOrientation() == Utils.Orientation.LANDSCAPE) {
-                //Landscape
-                paramsText.addRule(RelativeLayout.RIGHT_OF, R.id.ad_title);
-                paramsText.leftMargin = Utils.getDipInt(4);
-                paramsText.topMargin = Utils.getDipInt(6);
-            } else {
-                //Portrait
-                paramsText.addRule(RelativeLayout.RIGHT_OF, R.id.ad_logo);
-                paramsText.addRule(RelativeLayout.BELOW, R.id.ad_title);
-            }
-            houseAdText.setLayoutParams(paramsText);
-        }
         //Read in all the house ad apps from the xml
         houseAdList.clear();
         TypedArray houseAdArray = getResources().obtainTypedArray(R.array.house_ads);
@@ -491,34 +423,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         houseAdArray.recycle();
     }
 
-    private Runnable updateHouseAd = new Runnable() {
-        @Override
-        public void run() {
-            if(houseAdList == null || houseAdList.isEmpty() || houseAd == null || houseAdLogo == null) {
-                return;
-            }
-            final int currentHouseAd = incrementCurrentHouseAd();
-            houseAdLogo.setImageResource(houseAdList.get(currentHouseAd).logoRes);
-            houseAdTitle.setText(houseAdList.get(currentHouseAd).titleRes);
-            houseAdText.setText(houseAdList.get(currentHouseAd).textRes);
-            houseAd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.v(TAG, "Clicked house ad");
-                    Utils.openLink(getString(R.string.base_store_link) + getString(houseAdList.get(currentHouseAd).packageRes));
-                }
-            });
-            houseAdHandler.postDelayed(updateHouseAd, 1000 * 30);
-        }
-    };
-
     private void disableAds() {
         Log.v("TAG", "Hiding ads");
         Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", false);
         AdUsage.setAdsEnabled(false);
-        if(mAdView != null) {
-            mAdView.pause();
-        }
     }
 
     /**
@@ -527,16 +435,21 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     public void onSettingsChanged() {
         super.onSettingsChanged();
-        AdUsage.updateHideBanner();
     }
 
+    private boolean useAutoLock = false;
     @Override
     public void purchaseRemoveAds() {
         if(mHelper == null) {
             Utils.toastShort(AppUtil.getContext().getString(R.string.unable_setup_iap));
             return;
         }
-        Utils.lockOrientationCurrent(this);
+        if(Utils.getOrientationLock(this) == Utils.Orientation.UNDEFINED) {
+            Utils.lockOrientationCurrent(this);
+            useAutoLock = false;
+        } else {
+            useAutoLock = true;
+        }
         mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
             public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
                 if (result.isSuccess() && purchase.getSku().equals(REMOVE_ADS_SKU) && purchase.getDeveloperPayload().equals("REMOVE_ADS_PURCHASE_TOKEN")) {
@@ -548,7 +461,9 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     // Handle error
                     Utils.toastShort(AppUtil.getContext().getString(R.string.failed_purchase));
                 }
-                Utils.unlockOrientation(BaseAdLauncherActivity.this);
+                if(useAutoLock) {
+                    Utils.unlockOrientation(BaseAdLauncherActivity.this);
+                }
             }
         }, "REMOVE_ADS_PURCHASE_TOKEN");
     }
@@ -680,22 +595,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         loadLeaderboardFragment(leaderboardId);
     }
 
-    /**
-     * Request an interstitial ad be loaded (not shown)
-     */
-    private void requestNewInterstitial() {
-        if (mInterstitialAd != null && !mInterstitialAd.isLoaded()) {
-            AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice("9C2F1643B5D281A922A7275B214895BD") //Nexus 5 Android M
-                    .addTestDevice("AEFD83FC4CFE2E9700CB3BD8D7CC3AF1") //Nexus 5 second account
-                    .addTestDevice("827F16D46E55B979D33C6023E4705F7D") //transformer prime
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) //Emulator
-                    .build();
-
-            mInterstitialAd.loadAd(adRequest);
-        }
-    }
-
     private void showHouseInterstitial() {
         if(houseAdList == null || houseAdList.isEmpty()) {
             return;
@@ -723,27 +622,24 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     public void onDismiss(DialogInterface dialog) {
         Log.v(TAG, "House ad closed.");
-        requestNewInterstitial();
     }
 
     /**
      * Show the interstitial ad if we have one loaded and retry if not
      */
     private void showInterstitialAd() {
-        if(!AdUsage.getBannerAdHide()) {
+        if(!useInterstitial()) {
             return;
         }
         //See if its too shown to show another ad
-        if(!AdUsage.allowInterstitial()) {
-            Log.v(TAG, "Not enough time since last shown an add");
-            return;
-        }
+        //if(!AdUsage.allowInterstitial()) {
+            //Log.v(TAG, "Not enough time since last shown an ad");
+            //return;
+        //}
         //Make sure we are using the interstitial ad and that its loaded
         Log.v(TAG, "Requested interstitial");
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
-            Logger.v(Logger.LoggerCategory.MAIN, TAG, "Showing the interstitial ad");
-            mInterstitialAd.show();
-            AdUsage.updateAdShowTimeStamp();
+        if (true /*TODO if interstitial loaded*/) {
+            Chartboost.showInterstitial(CBLocation.LOCATION_DEFAULT);
         } else {
             Log.v(TAG, "No interstitial loaded. Showing house ad");
             showHouseInterstitial();

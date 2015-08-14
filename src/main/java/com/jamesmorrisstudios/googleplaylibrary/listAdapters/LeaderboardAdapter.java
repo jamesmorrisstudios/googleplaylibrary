@@ -15,8 +15,8 @@ import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 public class LeaderboardAdapter extends BaseRecycleAdapter {
     private ImageManager imageManager;
 
-    public LeaderboardAdapter(int headerMode, OnItemClickListener mListener) {
-        super(headerMode, mListener);
+    public LeaderboardAdapter(OnItemClickListener mListener) {
+        super(mListener);
         imageManager = ImageManager.create(AppUtil.getContext());
     }
 

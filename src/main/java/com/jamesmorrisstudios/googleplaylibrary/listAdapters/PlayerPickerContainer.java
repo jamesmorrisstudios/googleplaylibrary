@@ -25,7 +25,7 @@ public class PlayerPickerContainer extends BaseRecycleContainer {
     }
 
     @Override
-    public BaseRecycleItem getHeaderItem() {
+    public BaseRecycleItem getHeader() {
         return header;
     }
 

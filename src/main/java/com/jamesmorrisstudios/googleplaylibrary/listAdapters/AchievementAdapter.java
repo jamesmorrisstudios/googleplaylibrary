@@ -15,8 +15,8 @@ import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 public class AchievementAdapter extends BaseRecycleAdapter {
     private ImageManager imageManager;
 
-    public AchievementAdapter(int headerMode, OnItemClickListener mListener) {
-        super(headerMode, mListener);
+    public AchievementAdapter(OnItemClickListener mListener) {
+        super(mListener);
         imageManager = ImageManager.create(AppUtil.getContext());
     }
 

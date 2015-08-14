@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array translatable="false" name="settings_google_play_array">
-        <item>@array/settings_google_play_item_0</item>
-    </array>
-
-    <array translatable="false" name="settings_google_play_item_0">
-        <item name="defaultValue">@bool/settings_google_play_item_0_default_value</item>
-        <item name="key">@string/settings_google_play_item_0_key</item>
-        <item name="primary">@string/settings_google_play_item_0_primary</item>
-        <item name="secondary">@string/settings_google_play_item_0_secondary</item>
-        <item name="restart">@bool/settings_google_play_item_0_restart</item>
-    </array>
-
-    <bool name="settings_google_play_item_0_restart">true</bool>
-    <bool name="settings_google_play_item_0_default_value">false</bool>
-    <string translatable="false" name="settings_google_play_item_0_key">@string/pref_hide_banner</string>
-    <string translatable="false" name="pref_hide_banner">PREF_HIDE_BANNER</string>
 
 </resources>

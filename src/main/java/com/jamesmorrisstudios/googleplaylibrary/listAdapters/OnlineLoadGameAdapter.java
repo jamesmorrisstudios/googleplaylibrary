@@ -15,19 +15,13 @@ import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
  */
 public class OnlineLoadGameAdapter extends BaseRecycleAdapter {
 
-
-    public OnlineLoadGameAdapter(int headerMode, OnItemClickListener mListener) {
-        super(headerMode, mListener);
+    public OnlineLoadGameAdapter(OnItemClickListener mListener) {
+        super(mListener);
     }
 
     @Override
     protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean b, boolean b1, BaseRecycleViewHolder.cardClickListener cardClickListener) {
         return new OnlineLoadGameViewHolder(view, b, b1, cardClickListener);
-    }
-
-    @Override
-    protected int getColumnWidth() {
-        return Utils.getDipInt(300); //TODO at least 288 depending upon timestamp style
     }
 
     @Override

@@ -1,28 +1,20 @@
 package com.jamesmorrisstudios.googleplaylibrary.util;
 
-import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
-import com.jamesmorrisstudios.utilitieslibrary.preferences.Prefs;
-
 /**
  * Created by James on 5/11/2015.
  */
 public class AdUsage {
+    private static String mopubAdId;
     private static boolean adsEnabled = true;
-    private static boolean bannerAdHide = false;
     private static boolean alreadyRunning = false;
     private static long lastInterstitialShownTimeStamp = 0;
-    private static long minTimeBetween = AppUtil.getContext().getResources().getInteger(R.integer.interstitial_timeout) * 1000;
+    private static long minTimeBetween = 1000 * 60 * 2; //2 minutes
 
     /**
      * @return True if we are ready to show another full page ad
      */
     public static boolean allowInterstitial() {
-        if(bannerAdHide) {
-            return adsEnabled && System.currentTimeMillis() - lastInterstitialShownTimeStamp >= minTimeBetween;
-        } else {
-            return false;
-        }
+        return adsEnabled && System.currentTimeMillis() - lastInterstitialShownTimeStamp >= minTimeBetween;
     }
 
     /**
@@ -36,17 +28,15 @@ public class AdUsage {
         if(!alreadyRunning) {
             updateAdShowTimeStamp();
             alreadyRunning = true;
-            updateHideBanner();
         }
     }
 
-    public static void updateHideBanner() {
-        String pref = AppUtil.getContext().getString(R.string.settings_pref);
-        String keyHideBanner = AppUtil.getContext().getString(R.string.pref_hide_banner);
-        bannerAdHide = Prefs.getBoolean(pref, keyHideBanner, false);
-        if(bannerAdHide) {
-            lastInterstitialShownTimeStamp = 0;
-        }
+    public static String getMopubAdId() {
+        return mopubAdId;
+    }
+
+    public static void setMopubAdId(String mopubAdId1) {
+        mopubAdId = mopubAdId1;
     }
 
     public static boolean isAlreadyRunning() {
@@ -63,10 +53,6 @@ public class AdUsage {
 
     public static boolean getAdsEnabled() {
         return adsEnabled;
-    }
-
-    public static boolean getBannerAdHide() {
-        return bannerAdHide;
     }
 
 }

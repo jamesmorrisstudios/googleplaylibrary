@@ -29,7 +29,7 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
     private ImageView image;
     private CircleProgressDeterminate circle;
 
-    public AchievementViewHolder(View view, boolean isHeader, boolean isDummyItem, cardClickListener mListener, ImageManager imageManager) {
+    public AchievementViewHolder(View view, boolean isHeader, boolean isDummyItem, BaseRecycleViewHolder.cardClickListener mListener, ImageManager imageManager) {
         super(view, isHeader, isDummyItem, mListener);
         this.imageManager = imageManager;
     }
@@ -62,6 +62,7 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
         this.progressBar.setMax(header.numberTotal);
         this.progressBar.setProgress(header.numberComplete);
     }
+
 
     @Override
     protected void bindItem(BaseRecycleItem baseRecycleItem, boolean expanded) {

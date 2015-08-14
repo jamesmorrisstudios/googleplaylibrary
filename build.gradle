@@ -25,6 +25,7 @@ repositories {
     mavenLocal()
     maven { url "https://jitpack.io" }
     mavenCentral()
+    jcenter()
 }
 
 apply plugin: 'com.android.library'
@@ -57,4 +58,8 @@ dependencies {
 
     compile 'com.jamesmorrisstudios:appbaselibrary:1.1' //local gradle
     //compile 'com.github.morris-james:appbaselibrary:v1.1.1' //Jitpack
+
+    compile('com.mopub:mopub-sdk:3.10.0@aar') {
+        transitive = true
+    }
 }

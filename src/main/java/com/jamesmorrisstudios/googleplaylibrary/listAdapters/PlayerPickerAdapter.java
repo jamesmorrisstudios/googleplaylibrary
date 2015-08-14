@@ -15,8 +15,8 @@ import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
 public class PlayerPickerAdapter extends BaseRecycleAdapter {
     private ImageManager imageManager;
 
-    public PlayerPickerAdapter(int headerMode, OnItemClickListener mListener) {
-        super(headerMode, mListener);
+    public PlayerPickerAdapter(OnItemClickListener mListener) {
+        super(mListener);
         imageManager = ImageManager.create(AppUtil.getContext());
     }
 

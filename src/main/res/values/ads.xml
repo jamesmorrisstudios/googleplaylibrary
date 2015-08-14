@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Override these to set your ad ids -->
-    <string name="banner_id" translatable="false">changeThis</string>
-    <string name="interstitial_id" translatable="false">changeThis</string>
-
-    <!-- Minimum amount of time between showing an interstitial add even if requested in seconds. -->
-    <integer name="interstitial_timeout">30</integer>
-
-    <!-- Set this to enable loading of the interstitial ad -->
-    <bool name="interstitial_enable">false</bool>
 
     <!-- List of all my in house ads -->
     <string translatable="false" name="base_store_link">https://play.google.com/store/apps/details?id=</string>

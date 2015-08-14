@@ -22,8 +22,9 @@ public class AchievementContainer extends BaseRecycleContainer {
         this.item = item;
     }
 
+
     @Override
-    public BaseRecycleItem getHeaderItem() {
+    public BaseRecycleItem getHeader() {
         return header;
     }
 
