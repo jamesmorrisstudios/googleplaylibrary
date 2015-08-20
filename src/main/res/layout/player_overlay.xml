@@ -65,14 +65,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.jamesmorrisstudios.utilitieslibrary.controls.ButtonFlat
+    <Button
+        android:background="?android:attr/selectableItemBackground"
+        android:textColor="@color/textAccent"
         android:id="@+id/profile_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@color/textAccent"
-        android:clickable="true"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:textSize="@dimen/item_size" />
 
 </LinearLayout>

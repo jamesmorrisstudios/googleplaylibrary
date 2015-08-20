@@ -8,7 +8,9 @@
     <uses-permission android:name="com.android.vending.BILLING" />
     <!-- Chartboost ad services -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Optional so lets not use it -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:hardwareAccelerated="true"

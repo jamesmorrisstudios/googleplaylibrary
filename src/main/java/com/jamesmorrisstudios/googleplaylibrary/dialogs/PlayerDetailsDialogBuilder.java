@@ -5,18 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.images.ImageManager;
-import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
-import com.jamesmorrisstudios.utilitieslibrary.controls.ButtonFlat;
 
 /**
  * Created by James on 8/10/2015.
@@ -63,7 +61,7 @@ public class PlayerDetailsDialogBuilder {
         TextView name = (TextView) view.findViewById(R.id.name);
         TextView level = (TextView) view.findViewById(R.id.level);
         TextView levelName = (TextView) view.findViewById(R.id.level_name);
-        ButtonFlat btn = (ButtonFlat) view.findViewById(R.id.profile_btn);
+        Button btn = (Button) view.findViewById(R.id.profile_btn);
 
         if (player.hasIconImage()) {
             imageManager.loadImage(icon, player.getIconImageUri());

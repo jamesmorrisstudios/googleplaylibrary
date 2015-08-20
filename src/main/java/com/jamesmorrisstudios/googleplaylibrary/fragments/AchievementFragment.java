@@ -44,12 +44,13 @@ public class AchievementFragment extends BaseRecycleListFragment {
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
-            myMoPubAdapter.registerViewBinder(new ViewBinder.Builder(R.layout.list_native_ad)
+            myMoPubAdapter.registerViewBinder(new ViewBinder.Builder(R.layout.list_native_ad_full)
                     .titleId(R.id.title)
                     .textId(R.id.text)
                     .iconImageId(R.id.icon)
-                            //.callToActionId(R.id.my_call_to_action)
-                    .addExtra("Sponsored", R.id.sponsored)
+                    .mainImageId(R.id.image)
+                    .callToActionId(R.id.call_to_action)
+                    //.addExtra("Sponsored", R.id.sponsored)
                     .build());
         }
         return adapter;

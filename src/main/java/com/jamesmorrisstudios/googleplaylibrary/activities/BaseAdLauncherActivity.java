@@ -88,6 +88,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     private AppCompatSpinner spinnerSpan;
     private AppCompatSpinner spinnerCollection;
 
+    private boolean useAutoLock = false;
+
     //House ads
     private ArrayList<HouseAd> houseAdList = new ArrayList<>();
 
@@ -126,6 +128,19 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     };
 
+    private ChartboostDelegate delegate = new ChartboostDelegate() {
+        //Override the Chartboost delegate callbacks you wish to track and control
+
+        public void didCompleteRewardedVideo(String location, int reward) {
+            Log.v("Chartboost", "Reward: "+reward);
+            rewardAdWatched(50);
+        }
+
+        public void didCacheRewardedVideo(String location) {
+            rewardAdCached();
+        }
+    };
+
     /**
      * @param savedInstanceState
      */
@@ -134,6 +149,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         super.onCreate(savedInstanceState);
         onRestoreState(savedInstanceState);
         setContentView(R.layout.layout_main);
+        Chartboost.startWithAppId(this, getChartBoostAppId(), getChartBoostSignature());
+        Chartboost.setDelegate(delegate);
+        Chartboost.onCreate(this);
+        Chartboost.setAutoCacheAds(true);
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS){
             playServicesEnabled = true;
@@ -198,6 +217,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     protected abstract String getChartBoostAppId();
 
     protected abstract String getChartBoostSignature();
+
+    protected abstract void rewardAdWatched(int reward);
+
+    protected abstract void rewardAdCached();
 
     private void startIABHelper() {
         //Start the IAP service connection
@@ -342,6 +365,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onResume() {
         super.onResume();
         Chartboost.onResume(this);
+        if(useInterstitial()){
+            cacheInterstitial();
+        }
+        cacheRewardAd();
     }
 
     @Override
@@ -390,10 +417,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         if(useInterstitial()) {
             //Init house ads
             initHouseAd();
-
-            //Init Interstitial
-            Chartboost.startWithAppId(this, getChartBoostAppId(), getChartBoostSignature());
-            Chartboost.onCreate(this);
         }
 
         AdUsage.setMopubAdId(getMopubAdId());
@@ -437,7 +460,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         super.onSettingsChanged();
     }
 
-    private boolean useAutoLock = false;
     @Override
     public void purchaseRemoveAds() {
         if(mHelper == null) {
@@ -446,9 +468,9 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
         if(Utils.getOrientationLock(this) == Utils.Orientation.UNDEFINED) {
             Utils.lockOrientationCurrent(this);
-            useAutoLock = false;
-        } else {
             useAutoLock = true;
+        } else {
+            useAutoLock = false;
         }
         mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
             public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
@@ -632,19 +654,41 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             return;
         }
         //See if its too shown to show another ad
-        //if(!AdUsage.allowInterstitial()) {
-            //Log.v(TAG, "Not enough time since last shown an ad");
-            //return;
-        //}
+        if(!AdUsage.allowInterstitial()) {
+            Log.v(TAG, "Not enough time since last shown an ad");
+            return;
+        }
         //Make sure we are using the interstitial ad and that its loaded
         Log.v(TAG, "Requested interstitial");
-        if (true /*TODO if interstitial loaded*/) {
-            Chartboost.showInterstitial(CBLocation.LOCATION_DEFAULT);
+        if (hasCachedInterstitial()) {
+            Chartboost.showInterstitial(CBLocation.LOCATION_GAMEOVER);
+            AdUsage.updateAdShowTimeStamp();
         } else {
             Log.v(TAG, "No interstitial loaded. Showing house ad");
+            cacheInterstitial();
             showHouseInterstitial();
             AdUsage.updateAdShowTimeStamp();
         }
+    }
+
+    private boolean hasCachedInterstitial() {
+        return Chartboost.hasInterstitial(CBLocation.LOCATION_GAMEOVER);
+    }
+
+    private void cacheInterstitial() {
+        Chartboost.cacheInterstitial(CBLocation.LOCATION_GAMEOVER);
+    }
+
+    private void cacheRewardAd() {
+        Chartboost.cacheRewardedVideo(CBLocation.LOCATION_HOME_SCREEN);
+    }
+
+    private boolean hasCachedRewardAd() {
+        return Chartboost.hasRewardedVideo(CBLocation.LOCATION_HOME_SCREEN);
+    }
+
+    protected final void showRewardAd() {
+        Chartboost.showRewardedVideo(CBLocation.LOCATION_HOME_SCREEN);
     }
 
     private boolean getPlayGamesEnabledPref() {
