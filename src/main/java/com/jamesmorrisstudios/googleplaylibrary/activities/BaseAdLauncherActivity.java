@@ -214,6 +214,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     protected abstract String getMopubAdId();
 
+    protected abstract String getMopubAdIdFull();
+
     protected abstract String getChartBoostAppId();
 
     protected abstract String getChartBoostSignature();
@@ -420,6 +422,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
 
         AdUsage.setMopubAdId(getMopubAdId());
+        AdUsage.setMopubAdIdFull(getMopubAdIdFull());
     }
 
     private void initHouseAd() {
@@ -462,6 +465,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     @Override
     public void purchaseRemoveAds() {
+        if(!AdUsage.getAdsEnabled()) {
+            Utils.toastShort(getString(R.string.ads_removed));
+            return;
+        }
         if(mHelper == null) {
             Utils.toastShort(AppUtil.getContext().getString(R.string.unable_setup_iap));
             return;
@@ -483,7 +490,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     // Handle error
                     Utils.toastShort(AppUtil.getContext().getString(R.string.failed_purchase));
                 }
-                if(useAutoLock) {
+                if (useAutoLock) {
                     Utils.unlockOrientation(BaseAdLauncherActivity.this);
                 }
             }
@@ -532,6 +539,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             case SHOW_INTERSTITIAL:
                 Log.v(TAG, "Showing interstitial ad");
                 showInterstitialAd();
+                break;
+            case SHOW_REWARD_AD:
+                Log.v(TAG, "Showing reward ad");
+                showRewardAd();
                 break;
         }
     }
@@ -614,6 +625,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     @Override
     public void goToLeaderboard(String leaderboardId) {
+        GooglePlayCalls.getInstance().clearLeaderboardsCache();
         loadLeaderboardFragment(leaderboardId);
     }
 

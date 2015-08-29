@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
@@ -149,7 +150,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
             getSettingsContainer(view).addView(item);
         } else {
             View item = getActivity().getLayoutInflater().inflate(R.layout.layout_remove_ads_gone, null);
-/*
+
             TextView text = (TextView)item.findViewById(R.id.ads_removed);
             text.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -157,7 +158,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
                     googlePlaySettingsListener.testingConsumePurchase();
                 }
             });
-*/
+
             getSettingsContainer(view).addView(item);
         }
     }

@@ -50,7 +50,6 @@ public class AchievementFragment extends BaseRecycleListFragment {
                     .iconImageId(R.id.icon)
                     .mainImageId(R.id.image)
                     .callToActionId(R.id.call_to_action)
-                    //.addExtra("Sponsored", R.id.sponsored)
                     .build());
         }
         return adapter;
@@ -88,7 +87,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubAdId());
+            myMoPubAdapter.loadAds(AdUsage.getMopubAdIdFull());
         }
     }
 
@@ -104,7 +103,9 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     @Override
     public void onDestroy() {
-        myMoPubAdapter.destroy();
+        if(myMoPubAdapter != null) {
+            myMoPubAdapter.destroy();
+        }
         super.onDestroy();
         Bus.unregister(this);
     }

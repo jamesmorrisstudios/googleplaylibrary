@@ -4,7 +4,7 @@ package com.jamesmorrisstudios.googleplaylibrary.util;
  * Created by James on 5/11/2015.
  */
 public class AdUsage {
-    private static String mopubAdId;
+    private static String mopubAdId, mopubAdIdFull;
     private static boolean adsEnabled = true;
     private static boolean alreadyRunning = false;
     private static long lastInterstitialShownTimeStamp = 0;
@@ -35,8 +35,16 @@ public class AdUsage {
         return mopubAdId;
     }
 
+    public static String getMopubAdIdFull() {
+        return mopubAdIdFull;
+    }
+
     public static void setMopubAdId(String mopubAdId1) {
         mopubAdId = mopubAdId1;
+    }
+
+    public static void setMopubAdIdFull(String mopubAdIdFull1) {
+        mopubAdIdFull = mopubAdIdFull1;
     }
 
     public static boolean isAlreadyRunning() {

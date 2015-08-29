@@ -50,8 +50,6 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
                     .titleId(R.id.title)
                     .textId(R.id.text)
                     .iconImageId(R.id.icon)
-                            //.callToActionId(R.id.my_call_to_action)
-                            //.addExtra("Sponsored", R.id.sponsored)
                     .build());
         }
         return adapter;
@@ -103,6 +101,9 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
     }
 
     public void onDestroy() {
+        if(myMoPubAdapter != null) {
+            myMoPubAdapter.destroy();
+        }
         super.onDestroy();
         Bus.unregister(this);
     }
