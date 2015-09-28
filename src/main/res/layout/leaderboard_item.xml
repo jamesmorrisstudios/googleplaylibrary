@@ -47,7 +47,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"/>
 
-            <com.jamesmorrisstudios.utilitieslibrary.controls.TintedImageView
+            <com.jamesmorrisstudios.appbaselibrary.controls.TintedImageView
                 android:padding="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

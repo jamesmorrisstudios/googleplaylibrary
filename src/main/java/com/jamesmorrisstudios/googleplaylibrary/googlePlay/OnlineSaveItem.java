@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.googleplaylibrary.game.GameDetails;
-import com.jamesmorrisstudios.utilitieslibrary.BitManager;
+import com.jamesmorrisstudios.appbaselibrary.BitManager;
 
 import java.util.ArrayList;
 

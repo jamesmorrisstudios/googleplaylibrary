@@ -12,7 +12,7 @@ import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaItem;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaVariantItem;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 
 /**
  * Created by James on 6/6/2015.
@@ -58,7 +58,7 @@ public class LeaderboardMetaViewHolder extends BaseRecycleViewHolder {
             score.setText(variant.displayPlayerScore);
             rank.setText(variant.displayPlayerRank);
         } else {
-            score.setText(AppUtil.getContext().getString(R.string.n_a));
+            score.setText(AppBase.getContext().getString(R.string.n_a));
             rank.setText("");
         }
     }

@@ -11,10 +11,10 @@ import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleViewHolder;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementHeader;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementItem;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
-import com.jamesmorrisstudios.utilitieslibrary.controls.CircleProgressDeterminate;
-import com.jamesmorrisstudios.utilitieslibrary.controls.ProgressBarDeterminate;
-import com.jamesmorrisstudios.utilitieslibrary.math.UtilsMath;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
+import com.jamesmorrisstudios.appbaselibrary.controls.CircleProgressDeterminate;
+import com.jamesmorrisstudios.appbaselibrary.controls.ProgressBarDeterminate;
+import com.jamesmorrisstudios.appbaselibrary.math.UtilsMath;
 
 /**
  * Created by James on 5/27/2015.
@@ -57,7 +57,7 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
     protected void bindHeader(BaseRecycleItem baseRecycleItem, boolean expanded) {
         AchievementHeader header = (AchievementHeader) baseRecycleItem;
         this.headerTitle.setText(header.title);
-        this.headerCount.setText(Integer.toString(header.numberComplete) + AppUtil.getContext().getResources().getString(R.string.separator) + Integer.toString(header.numberTotal));
+        this.headerCount.setText(Integer.toString(header.numberComplete) + AppBase.getContext().getResources().getString(R.string.separator) + Integer.toString(header.numberTotal));
         this.progressBar.setMin(0);
         this.progressBar.setMax(header.numberTotal);
         this.progressBar.setProgress(header.numberComplete);
@@ -71,7 +71,7 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
         this.title.setText(item.title);
         this.description.setText(item.description);
         if(item.xp != 0) {
-            this.xp.setText(UtilsMath.formatDisplayNumber(item.xp)+" "+AppUtil.getContext().getResources().getString(R.string.xp));
+            this.xp.setText(UtilsMath.formatDisplayNumber(item.xp)+" "+AppBase.getContext().getResources().getString(R.string.xp));
         } else {
             this.xp.setText("");
         }
@@ -89,7 +89,7 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
             //Incremental
             this.image.setVisibility(View.GONE);
             int per = Math.round(100 * (item.currentSteps * 1.0f / item.totalSteps));
-            percent.setText(per+AppUtil.getContext().getResources().getString(R.string.percent_char));
+            percent.setText(per+AppBase.getContext().getResources().getString(R.string.percent_char));
             circle.setProgress(per);
             percent.setVisibility(View.VISIBLE);
             circle.setVisibility(View.VISIBLE);

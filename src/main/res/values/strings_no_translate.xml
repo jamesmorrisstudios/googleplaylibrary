@@ -2,13 +2,6 @@
 <resources>
     <string name="app_name" translatable="false">GooglePlayLibrary</string>
 
-    <!-- Google Play -->
-    <string name="network_failure" translatable="false">Network Connection Failure</string>
-    <string name="gamehelper_sign_in_failed" translatable="false">Failed to sign in. Please check your network connection and try again.</string>
-    <string name="gamehelper_app_misconfigured" translatable="false">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
-    <string name="gamehelper_license_failed" translatable="false">License check failed.</string>
-    <string name="gamehelper_unknown_error" translatable="false">Unknown error.</string>
-
     <string-array name="leaderboard_span">
         <item>@string/daily</item>
         <item>@string/weekly</item>
@@ -17,7 +10,7 @@
 
     <string-array name="leaderboard_collection">
         <item>@string/my_circles</item>
-        <item>@string/public_word</item>
+        <item>@string/public_</item>
     </string-array>
 
 </resources>

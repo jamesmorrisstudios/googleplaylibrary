@@ -38,10 +38,10 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.snapshot.Snapshots;
-import com.jamesmorrisstudios.utilitieslibrary.Bus;
-import com.jamesmorrisstudios.utilitieslibrary.Logger;
-import com.jamesmorrisstudios.utilitieslibrary.Utils;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.Logger;
+import com.jamesmorrisstudios.appbaselibrary.Utils;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -948,11 +948,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
      */
     private boolean startGooglePlayGames(Intent intent) {
         //This assumes it is running in a fragment. Adjust getActivity() as needed.
-        PackageManager packageManager = AppUtil.getContext().getPackageManager();
+        PackageManager packageManager = AppBase.getContext().getPackageManager();
         List activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         boolean isIntentSafe = activities.size() > 0;
         if(isIntentSafe) {
-            AppUtil.getContext().startActivity(intent);
+            AppBase.getContext().startActivity(intent);
             return true;
         } else {
             return false;

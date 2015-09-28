@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.jamesmorrisstudios.appbaselibrary.Utils;
 
 /**
  * Created by James on 7/24/2015.

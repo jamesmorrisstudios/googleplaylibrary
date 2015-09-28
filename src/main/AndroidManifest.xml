@@ -8,7 +8,7 @@
     <uses-permission android:name="com.android.vending.BILLING" />
     <!-- Chartboost ad services -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- Optional so lets not use it -->
+    <!-- Chartboost ad services -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
@@ -20,7 +20,7 @@
         <activity android:name="com.mopub.mobileads.MoPubActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name="com.mopub.mobileads.MraidActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name="com.mopub.common.MoPubBrowser" android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name="com.mopub.mobileads.MraidVideoPlayerActivity" android:configChanges="keyboardHidden|orientation"/>
+        <activity android:name="com.mopub.mobileads.MraidVideoPlayerActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
 
     </application>
 

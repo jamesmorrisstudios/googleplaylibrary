@@ -36,7 +36,7 @@
                 android:layout_height="match_parent" />
 
             <!-- Achievement icon progress bar for uncompleted incrementals -->
-            <com.jamesmorrisstudios.utilitieslibrary.controls.CircleProgressDeterminate
+            <com.jamesmorrisstudios.appbaselibrary.controls.CircleProgressDeterminate
                 android:id="@+id/achievement_percentage_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

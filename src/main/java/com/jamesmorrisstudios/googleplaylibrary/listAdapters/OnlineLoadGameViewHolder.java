@@ -13,7 +13,7 @@ import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.game.GameDetails;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineLoadHeader;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineSaveItem;
-import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.jamesmorrisstudios.appbaselibrary.Utils;
 
 /**
  * Created by James on 8/3/2015.

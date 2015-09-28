@@ -9,7 +9,7 @@
     android:padding="16dip">
 
     <!-- Icon -->
-    <com.jamesmorrisstudios.utilitieslibrary.controls.TintedImageView
+    <com.jamesmorrisstudios.appbaselibrary.controls.TintedImageView
         android:id="@+id/achievement_icon"
         android:layout_width="25dp"
         android:layout_height="25dp"
@@ -40,7 +40,7 @@
         android:textSize="15sp" />
 
     <!-- Progress bar for amount of achievements completed -->
-    <com.jamesmorrisstudios.utilitieslibrary.controls.ProgressBarDeterminateHorizontal
+    <com.jamesmorrisstudios.appbaselibrary.controls.ProgressBarDeterminateHorizontal
         android:id="@+id/achievement_progress"
         android:layout_width="100dp"
         android:layout_height="5dp"

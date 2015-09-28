@@ -29,8 +29,12 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.snapshot.Snapshots;
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.Utils;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
+import com.jamesmorrisstudios.appbaselibrary.preferences.Prefs;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.AchievementOverlayDialogRequest;
 import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.CompareProfilesRequest;
@@ -55,14 +59,16 @@ import com.jamesmorrisstudios.googleplaylibrary.util.IabHelper;
 import com.jamesmorrisstudios.googleplaylibrary.util.IabResult;
 import com.jamesmorrisstudios.googleplaylibrary.util.Inventory;
 import com.jamesmorrisstudios.googleplaylibrary.util.Purchase;
-import com.jamesmorrisstudios.utilitieslibrary.Bus;
-import com.jamesmorrisstudios.utilitieslibrary.Utils;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
-import com.jamesmorrisstudios.utilitieslibrary.preferences.Prefs;
+import com.mopub.common.MoPub;
+import com.mopub.common.MoPubReward;
+import com.mopub.mobileads.MoPubErrorCode;
+import com.mopub.mobileads.MoPubInterstitial;
+import com.mopub.mobileads.MoPubRewardedVideoListener;
 import com.squareup.otto.Subscribe;
 import com.chartboost.sdk.*;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by James on 5/11/2015.
@@ -74,7 +80,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         BaseGooglePlayMainFragment.OnGooglePlayListener,
         LeaderboardMetaFragment.OnLeaderboardMetaListener,
         LeaderboardFragment.OnLeaderboardListener,
-        DialogInterface.OnDismissListener{
+        DialogInterface.OnDismissListener, MoPubInterstitial.InterstitialAdListener {
 
     private static final String TAG = "BaseAdLauncherActivity";
     private static final String REMOVE_ADS_SKU = "remove_ads_1";
@@ -82,6 +88,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     private final static int RC_LOOK_AT_MATCHES = 10000;
     private final static int RC_LOOK_AT_SNAPSHOTS = 10001;
     private final static int RC_SELECT_PLAYERS = 11000;
+
+    private MoPubInterstitial mInterstitial;
 
     private boolean playServicesEnabled = false;
 
@@ -128,16 +136,38 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     };
 
-    private ChartboostDelegate delegate = new ChartboostDelegate() {
-        //Override the Chartboost delegate callbacks you wish to track and control
-
-        public void didCompleteRewardedVideo(String location, int reward) {
-            Log.v("Chartboost", "Reward: "+reward);
-            rewardAdWatched(50);
+    private MoPubRewardedVideoListener rewardedVideoListener = new MoPubRewardedVideoListener() {
+        @Override
+        public void onRewardedVideoLoadSuccess(@NonNull String adUnitId) {
+            rewardAdCached();
         }
 
-        public void didCacheRewardedVideo(String location) {
-            rewardAdCached();
+        @Override
+        public void onRewardedVideoLoadFailure(@NonNull String adUnitId, @NonNull MoPubErrorCode errorCode) {
+
+        }
+
+        @Override
+        public void onRewardedVideoStarted(@NonNull String adUnitId) {
+
+        }
+
+        @Override
+        public void onRewardedVideoPlaybackError(@NonNull String adUnitId, @NonNull MoPubErrorCode errorCode) {
+
+        }
+
+        @Override
+        public void onRewardedVideoClosed(@NonNull String adUnitId) {
+
+        }
+
+        @Override
+        public void onRewardedVideoCompleted(@NonNull Set<String> adUnitIds, @NonNull MoPubReward reward) {
+            if(reward.isSuccessful()) {
+                Log.v("Chartboost", "Reward: "+reward);
+                rewardAdWatched(reward.getAmount());
+            }
         }
     };
 
@@ -149,10 +179,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         super.onCreate(savedInstanceState);
         onRestoreState(savedInstanceState);
         setContentView(R.layout.layout_main);
-        Chartboost.startWithAppId(this, getChartBoostAppId(), getChartBoostSignature());
-        Chartboost.setDelegate(delegate);
-        Chartboost.onCreate(this);
-        Chartboost.setAutoCacheAds(true);
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS){
             playServicesEnabled = true;
@@ -194,6 +220,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
         initOnCreate();
         initToolbarSpinners();
+        MoPub.onCreate(this);
     }
 
     @Override
@@ -210,15 +237,13 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     protected abstract int getGooglePlayClients();
 
-    protected abstract boolean useInterstitial();
+    protected abstract String getMopubNativeAdId();
 
-    protected abstract String getMopubAdId();
+    protected abstract String getMopubNativeAdIdFull();
 
-    protected abstract String getMopubAdIdFull();
+    protected abstract String getMopubInterstitialAdId();
 
-    protected abstract String getChartBoostAppId();
-
-    protected abstract String getChartBoostSignature();
+    protected abstract String getMopubRewardAdId();
 
     protected abstract void rewardAdWatched(int reward);
 
@@ -361,15 +386,15 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             }
         }
         Chartboost.onStart(this);
+        MoPub.onStart(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Chartboost.onResume(this);
-        if(useInterstitial()){
-            cacheInterstitial();
-        }
+        MoPub.onResume(this);
+        cacheInterstitial();
         cacheRewardAd();
     }
 
@@ -377,6 +402,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     public void onPause() {
         super.onPause();
         Chartboost.onPause(this);
+        MoPub.onPause(this);
     }
 
     @Override
@@ -384,6 +410,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         super.onStop();
         Bus.unregister(busListener);
         Chartboost.onStop(this);
+        MoPub.onStop(this);
     }
 
     @Override
@@ -398,16 +425,21 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             }
             mHelper = null;
         }
-        Chartboost.onDestroy(this);
+        mInterstitial.destroy();
+        MoPub.onDestroy(this);
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        MoPub.onRestart(this);
     }
 
     @Override
     public void onBackPressed() {
-        // If an interstitial is on screen, close it.
-        if (Chartboost.onBackPressed()) {
-            return;
-        } else {
+        if(!Chartboost.onBackPressed()) {
             super.onBackPressed();
+            MoPub.onBackPressed(this);
         }
     }
 
@@ -415,14 +447,16 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         Log.v("TAG", "Showing ads");
         Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
         AdUsage.setAdsEnabled(true);
-
-        if(useInterstitial()) {
-            //Init house ads
-            initHouseAd();
-        }
-
-        AdUsage.setMopubAdId(getMopubAdId());
-        AdUsage.setMopubAdIdFull(getMopubAdIdFull());
+        //Log the ad ids
+        AdUsage.setMopubNativeAdId(getMopubNativeAdId());
+        AdUsage.setMopubNativeAdIdFull(getMopubNativeAdIdFull());
+        AdUsage.setMopubInterstitialAdId(getMopubInterstitialAdId());
+        AdUsage.setMopubRewardAdId(getMopubRewardAdId());
+        //Init the ads
+        initHouseAd();
+        initInterstitialAd();
+        MoPub.initializeRewardedVideo(this);
+        MoPub.setRewardedVideoListener(rewardedVideoListener);
     }
 
     private void initHouseAd() {
@@ -449,6 +483,12 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         houseAdArray.recycle();
     }
 
+    private void initInterstitialAd() {
+        mInterstitial = new MoPubInterstitial(this, AdUsage.getMopubInterstitialAdId());
+        mInterstitial.setInterstitialAdListener(this);
+        cacheInterstitial();
+    }
+
     private void disableAds() {
         Log.v("TAG", "Hiding ads");
         Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", false);
@@ -470,7 +510,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             return;
         }
         if(mHelper == null) {
-            Utils.toastShort(AppUtil.getContext().getString(R.string.unable_setup_iap));
+            Utils.toastShort(AppBase.getContext().getString(R.string.unable_setup_iap));
             return;
         }
         if(Utils.getOrientationLock(this) == Utils.Orientation.UNDEFINED) {
@@ -488,7 +528,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     restartActivity();
                 } else {
                     // Handle error
-                    Utils.toastShort(AppUtil.getContext().getString(R.string.failed_purchase));
+                    Utils.toastShort(AppBase.getContext().getString(R.string.failed_purchase));
                 }
                 if (useAutoLock) {
                     Utils.unlockOrientation(BaseAdLauncherActivity.this);
@@ -551,8 +591,8 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         spinnerSpan = (AppCompatSpinner) findViewById(R.id.leaderboard_span);
         spinnerCollection = (AppCompatSpinner) findViewById(R.id.leaderboard_collection);
 
-        final ArrayAdapter spinnerTimesAdapter = ArrayAdapter.createFromResource(AppUtil.getContext(), R.array.leaderboard_span, R.layout.simple_drop_down_item);
-        final ArrayAdapter spinnerCollectionAdapter = ArrayAdapter.createFromResource(AppUtil.getContext(), R.array.leaderboard_collection, R.layout.simple_drop_down_item);
+        final ArrayAdapter spinnerTimesAdapter = ArrayAdapter.createFromResource(AppBase.getContext(), R.array.leaderboard_span, R.layout.simple_drop_down_item);
+        final ArrayAdapter spinnerCollectionAdapter = ArrayAdapter.createFromResource(AppBase.getContext(), R.array.leaderboard_collection, R.layout.simple_drop_down_item);
         spinnerTimesAdapter.setDropDownViewResource(R.layout.simple_drop_down_item);
         spinnerCollectionAdapter.setDropDownViewResource(R.layout.simple_drop_down_item);
 
@@ -662,9 +702,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
      * Show the interstitial ad if we have one loaded and retry if not
      */
     private void showInterstitialAd() {
-        if(!useInterstitial()) {
-            return;
-        }
         //See if its too shown to show another ad
         if(!AdUsage.allowInterstitial()) {
             Log.v(TAG, "Not enough time since last shown an ad");
@@ -673,7 +710,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         //Make sure we are using the interstitial ad and that its loaded
         Log.v(TAG, "Requested interstitial");
         if (hasCachedInterstitial()) {
-            Chartboost.showInterstitial(CBLocation.LOCATION_GAMEOVER);
+            mInterstitial.show();
             AdUsage.updateAdShowTimeStamp();
         } else {
             Log.v(TAG, "No interstitial loaded. Showing house ad");
@@ -684,23 +721,23 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     private boolean hasCachedInterstitial() {
-        return Chartboost.hasInterstitial(CBLocation.LOCATION_GAMEOVER);
+        return mInterstitial.isReady();
     }
 
     private void cacheInterstitial() {
-        Chartboost.cacheInterstitial(CBLocation.LOCATION_GAMEOVER);
+        mInterstitial.load();
     }
 
     private void cacheRewardAd() {
-        Chartboost.cacheRewardedVideo(CBLocation.LOCATION_HOME_SCREEN);
+        MoPub.loadRewardedVideo(AdUsage.getMopubRewardAdId());
     }
 
     private boolean hasCachedRewardAd() {
-        return Chartboost.hasRewardedVideo(CBLocation.LOCATION_HOME_SCREEN);
+        return MoPub.hasRewardedVideo(AdUsage.getMopubRewardAdId());
     }
 
     protected final void showRewardAd() {
-        Chartboost.showRewardedVideo(CBLocation.LOCATION_HOME_SCREEN);
+        MoPub.showRewardedVideo(AdUsage.getMopubRewardAdId());
     }
 
     private boolean getPlayGamesEnabledPref() {
@@ -761,7 +798,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 GooglePlay.getInstance().beginUserInitiatedSignIn();
             }
         } else {
-            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+            Utils.toastShort(AppBase.getContext().getString(R.string.requires_google_play));
         }
         return false;
     }
@@ -794,7 +831,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 GooglePlay.getInstance().beginUserInitiatedSignIn();
             }
         } else {
-            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+            Utils.toastShort(AppBase.getContext().getString(R.string.requires_google_play));
         }
         return false;
     }
@@ -847,7 +884,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 GooglePlay.getInstance().beginUserInitiatedSignIn();
             }
         } else {
-            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+            Utils.toastShort(AppBase.getContext().getString(R.string.requires_google_play));
         }
     }
 
@@ -879,7 +916,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 GooglePlay.getInstance().beginUserInitiatedSignIn();
             }
         } else {
-            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+            Utils.toastShort(AppBase.getContext().getString(R.string.requires_google_play));
         }
         return false;
     }
@@ -896,7 +933,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 GooglePlay.getInstance().beginUserInitiatedSignIn();
             }
         } else {
-            Utils.toastShort(AppUtil.getContext().getString(R.string.requires_google_play));
+            Utils.toastShort(AppBase.getContext().getString(R.string.requires_google_play));
         }
         return false;
     }
@@ -947,4 +984,28 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         builder.build().show();
     }
 
+    @Override
+    public void onInterstitialLoaded(MoPubInterstitial interstitial) {
+
+    }
+
+    @Override
+    public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
+
+    }
+
+    @Override
+    public void onInterstitialShown(MoPubInterstitial interstitial) {
+
+    }
+
+    @Override
+    public void onInterstitialClicked(MoPubInterstitial interstitial) {
+
+    }
+
+    @Override
+    public void onInterstitialDismissed(MoPubInterstitial interstitial) {
+        cacheInterstitial();
+    }
 }

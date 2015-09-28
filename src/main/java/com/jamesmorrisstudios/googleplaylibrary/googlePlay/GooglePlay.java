@@ -23,7 +23,7 @@ import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.request.GameRequest;
-import com.jamesmorrisstudios.utilitieslibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.Bus;
 
 import java.util.ArrayList;
 

@@ -19,8 +19,8 @@ import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementContainer;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.utilitieslibrary.Bus;
-import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.Utils;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
 import com.mopub.nativeads.ViewBinder;
 import com.squareup.otto.Subscribe;
@@ -50,6 +50,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
                     .iconImageId(R.id.icon)
                     .mainImageId(R.id.image)
                     .callToActionId(R.id.call_to_action)
+                    .daaIconImageId(R.id.native_ad_daa_icon_image)
                     .build());
         }
         return adapter;
@@ -87,7 +88,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubAdIdFull());
+            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdIdFull());
         }
     }
 

@@ -4,7 +4,10 @@ package com.jamesmorrisstudios.googleplaylibrary.util;
  * Created by James on 5/11/2015.
  */
 public class AdUsage {
-    private static String mopubAdId, mopubAdIdFull;
+    private static String mopubNativeAdId;
+    private static String mopubNativeAdIdFull;
+    private static String mopubInterstitialAdId;
+    private static String mopubRewardAdId;
     private static boolean adsEnabled = true;
     private static boolean alreadyRunning = false;
     private static long lastInterstitialShownTimeStamp = 0;
@@ -31,20 +34,36 @@ public class AdUsage {
         }
     }
 
-    public static String getMopubAdId() {
-        return mopubAdId;
+    public static String getMopubNativeAdId() {
+        return mopubNativeAdId;
     }
 
-    public static String getMopubAdIdFull() {
-        return mopubAdIdFull;
+    public static String getMopubNativeAdIdFull() {
+        return mopubNativeAdIdFull;
     }
 
-    public static void setMopubAdId(String mopubAdId1) {
-        mopubAdId = mopubAdId1;
+    public static void setMopubNativeAdId(String mopubAdId) {
+        AdUsage.mopubNativeAdId = mopubAdId;
     }
 
-    public static void setMopubAdIdFull(String mopubAdIdFull1) {
-        mopubAdIdFull = mopubAdIdFull1;
+    public static void setMopubNativeAdIdFull(String mopubAdIdFull) {
+        AdUsage.mopubNativeAdIdFull = mopubAdIdFull;
+    }
+
+    public static String getMopubInterstitialAdId() {
+        return mopubInterstitialAdId;
+    }
+
+    public static void setMopubInterstitialAdId(String mopubInterstitialAdId) {
+        AdUsage.mopubInterstitialAdId = mopubInterstitialAdId;
+    }
+
+    public static String getMopubRewardAdId() {
+        return mopubRewardAdId;
+    }
+
+    public static void setMopubRewardAdId(String mopubRewardAdId) {
+        AdUsage.mopubRewardAdId = mopubRewardAdId;
     }
 
     public static boolean isAlreadyRunning() {

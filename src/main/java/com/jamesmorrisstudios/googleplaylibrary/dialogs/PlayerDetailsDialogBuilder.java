@@ -14,7 +14,7 @@ import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Player;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 
 /**
  * Created by James on 8/10/2015.
@@ -75,7 +75,7 @@ public class PlayerDetailsDialogBuilder {
         Player me = GooglePlayCalls.getInstance().getCurrentPlayer();
 
         if(player.getPlayerId().equals(me.getPlayerId())) {
-            btn.setText(AppUtil.getContext().getString(R.string.view_profile));
+            btn.setText(AppBase.getContext().getString(R.string.view_profile));
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,7 +83,7 @@ public class PlayerDetailsDialogBuilder {
                 }
             });
         } else {
-            btn.setText(AppUtil.getContext().getString(R.string.compare_profiles));
+            btn.setText(AppBase.getContext().getString(R.string.compare_profiles));
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

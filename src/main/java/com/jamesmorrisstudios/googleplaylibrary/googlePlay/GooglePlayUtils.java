@@ -10,7 +10,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -188,7 +188,7 @@ public class GooglePlayUtils {
      * @return Height of the ad view
      */
     public static float getAdHeight() {
-        return AppUtil.getContext().getResources().getDimension(R.dimen.ad_height);
+        return AppBase.getContext().getResources().getDimension(R.dimen.ad_height);
     }
 
 }

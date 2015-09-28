@@ -7,7 +7,7 @@ import com.google.android.gms.common.images.ImageManager;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleViewHolder;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.utilitieslibrary.app.AppUtil;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 
 /**
  * Created by James on 6/6/2015.
@@ -17,7 +17,7 @@ public class LeaderboardMetaAdapter extends BaseRecycleAdapter {
 
     public LeaderboardMetaAdapter(OnItemClickListener mListener) {
         super(mListener);
-        imageManager = ImageManager.create(AppUtil.getContext());
+        imageManager = ImageManager.create(AppBase.getContext());
     }
 
     @Override

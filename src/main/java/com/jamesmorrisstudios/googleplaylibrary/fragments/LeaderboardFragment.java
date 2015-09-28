@@ -16,12 +16,11 @@ import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.PlayerDetailsDialog
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardItem;
-import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardContainer;
 import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.utilitieslibrary.Bus;
-import com.jamesmorrisstudios.utilitieslibrary.Utils;
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.Utils;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
 import com.mopub.nativeads.ViewBinder;
 import com.squareup.otto.Subscribe;
@@ -50,6 +49,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
                     .titleId(R.id.title)
                     .textId(R.id.text)
                     .iconImageId(R.id.icon)
+                    .daaIconImageId(R.id.native_ad_daa_icon_image)
                     .build());
         }
         return adapter;
@@ -73,7 +73,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubAdId());
+            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdId());
         }
     }
 
