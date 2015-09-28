@@ -26,6 +26,7 @@ repositories {
     maven { url "https://jitpack.io" }
     mavenCentral()
     jcenter()
+    maven { url 'http://guardian.github.com/maven/repo-releases' }
 }
 
 apply plugin: 'com.android.library'
@@ -54,12 +55,9 @@ dependencies {
     //compile 'com.google.android.gms:play-services-ads:6.5.87' //For use with emulator
     compile 'com.google.android.gms:play-services-games:7.8.0'
     compile 'com.google.android.gms:play-services-ads:7.8.0'
-    compile 'com.android.support:appcompat-v7:23.0.1'
+
+    compile('com.mopub:mopub-sdk:3.13.0@aar') { transitive = true }
 
     compile 'com.jamesmorrisstudios:appbaselibrary:1.1' //local gradle
     //compile 'com.github.morris-james:appbaselibrary:v1.1.1' //Jitpack
-
-    compile('com.mopub:mopub-sdk:3.13.0@aar') {
-        transitive = true
-    }
 }

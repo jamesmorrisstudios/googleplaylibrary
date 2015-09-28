@@ -7,76 +7,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4077de6c-d712-4194-8a4d-7d8261773451" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-ar\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-bg\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-ca\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-cs\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-da\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-de\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-el\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-es\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-fi\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-fr\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-he\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-hi\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-hr\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-hu\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-id\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-it\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-ja\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-ko\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-lt\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-lv\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-nl\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-no\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-pl\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-pt\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-ro\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-ru\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-sk\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-sl\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-sr\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-sv\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-th\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-tr\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-uk\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-vi\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values-zh\strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Programming\libraries\googleplaylibrary\src\main\res\values\strings.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/AchievementAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/AchievementAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/AchievementFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/AchievementFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/dialogs/AchievementOverlayDialogBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/dialogs/AchievementOverlayDialogBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/AchievementViewHolder.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/AchievementViewHolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/AdUsage.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/AdUsage.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/activities/BaseAdLauncherActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlay.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlay.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayCalls.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/GooglePlaySettingsFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/GooglePlaySettingsFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayUtils.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/GooglePlayUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/house_ads/HouseAdInterstitial.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/house_ads/HouseAdInterstitial.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/LeaderboardMetaFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardMetaViewHolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/OnlineLoadGameAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/OnlineLoadGameAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/OnlineLoadGameFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/OnlineLoadGameFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/OnlineLoadGameViewHolder.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/OnlineLoadGameViewHolder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/OnlineSaveItem.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/googlePlay/OnlineSaveItem.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/dialogs/PlayerDetailsDialogBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/dialogs/PlayerDetailsDialogBuilder.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/PlayerPickerAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/PlayerPickerAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/PlayerPickerFragment.java" afterPath="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/fragments/PlayerPickerFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/achievement_header.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/achievement_header.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/achievement_item.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/achievement_item.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/googleplaylibrary.iml" afterPath="$PROJECT_DIR$/googleplaylibrary.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/leaderboard_item.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/leaderboard_item.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/list_native_ad.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/list_native_ad.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/list_native_ad_full.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/list_native_ad_full.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/player_item.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/player_item.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/layout/player_overlay.xml" afterPath="$PROJECT_DIR$/src/main/res/layout/player_overlay.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/res/values/strings_no_translate.xml" afterPath="$PROJECT_DIR$/src/main/res/values/strings_no_translate.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="googleplaylibrary.iws" />
@@ -142,7 +75,28 @@
     <favorites_list name="googleplaylibrary" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="61" column="71" selection-start-line="61" selection-start-column="71" selection-end-line="61" selection-end-column="71" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.81888247">
+              <caret line="25" column="11" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -701,6 +655,11 @@
                 <option name="name" value="prepareDebugUnitTestDependencies" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+                <option name="description" value="Prepare net.rdrei.android.dirchooser:library:3.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+                <option name="name" value="prepareNetRdreiAndroidDirchooserLibrary30Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="prepareReleaseDependencies" />
               </ExternalTaskPojo>
@@ -828,7 +787,7 @@
         <entry key="$PROJECT_DIR$/../../TurnBasedLibrary" value="4293858258014" />
         <entry key="$PROJECT_DIR$" value="1435007526299" />
         <entry key="$PROJECT_DIR$/../../randRemind" value="4288693225737" />
-        <entry key="C:\Programming\libraries\googleplaylibrary" value="2885384345145" />
+        <entry key="C:\Programming\libraries\googleplaylibrary" value="2885384766069" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -845,25 +804,32 @@
                           <list>
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/google/m2repository/com/google/android/gms/play-services-games/7.8.0/play-services-games-7.8.0.aar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/google/m2repository/com/google/android/gms/play-services-ads/7.8.0/play-services-ads-7.8.0.aar" />
-                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/appcompat-v7/23.0.1/appcompat-v7-23.0.1.aar" />
-                            <option value="$MAVEN_REPOSITORY$/com/jamesmorrisstudios/appbaselibrary/1.1/appbaselibrary-1.1.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mopub/mopub-sdk/3.13.0/deacd8e536ec3254ad205c06975b423e767a6abf/mopub-sdk-3.13.0.aar" />
+                            <option value="$MAVEN_REPOSITORY$/com/jamesmorrisstudios/appbaselibrary/1.1/appbaselibrary-1.1.aar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/google/m2repository/com/google/android/gms/play-services-base/7.8.0/play-services-base-7.8.0.aar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/google/m2repository/com/google/android/gms/play-services-drive/7.8.0/play-services-drive-7.8.0.aar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/google/m2repository/com/google/android/gms/play-services-analytics/7.8.0/play-services-analytics-7.8.0.aar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/google/m2repository/com/google/android/gms/play-services-appindexing/7.8.0/play-services-appindexing-7.8.0.aar" />
-                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/support-v4/23.0.1/support-v4-23.0.1.aar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mopub.volley/mopub-volley/1.1.0/4357bce66ae3bb9be50679e43df122fd0a8f3394/mopub-volley-1.1.0.jar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/cardview-v7/23.0.1/cardview-v7-23.0.1.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/563dcb685903c96ce8abbd03adf7fa49e19aa8b4/gson-2.3.1-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/ecb6e1f8e4b0e84c4b886c2f14a1500caf309757/gson-2.3.1.jar" />
-                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.morris-james/MaterialDateTimePicker/v1.3.4/6f3e2cb5f866eff97aade22a37f30bee3e8ba926/MaterialDateTimePicker-v1.3.4.aar" />
-                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.0.1/recyclerview-v7-23.0.1.aar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.rdrei.android.dirchooser/library/3.0/8a51387c53992189dedb2e0ed645b39523a4270f/library-3.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.rdrei.android.dirchooser/library/3.0/32eaeee854ca63f1abfecdb9ccc8e2383b3b3831/library-3.0.aar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/design/23.0.1/design-23.0.1.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup/otto/1.3.8/57254b7c1d02b6df44a710525a3955e0c2a0c824/otto-1.3.8-sources.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup/otto/1.3.8/cf615176cd1177edf71d3c9605f8dc148fede6be/otto-1.3.8.jar" />
+                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/appcompat-v7/23.0.1/appcompat-v7-23.0.1.aar" />
                             <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/gridlayout-v7/23.0.1/gridlayout-v7-23.0.1.aar" />
-                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mopub.volley/mopub-volley/1.1.0/4357bce66ae3bb9be50679e43df122fd0a8f3394/mopub-volley-1.1.0.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.frankiesardo/auto-parcel/0.3/1d06969c7fed29c3f8030ec4133ddb71d6ee5d09/auto-parcel-0.3-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.frankiesardo/auto-parcel/0.3/b68911fc1bd0419e5a19c2d3cba9d772f8352d67/auto-parcel-0.3.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.auto.value/auto-value/1.1/2080a469bb5d47f63c7d422954fbcea85bd576cf/auto-value-1.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.auto.value/auto-value/1.1/f6951c141ea3e89c0f8b01da16834880a1ebf162/auto-value-1.1.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.gu/option/1.3/fa1ce7cb951145e96e3db1b585ded5d0292a330a/option-1.3.jar" />
+                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar" />
+                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/support-v4/23.0.1/support-v4-23.0.1.aar" />
+                            <option value="$PROJECT_DIR$/../../android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.0.1/recyclerview-v7-23.0.1.aar" />
                             <option value="$MODULE_DIR$/libs/chartboost.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/build/gradle/1.3.0/gradle-1.3.0-sources.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/build/gradle/1.3.0/gradle-1.3.0.jar" />
@@ -1276,7 +1242,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/listAdapters/LeaderboardContainer.java" />
         <option value="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/jamesmorrisstudios/googleplaylibrary/util/AdUsage.java" />
-        <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/mopub-sdk/build.gradle" />
         <option value="$PROJECT_DIR$/settings.gradle" />
         <option value="$PROJECT_DIR$/src/main/res/layout/list_native_ad_full.xml" />
@@ -1311,6 +1276,7 @@
         <option value="$PROJECT_DIR$/src/main/res/layout/player_item.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/player_overlay.xml" />
         <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
       </list>
     </option>
   </component>
@@ -1369,6 +1335,24 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="googleplaylibrary" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googleplaylibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="manifests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidManifestsGroupNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -1661,7 +1645,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18589744" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39555556" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39555556" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="140" y="140" width="1720" height="840" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -1727,13 +1711,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.11921459">
           <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5245714">
-          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -2098,8 +2075,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.39306358">
-          <caret line="48" column="1" selection-start-line="48" selection-start-column="1" selection-end-line="48" selection-end-column="1" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="61" column="71" selection-start-line="61" selection-start-column="71" selection-end-line="61" selection-end-column="71" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.81888247">
+          <caret line="25" column="11" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="11" />
           <folding />
         </state>
       </provider>
