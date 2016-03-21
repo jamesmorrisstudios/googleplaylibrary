@@ -15,14 +15,14 @@ import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 public class LeaderboardMetaAdapter extends BaseRecycleAdapter {
     private ImageManager imageManager;
 
-    public LeaderboardMetaAdapter(OnItemClickListener mListener) {
+    public LeaderboardMetaAdapter(OnRecycleAdapterEventsListener mListener) {
         super(mListener);
         imageManager = ImageManager.create(AppBase.getContext());
     }
 
     @Override
-    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean isHeader, boolean isDummyItem, BaseRecycleViewHolder.cardClickListener cardClickListener) {
-        return new LeaderboardMetaViewHolder(view, isHeader, isDummyItem, cardClickListener, imageManager);
+    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean isHeader, BaseRecycleViewHolder.cardClickListener cardClickListener) {
+        return new LeaderboardMetaViewHolder(view, isHeader, cardClickListener, imageManager);
     }
 
     @Override

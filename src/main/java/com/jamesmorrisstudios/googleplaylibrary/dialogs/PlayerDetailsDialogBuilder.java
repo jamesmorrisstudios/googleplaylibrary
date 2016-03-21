@@ -26,15 +26,14 @@ public class PlayerDetailsDialogBuilder {
     private AlertDialog dialog;
     private ImageManager imageManager;
 
-    private PlayerDetailsDialogBuilder(@NonNull Context context) {
-        builder = new AlertDialog.Builder(context, R.style.alertDialog);
-        LayoutInflater li = LayoutInflater.from(context);
-        view = (LinearLayout) li.inflate(R.layout.player_overlay, null);
+    private PlayerDetailsDialogBuilder(@NonNull Context context, final int style) {
+        builder = new AlertDialog.Builder(context, style);
+        view = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.player_overlay, null);
         builder.setView(view);
     }
 
-    public static PlayerDetailsDialogBuilder with(@NonNull Context context) {
-        return new PlayerDetailsDialogBuilder(context);
+    public static PlayerDetailsDialogBuilder with(@NonNull Context context, final int style) {
+        return new PlayerDetailsDialogBuilder(context, style);
     }
 
     public PlayerDetailsDialogBuilder setView(@NonNull LinearLayout view) {
@@ -66,7 +65,7 @@ public class PlayerDetailsDialogBuilder {
         if (player.hasIconImage()) {
             imageManager.loadImage(icon, player.getIconImageUri());
         } else {
-            imageManager.loadImage(icon, R.drawable.leaderboard_blank);
+            imageManager.loadImage(icon, R.drawable.ic_player);
         }
         name.setText(player.getDisplayName());
         level.setText(Integer.toString(player.getLevelInfo().getCurrentLevel().getLevelNumber()));

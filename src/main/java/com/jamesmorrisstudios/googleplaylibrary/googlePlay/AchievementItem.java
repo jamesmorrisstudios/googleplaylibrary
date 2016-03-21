@@ -22,7 +22,7 @@ public class AchievementItem extends BaseRecycleItem {
     }
 
     /**
-     * Achievement item container. This is built directly out of the google play version and container
+     * Achievement item container. This is built directly out of the google ic_play_match version and container
      * all the data needed for achievements in game
      * @param title Title
      * @param description Description

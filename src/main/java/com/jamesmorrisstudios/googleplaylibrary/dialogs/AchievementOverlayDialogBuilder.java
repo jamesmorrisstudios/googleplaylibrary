@@ -21,15 +21,14 @@ public class AchievementOverlayDialogBuilder {
     private AchievementContainer item;
     private AlertDialog dialog;
 
-    private AchievementOverlayDialogBuilder(@NonNull Context context) {
-        builder = new AlertDialog.Builder(context, R.style.alertDialogTransparent);
-        LayoutInflater li = LayoutInflater.from(context);
-        view = (CardView) li.inflate(R.layout.achievement_item, null);
+    private AchievementOverlayDialogBuilder(@NonNull Context context, final int style) {
+        builder = new AlertDialog.Builder(context, style);
+        view = (CardView) LayoutInflater.from(context).inflate(R.layout.achievement_item, null);
         builder.setView(view);
     }
 
-    public static AchievementOverlayDialogBuilder with(@NonNull Context context) {
-        return new AchievementOverlayDialogBuilder(context);
+    public static AchievementOverlayDialogBuilder with(@NonNull Context context, final int style) {
+        return new AchievementOverlayDialogBuilder(context, style);
     }
 
     public AchievementOverlayDialogBuilder setAchievement(@NonNull AchievementContainer item) {
@@ -38,8 +37,7 @@ public class AchievementOverlayDialogBuilder {
     }
 
     public AlertDialog build() {
-        Context context = builder.getContext();
-        AchievementViewHolder overlayHolder = new AchievementViewHolder(view, false, false, null, ImageManager.create(AppBase.getContext()));
+        AchievementViewHolder overlayHolder = new AchievementViewHolder(view, false, null, ImageManager.create(AppBase.getContext()));
         overlayHolder.bindItem(item, false);
         dialog = builder.create();
         return dialog;

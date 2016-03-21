@@ -1,6 +1,6 @@
 package com.jamesmorrisstudios.googleplaylibrary.fragments;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseFragment;
@@ -12,15 +12,15 @@ public abstract class BaseGooglePlayFragment extends BaseFragment {
     protected OnGooglePlayListener googlePlayListener;
 
     /**
-     * @param activity Activity to attach to
+     * @param context Context to attach to
      */
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
         try {
-            googlePlayListener = (OnGooglePlayListener) activity;
+            googlePlayListener = (OnGooglePlayListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnGooglePlayListener");
         }
     }

@@ -21,6 +21,7 @@ import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
 import com.jamesmorrisstudios.appbaselibrary.Bus;
 import com.jamesmorrisstudios.appbaselibrary.Utils;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
+import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
 import com.mopub.nativeads.ViewBinder;
 import com.squareup.otto.Subscribe;
 
@@ -35,18 +36,20 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     private BaseRecycleAdapter adapter;
 
     @Override
-    protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnItemClickListener onItemClickListener) {
-        adapter = new PlayerPickerAdapter(onItemClickListener);
+    protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
+        adapter = new PlayerPickerAdapter(mListener);
         if(AdUsage.getAdsEnabled()) {
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
-            myMoPubAdapter.registerViewBinder(new ViewBinder.Builder(R.layout.list_native_ad)
+            ViewBinder myViewBinder = new ViewBinder.Builder(R.layout.list_native_ad)
                     .titleId(R.id.title)
                     .textId(R.id.text)
                     .iconImageId(R.id.icon)
-                    .daaIconImageId(R.id.native_ad_daa_icon_image)
-                    .build());
+                    .build();
+
+            MoPubStaticNativeAdRenderer myRenderer = new MoPubStaticNativeAdRenderer(myViewBinder);
+            myMoPubAdapter.registerAdRenderer(myRenderer);
         }
         return adapter;
     }
@@ -59,23 +62,9 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
-    /**
-     * View creation done
-     *
-     * @param view               This fragments main view
-     * @param savedInstanceState Saved instance state
-     */
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdId());
-        }
-    }
-
-    @Override
-    public void itemClicked(@NonNull BaseRecycleContainer item) {
-        //Override to prevent use
+    protected boolean includeSearch() {
+        return false;
     }
 
     @Override
@@ -87,17 +76,11 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
         }
     }
 
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        Bus.register(this);
-    }
-
     public void onDestroy() {
         if(myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
-        Bus.unregister(this);
     }
 
     @Subscribe
@@ -107,20 +90,20 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
                 applyDataActive();
                 break;
             case PLAYERS_ACTIVE_FAIL:
-                Utils.toastShort(getString(R.string.failed_load_google_page));
+                Utils.toastShort(getString(R.string.loading_failed));
                 applyDataActive();
                 break;
             case PLAYERS_ALL_READY:
                 applyDataAll();
                 break;
             case PLAYERS_ALL_FAIL:
-                Utils.toastShort(getString(R.string.failed_load_google_page));
+                Utils.toastShort(getString(R.string.loading_failed));
                 break;
             case PLAYERS_ALL_MORE_READY:
                 applyDataAllMore();
                 break;
             case PLAYERS_ALL_MORE_FAIL:
-                Utils.toastShort(getString(R.string.failed_load_google_page));
+                Utils.toastShort(getString(R.string.loading_failed));
                 break;
         }
     }
@@ -149,7 +132,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
                 data.add(new PlayerPickerContainer(item));
             }
         }
-        appendData(data, true);
+        appendData(data);
     }
 
     private void applyDataAllMore() {
@@ -161,7 +144,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
                 data.add(new PlayerPickerContainer(item));
             }
         }
-        appendData(data, false);
+        appendData(data);
     }
 
     @Override
@@ -181,13 +164,48 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     }
 
     @Override
-    public void onBack() {
+    protected void itemMove(int i, int i1) {
 
+    }
+
+    @Override
+    protected boolean supportsHeaders() {
+        return false;
+    }
+
+    @Override
+    protected boolean allowReording() {
+        return false;
+    }
+
+    @Override
+    protected void setStartData(@Nullable Bundle bundle, int i) {
+
+    }
+
+    @Override
+    protected int getOptionsMenuRes() {
+        return 0;
+    }
+
+    @Override
+    protected boolean usesOptionsMenu() {
+        return false;
     }
 
     @Override
     public boolean showToolbarTitle() {
         return true;
+    }
+
+    @Override
+    protected void registerBus() {
+        Bus.register(this);
+    }
+
+    @Override
+    protected void unregisterBus() {
+        Bus.unregister(this);
     }
 
     @Override
@@ -203,5 +221,9 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     @Override
     protected void afterViewCreated() {
         setEnablePullToRefresh(true);
+        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdId());
+        }
     }
+
 }

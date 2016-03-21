@@ -1,6 +1,5 @@
 package com.jamesmorrisstudios.googleplaylibrary.listAdapters;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,8 +24,8 @@ public class PlayerPickerViewHolder extends BaseRecycleViewHolder {
     private ImageView icon;
     private TextView name;
 
-    public PlayerPickerViewHolder(View view, boolean isHeader, boolean isDummyItem, cardClickListener mListener, ImageManager imageManager) {
-        super(view, isHeader, isDummyItem, mListener);
+    public PlayerPickerViewHolder(View view, boolean isHeader, cardClickListener mListener, ImageManager imageManager) {
+        super(view, isHeader, mListener);
         this.imageManager = imageManager;
     }
 
@@ -51,9 +50,9 @@ public class PlayerPickerViewHolder extends BaseRecycleViewHolder {
     protected void bindItem(BaseRecycleItem baseRecycleItem, boolean b) {
         PlayerItem item = (PlayerItem) baseRecycleItem;
         if(item.player.hasIconImage()) {
-            imageManager.loadImage(icon, item.player.getIconImageUri(), R.drawable.leaderboard_blank);
+            imageManager.loadImage(icon, item.player.getIconImageUri(), R.drawable.ic_player);
         } else {
-            imageManager.loadImage(icon, R.drawable.leaderboard_blank);
+            imageManager.loadImage(icon, R.drawable.ic_player);
         }
         name.setText(item.player.getDisplayName());
     }

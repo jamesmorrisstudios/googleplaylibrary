@@ -3,8 +3,8 @@
     <string name="app_name" translatable="false">GooglePlayLibrary</string>
 
     <string-array name="leaderboard_span">
-        <item>@string/daily</item>
-        <item>@string/weekly</item>
+        <item>@string/time_daily</item>
+        <item>@string/time_weekly</item>
         <item>@string/all_time</item>
     </string-array>
 

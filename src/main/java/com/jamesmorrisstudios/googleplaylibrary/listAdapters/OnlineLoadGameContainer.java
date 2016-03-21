@@ -1,5 +1,7 @@
 package com.jamesmorrisstudios.googleplaylibrary.listAdapters;
 
+import android.support.annotation.NonNull;
+
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineLoadHeader;
@@ -32,5 +34,11 @@ public class OnlineLoadGameContainer extends BaseRecycleContainer {
     @Override
     public BaseRecycleItem getItem() {
         return item;
+    }
+
+    @NonNull
+    @Override
+    public String getFilterText() {
+        return null;
     }
 }

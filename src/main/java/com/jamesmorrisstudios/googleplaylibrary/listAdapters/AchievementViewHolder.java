@@ -6,14 +6,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.images.ImageManager;
+import com.jamesmorrisstudios.appbaselibrary.controls.progress.CircleProgressDeterminate;
+import com.jamesmorrisstudios.appbaselibrary.controls.progress.ProgressBarDeterminateHorizontal;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleViewHolder;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementHeader;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementItem;
 import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
-import com.jamesmorrisstudios.appbaselibrary.controls.CircleProgressDeterminate;
-import com.jamesmorrisstudios.appbaselibrary.controls.ProgressBarDeterminate;
 import com.jamesmorrisstudios.appbaselibrary.math.UtilsMath;
 
 /**
@@ -23,14 +23,14 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
     private ImageManager imageManager;
     //Header
     private TextView headerTitle, headerCount;
-    private ProgressBarDeterminate progressBar;
+    private ProgressBarDeterminateHorizontal progressBar;
     //Item
     private TextView title, description, xp, percent;
     private ImageView image;
     private CircleProgressDeterminate circle;
 
-    public AchievementViewHolder(View view, boolean isHeader, boolean isDummyItem, BaseRecycleViewHolder.cardClickListener mListener, ImageManager imageManager) {
-        super(view, isHeader, isDummyItem, mListener);
+    public AchievementViewHolder(View view, boolean isHeader, BaseRecycleViewHolder.cardClickListener mListener, ImageManager imageManager) {
+        super(view, isHeader, mListener);
         this.imageManager = imageManager;
     }
 
@@ -38,7 +38,7 @@ public class AchievementViewHolder extends BaseRecycleViewHolder {
     protected void initHeader(View view) {
         headerTitle = (TextView) view.findViewById(R.id.achievement_main_text);
         headerCount = (TextView) view.findViewById(R.id.achievement_count_text);
-        progressBar = (ProgressBarDeterminate) view.findViewById(R.id.achievement_progress);
+        progressBar = (ProgressBarDeterminateHorizontal) view.findViewById(R.id.achievement_progress);
     }
 
     @Override

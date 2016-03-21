@@ -11,13 +11,12 @@
     android:layout_marginBottom="1dp"
     android:clickable="true"
     android:foreground="?selectableItemBackground"
-    card_view:cardBackgroundColor="@color/primaryLight"
+    style="?attr/cardViewStyle"
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true">
 
     <!-- Primary layout container -->
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dip">
@@ -28,7 +27,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:textSize="22sp"
-            android:textColor="@color/textDarkMain"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -47,13 +46,13 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"/>
 
-            <com.jamesmorrisstudios.appbaselibrary.controls.TintedImageView
+            <ImageView
                 android:padding="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"
-                android:src="@drawable/circle_mask"
-                android:tint="@color/primaryLight" />
+                android:src="@drawable/ic_circle_mask"
+                android:tint="?attr/colorBackgroundCard"/>
 
             <FrameLayout
                 android:layout_alignParentRight="true"
@@ -62,10 +61,11 @@
                 android:layout_height="20dp">
 
                 <ImageView
-                    android:src="@drawable/leaderboard_hex"
+                    android:src="@drawable/ic_player_back"
                     android:scaleType="fitCenter"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:tint="?attr/colorAccent" />
 
                 <TextView
                     android:id="@+id/leaderboard_level"
@@ -83,7 +83,7 @@
             android:id="@+id/leaderboard_name"
             android:layout_toRightOf="@+id/leaderboard_icon_container"
             android:textSize="16sp"
-            android:textColor="@color/textDarkMain"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -92,7 +92,8 @@
             android:layout_toRightOf="@+id/leaderboard_icon_container"
             android:layout_below="@+id/leaderboard_name"
             android:textSize="14sp"
-            android:textColor="@color/textAccent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="?attr/colorAccentText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

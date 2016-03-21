@@ -5,9 +5,9 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
+import com.jamesmorrisstudios.appbaselibrary.UtilsBits;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.googleplaylibrary.game.GameDetails;
-import com.jamesmorrisstudios.appbaselibrary.BitManager;
 
 import java.util.ArrayList;
 
@@ -92,7 +92,7 @@ public class OnlineSaveItem extends BaseRecycleItem {
             return;
         }
         int index = 0;
-        byte version = BitManager.copyFromByteArr(index, srcData);
+        byte version = UtilsBits.copyFromByteArr(index, srcData);
         if(version != CURRENT_VERSION) {
             this.data = null;
             this.image = null;
@@ -105,17 +105,17 @@ public class OnlineSaveItem extends BaseRecycleItem {
             return;
         }
         index += 1;
-        int lengthImage = BitManager.byteArrToInt(srcData, index);
+        int lengthImage = UtilsBits.byteArrToInt(srcData, index);
         index += 4;
-        int lengthDesc = BitManager.byteArrToInt(srcData, index);
+        int lengthDesc = UtilsBits.byteArrToInt(srcData, index);
         index += 4;
-        int lengthData = BitManager.byteArrToInt(srcData, index);
+        int lengthData = UtilsBits.byteArrToInt(srcData, index);
         index += 4;
-        byte[] imageArr = BitManager.copyFromByteArr(index, lengthImage, srcData);
+        byte[] imageArr = UtilsBits.copyFromByteArr(index, lengthImage, srcData);
         index += lengthImage;
-        byte[] descArr = BitManager.copyFromByteArr(index, lengthDesc, srcData);
+        byte[] descArr = UtilsBits.copyFromByteArr(index, lengthDesc, srcData);
         index += lengthDesc;
-        this.data = BitManager.copyFromByteArr(index, lengthData, srcData);
+        this.data = UtilsBits.copyFromByteArr(index, lengthData, srcData);
 
         //Got the byte data now decode
         this.image = BitmapFactory.decodeByteArray(imageArr, 0, imageArr.length);

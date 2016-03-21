@@ -11,7 +11,7 @@
     android:layout_marginBottom="1dp"
     android:clickable="true"
     android:foreground="?selectableItemBackground"
-    card_view:cardBackgroundColor="@color/primaryLight"
+    style="?attr/cardViewStyle"
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true">
 
@@ -63,7 +63,7 @@
             android:id="@+id/toolbar"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@color/primaryLight"
+            android:background="?attr/colorPrimaryLight"
             android:minHeight="32dp"
             android:theme="@style/toolbarDark"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -75,7 +75,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/game_image"
             android:layout_below="@+id/match_variant"
-            android:background="@drawable/addon_1"
+            android:background="@drawable/ic_addon_1"
             android:layout_width="28dp"
             android:layout_height="28dp" />
 
@@ -85,7 +85,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/match_addon_1"
             android:layout_below="@+id/match_variant"
-            android:background="@drawable/addon_2"
+            android:background="@drawable/ic_addon_2"
             android:layout_width="28dp"
             android:layout_height="28dp" />
 
@@ -95,7 +95,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/match_addon_2"
             android:layout_below="@+id/match_variant"
-            android:background="@drawable/addon_3"
+            android:background="@drawable/ic_addon_3"
             android:layout_width="28dp"
             android:layout_height="28dp" />
 
@@ -105,7 +105,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/match_addon_3"
             android:layout_below="@+id/match_variant"
-            android:background="@drawable/addon_4"
+            android:background="@drawable/ic_addon_4"
             android:layout_width="28dp"
             android:layout_height="28dp" />
 
@@ -115,7 +115,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/match_addon_4"
             android:layout_below="@+id/match_variant"
-            android:background="@drawable/addon_5"
+            android:background="@drawable/ic_addon_5"
             android:layout_width="28dp"
             android:layout_height="28dp" />
 
@@ -125,7 +125,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/match_addon_5"
             android:layout_below="@+id/match_variant"
-            android:background="@drawable/addon_6"
+            android:background="@drawable/ic_addon_6"
             android:layout_width="28dp"
             android:layout_height="28dp" />
 

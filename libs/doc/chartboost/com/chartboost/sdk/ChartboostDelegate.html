@@ -285,7 +285,19 @@ implements com.chartboost.sdk.AbstractChartboostDelegate</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../com/chartboost/sdk/ChartboostDelegate.html#didInitialize()">didInitialize</a></strong>()</code>
+<div class="block">Called when the SDK is finished intializing.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../com/chartboost/sdk/ChartboostDelegate.html#didPauseClickForConfirmation()">didPauseClickForConfirmation</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;&nbsp;</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../com/chartboost/sdk/ChartboostDelegate.html#didPauseClickForConfirmation(android.app.Activity)">didPauseClickForConfirmation</a></strong>(android.app.Activity&nbsp;activity)</code>
 <div class="block">Called if Chartboost SDK pauses click actions awaiting confirmation from the user.</div>
 </td>
 </tr>
@@ -673,9 +685,28 @@ implements com.chartboost.sdk.AbstractChartboostDelegate</pre>
 <li class="blockList">
 <h4>didPauseClickForConfirmation</h4>
 <pre>public&nbsp;void&nbsp;didPauseClickForConfirmation()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i></i></div>
 <div class="block">Called if Chartboost SDK pauses click actions awaiting confirmation from the user.
  <p>
  Use this method to display any gating you would like to prompt the user for input.
+ Once confirmed call <a href="../../../com/chartboost/sdk/Chartboost.html#didPassAgeGate(boolean)"><code>Chartboost.didPassAgeGate(boolean)</code></a>to continue execution.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code>didPauseClickForConfirmation</code>&nbsp;in interface&nbsp;<code>com.chartboost.sdk.AbstractChartboostDelegate</code></dd>
+</dl>
+</li>
+</ul>
+<a name="didPauseClickForConfirmation(android.app.Activity)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>didPauseClickForConfirmation</h4>
+<pre>public&nbsp;void&nbsp;didPauseClickForConfirmation(android.app.Activity&nbsp;activity)</pre>
+<div class="block">Called if Chartboost SDK pauses click actions awaiting confirmation from the user.
+ <p>
+ Use this method to display any gating you would like to prompt the user for input.
+ Use the Activity context to display your UI
  Once confirmed call <a href="../../../com/chartboost/sdk/Chartboost.html#didPassAgeGate(boolean)"><code>Chartboost.didPassAgeGate(boolean)</code></a>to continue execution.</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
@@ -860,7 +891,7 @@ implements com.chartboost.sdk.AbstractChartboostDelegate</pre>
 <a name="didFailToLoadInPlay(java.lang.String, com.chartboost.sdk.Model.CBError.CBImpressionError)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>didFailToLoadInPlay</h4>
 <pre>public&nbsp;void&nbsp;didFailToLoadInPlay(java.lang.String&nbsp;location,
@@ -874,6 +905,20 @@ implements com.chartboost.sdk.AbstractChartboostDelegate</pre>
 <dt><strong>Specified by:</strong></dt>
 <dd><code>didFailToLoadInPlay</code>&nbsp;in interface&nbsp;<code>com.chartboost.sdk.AbstractChartboostDelegate</code></dd>
 <dt><span class="strong">Parameters:</span></dt><dd><code>location</code> - The location for the Chartboost impression type.</dd><dd><code>error</code> - The reason for the error defined via a <a href="../../../com/chartboost/sdk/Model/CBError.CBImpressionError.html" title="enum in com.chartboost.sdk.Model"><code>CBError.CBImpressionError</code></a>}.</dd></dl>
+</li>
+</ul>
+<a name="didInitialize()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>didInitialize</h4>
+<pre>public&nbsp;void&nbsp;didInitialize()</pre>
+<div class="block">Called when the SDK is finished intializing.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code>didInitialize</code>&nbsp;in interface&nbsp;<code>com.chartboost.sdk.AbstractChartboostDelegate</code></dd>
+</dl>
 </li>
 </ul>
 </li>

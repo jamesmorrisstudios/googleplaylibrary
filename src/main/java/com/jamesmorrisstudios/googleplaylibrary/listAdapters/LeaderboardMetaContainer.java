@@ -28,4 +28,10 @@ public class LeaderboardMetaContainer extends BaseRecycleContainer {
         return item;
     }
 
+    @NonNull
+    @Override
+    public String getFilterText() {
+        return null;
+    }
+
 }

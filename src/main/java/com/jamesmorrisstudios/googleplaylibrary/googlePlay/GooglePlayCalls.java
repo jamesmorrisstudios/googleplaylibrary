@@ -258,7 +258,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         Games.Achievements.load(GooglePlay.getInstance().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Achievements.LoadAchievementsResult>() {
             @Override
             public void onResult(Achievements.LoadAchievementsResult loadAchievementsResult) {
-                Logger.v(Logger.LoggerCategory.MAIN, TAG, "Achievements loaded");
+                Logger.v(Logger.LoggerCategory.BASE, TAG, "Achievements loaded");
                 if (!loadAchievementsResult.getStatus().isSuccess()) {
                     loadAchievementsResult.release();
                     Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_FAIL);
@@ -348,7 +348,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public synchronized final void loadLeaderboardsMeta(boolean forceRefresh, @NonNull final String[] leaderboardIds) {
-        Log.v("GooglePlayCalls", "Load leaderboard Meta Data");
+        Log.v("GooglePlayCalls", "Load ic_leaderboard Meta Data");
         if(hasLeaderboardsMeta() && !forceRefresh && (this.leaderboardIds == null || Arrays.equals(leaderboardIds, this.leaderboardIds))) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_META_READY);
             return;
@@ -361,9 +361,9 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         Games.Leaderboards.loadLeaderboardMetadata(GooglePlay.getInstance().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Leaderboards.LeaderboardMetadataResult>() {
             @Override
             public void onResult(Leaderboards.LeaderboardMetadataResult leaderboardMetadataResult) {
-                Log.v("GooglePlayCalls", "Load leaderboard Meta Data complete");
+                Log.v("GooglePlayCalls", "Load ic_leaderboard Meta Data complete");
                 if (leaderboardMetadataResult.getStatus().isSuccess()) {
-                    Log.v("GooglePlayCalls", "Load leaderboard Meta Data complete success");
+                    Log.v("GooglePlayCalls", "Load ic_leaderboard Meta Data complete success");
                     LeaderboardBuffer leaders = leaderboardMetadataResult.getLeaderboards();
                     leaderboardsMeta = new ArrayList<>();
                     for (int i = 0; i < leaders.getCount(); i++) {
@@ -932,7 +932,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         //Manually specify the package and activity name
-        intent.setComponent(new ComponentName("com.google.android.play.games", "com.google.android.gms.games.ui.destination.api.ApiActivity"));
+        intent.setComponent(new ComponentName("com.google.android.ic_play_match.games", "com.google.android.gms.games.ui.destination.api.ApiActivity"));
         //Not really needed as default happens if you don't specify it.
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         //You must specify the current players user. It ensures that Google Play Games is logged in as the same person.
@@ -999,7 +999,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     /**
-     * Launches to a specific leaderboard. You must specify the leaderboardId
+     * Launches to a specific ic_leaderboard. You must specify the leaderboardId
      */
     public final boolean launchGPSLeaderboard(String leaderboardId) {
         Intent intent = buildDeepLinkIntent();

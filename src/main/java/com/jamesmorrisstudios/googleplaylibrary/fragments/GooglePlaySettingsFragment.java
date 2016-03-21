@@ -24,12 +24,13 @@ import com.squareup.otto.Subscribe;
 /**
  * Created by James on 5/26/2015.
  */
-public class GooglePlaySettingsFragment extends SettingsFragment {
+public class GooglePlaySettingsFragment /*extends SettingsFragment */{
     protected OnGooglePlaySettingsListener googlePlaySettingsListener;
 
     /**
      * @param activity Activity to attach to
      */
+    /*
     @Override
     public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
@@ -40,10 +41,12 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
                     + " must implement OnGooglePlaySettingsListener");
         }
     }
+    */
 
     /**
      * Detach from activity
      */
+    /*
     @Override
     public void onDetach() {
         super.onDetach();
@@ -61,6 +64,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
         super.onStop();
         Bus.unregister(this);
     }
+    */
 
     /**
      * Create view
@@ -70,6 +74,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
      * @param savedInstanceState Saved instance state
      * @return The top view for this fragment
      */
+    /*
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
@@ -186,6 +191,7 @@ public class GooglePlaySettingsFragment extends SettingsFragment {
                 break;
         }
     }
+    */
 
     /**
      *

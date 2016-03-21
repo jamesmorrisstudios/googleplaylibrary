@@ -24,8 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:src="@drawable/circle_mask"
-            android:tint="@color/primaryLight" />
+            android:src="@drawable/ic_circle_mask"
+            android:tint="?attr/colorPrimaryLight" />
 
         <FrameLayout
             android:layout_alignParentRight="true"
@@ -34,7 +34,7 @@
             android:layout_height="30dp">
 
             <ImageView
-                android:src="@drawable/leaderboard_hex"
+                android:src="@drawable/ic_player_back"
                 android:scaleType="fitCenter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -67,7 +67,7 @@
 
     <Button
         android:background="?android:attr/selectableItemBackground"
-        android:textColor="@color/textAccent"
+        android:textColor="?attr/colorAccentText"
         android:id="@+id/profile_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

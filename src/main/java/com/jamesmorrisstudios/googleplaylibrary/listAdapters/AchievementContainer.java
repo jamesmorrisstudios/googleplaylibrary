@@ -1,5 +1,7 @@
 package com.jamesmorrisstudios.googleplaylibrary.listAdapters;
 
+import android.support.annotation.NonNull;
+
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementHeader;
@@ -22,7 +24,6 @@ public class AchievementContainer extends BaseRecycleContainer {
         this.item = item;
     }
 
-
     @Override
     public BaseRecycleItem getHeader() {
         return header;
@@ -31,5 +32,11 @@ public class AchievementContainer extends BaseRecycleContainer {
     @Override
     public BaseRecycleItem getItem() {
         return item;
+    }
+
+    @NonNull
+    @Override
+    public String getFilterText() {
+        return null;
     }
 }

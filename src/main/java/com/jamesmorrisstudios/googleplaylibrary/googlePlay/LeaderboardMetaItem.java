@@ -9,7 +9,7 @@ import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import java.util.ArrayList;
 
 /**
- * The metadata for an individual leaderboard
+ * The metadata for an individual ic_leaderboard
  *
  * Created by James on 6/6/2015.
  */

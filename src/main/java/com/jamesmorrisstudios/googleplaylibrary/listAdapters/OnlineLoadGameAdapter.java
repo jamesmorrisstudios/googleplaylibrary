@@ -15,13 +15,13 @@ import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
  */
 public class OnlineLoadGameAdapter extends BaseRecycleAdapter {
 
-    public OnlineLoadGameAdapter(OnItemClickListener mListener) {
+    public OnlineLoadGameAdapter(OnRecycleAdapterEventsListener mListener) {
         super(mListener);
     }
 
     @Override
-    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean b, boolean b1, BaseRecycleViewHolder.cardClickListener cardClickListener) {
-        return new OnlineLoadGameViewHolder(view, b, b1, cardClickListener);
+    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean isHeader, BaseRecycleViewHolder.cardClickListener cardClickListener) {
+        return new OnlineLoadGameViewHolder(view, isHeader, cardClickListener);
     }
 
     @Override

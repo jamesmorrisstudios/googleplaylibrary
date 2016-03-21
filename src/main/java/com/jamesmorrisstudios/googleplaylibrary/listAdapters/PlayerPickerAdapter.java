@@ -15,14 +15,14 @@ import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 public class PlayerPickerAdapter extends BaseRecycleAdapter {
     private ImageManager imageManager;
 
-    public PlayerPickerAdapter(OnItemClickListener mListener) {
+    public PlayerPickerAdapter(OnRecycleAdapterEventsListener mListener) {
         super(mListener);
         imageManager = ImageManager.create(AppBase.getContext());
     }
 
     @Override
-    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean b, boolean b1, BaseRecycleViewHolder.cardClickListener cardClickListener) {
-        return new PlayerPickerViewHolder(view, b, b1, cardClickListener, imageManager);
+    protected BaseRecycleViewHolder getViewHolder(@NonNull View view, boolean isHeader, BaseRecycleViewHolder.cardClickListener cardClickListener) {
+        return new PlayerPickerViewHolder(view, isHeader, cardClickListener, imageManager);
     }
 
     @Override

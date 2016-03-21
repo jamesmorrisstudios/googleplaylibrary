@@ -9,11 +9,12 @@ import android.widget.TextView;
 
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleViewHolder;
+import com.jamesmorrisstudios.appbaselibrary.time.DateTimeItem;
+import com.jamesmorrisstudios.appbaselibrary.time.UtilsTime;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.game.GameDetails;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineLoadHeader;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineSaveItem;
-import com.jamesmorrisstudios.appbaselibrary.Utils;
 
 /**
  * Created by James on 8/3/2015.
@@ -28,8 +29,8 @@ public class OnlineLoadGameViewHolder extends BaseRecycleViewHolder {
     private LinearLayout playerRow1, playerRow2;
     private TextView timestamp, name1, name2, name3, name4, name5, name6;
 
-    public OnlineLoadGameViewHolder(View view, boolean isHeader, boolean isDummyItem, cardClickListener mListener) {
-        super(view, isHeader, isDummyItem, mListener);
+    public OnlineLoadGameViewHolder(View view, boolean isHeader, cardClickListener mListener) {
+        super(view, isHeader, mListener);
     }
 
     @Override
@@ -90,7 +91,7 @@ public class OnlineLoadGameViewHolder extends BaseRecycleViewHolder {
             });
         }
         if(item.image == null) {
-            gameImage.setBackgroundResource(R.drawable.blank_game_image);
+            gameImage.setBackgroundResource(R.drawable.ic_blank_game_image);
         } else {
             gameImage.setImageBitmap(item.image);
         }
@@ -127,30 +128,30 @@ public class OnlineLoadGameViewHolder extends BaseRecycleViewHolder {
         }
         switch(item.matchVariant) {
             case VARIANT_1:
-                variant.setBackgroundResource(R.drawable.variant_1);
+                variant.setBackgroundResource(R.drawable.ic_variant_1);
                 break;
             case VARIANT_2:
-                variant.setBackgroundResource(R.drawable.variant_2);
+                variant.setBackgroundResource(R.drawable.ic_variant_2);
                 break;
             case VARIANT_3:
-                variant.setBackgroundResource(R.drawable.variant_3);
+                variant.setBackgroundResource(R.drawable.ic_variant_3);
                 break;
             case VARIANT_4:
-                variant.setBackgroundResource(R.drawable.variant_4);
+                variant.setBackgroundResource(R.drawable.ic_variant_4);
                 break;
             case VARIANT_5:
-                variant.setBackgroundResource(R.drawable.variant_5);
+                variant.setBackgroundResource(R.drawable.ic_variant_5);
                 break;
             case VARIANT_6:
-                variant.setBackgroundResource(R.drawable.variant_6);
+                variant.setBackgroundResource(R.drawable.ic_variant_6);
                 break;
         }
         switch(item.numberTeams) {
             case FREE_FOR_ALL:
-                teams.setBackgroundResource(R.drawable.free_for_all);
+                teams.setBackgroundResource(R.drawable.ic_free_for_all);
                 break;
             case TWO:
-                teams.setBackgroundResource(R.drawable.two_teams);
+                teams.setBackgroundResource(R.drawable.ic_two_teams);
                 break;
         }
 
@@ -166,7 +167,7 @@ public class OnlineLoadGameViewHolder extends BaseRecycleViewHolder {
             playerRow2.setVisibility(View.VISIBLE);
             setPlayerNames(item.playerNames);
         }
-        timestamp.setText(Utils.getFormattedDateTime(item.getLastUpdateTimeStamp()));
+        timestamp.setText(UtilsTime.getDateTimeFormatted(new DateTimeItem(item.getLastUpdateTimeStamp())));
     }
 
     private void setPlayerNames(String[] names) {

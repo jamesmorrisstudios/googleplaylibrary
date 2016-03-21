@@ -10,7 +10,7 @@
     android:layout_marginBottom="1dp"
     android:clickable="true"
     android:foreground="?selectableItemBackground"
-    card_view:cardBackgroundColor="@color/primaryLight"
+    style="?attr/cardViewStyle"
     card_view:cardCornerRadius="4dp"
     card_view:cardUseCompatPadding="true">
 
@@ -33,7 +33,7 @@
             android:id="@+id/leaderboard_title"
             android:gravity="center_horizontal"
             android:textSize="20sp"
-            android:textColor="@color/textDarkMain"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_toRightOf="@+id/leaderboard_icon"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
@@ -53,14 +53,15 @@
                 android:id="@+id/leaderboard_rank"
                 android:layout_marginRight="8dp"
                 android:textSize="18sp"
-                android:textColor="@color/textDarkMain"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/leaderboard_score"
                 android:textSize="18sp"
-                android:textColor="@color/textAccent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="?attr/colorAccentText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

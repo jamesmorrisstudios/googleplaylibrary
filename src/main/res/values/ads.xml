@@ -13,7 +13,7 @@
 
     <!-- Randomly RemindMe -->
     <array translatable="false" name="house_ad_app_0">
-        <item name="logo">@drawable/logo_randomly_remindme</item>
+        <item name="logo">@drawable/ic_logo_randomly_remindme</item>
         <item name="title">@string/app_title_0</item>
         <item name="text">@string/app_text_0</item>
         <item name="cost">@string/app_cost_0</item>
@@ -27,7 +27,7 @@
 
     <!-- One and Up -->
     <array translatable="false" name="house_ad_app_1">
-        <item name="logo">@drawable/logo_one_and_up</item>
+        <item name="logo">@drawable/ic_logo_one_and_up</item>
         <item name="title">@string/app_title_1</item>
         <item name="text">@string/app_text_1</item>
         <item name="cost">@string/app_cost_1</item>
@@ -41,7 +41,7 @@
 
     <!-- BandIt Five -->
     <array translatable="false" name="house_ad_app_2">
-        <item name="logo">@drawable/logo_bandit_five</item>
+        <item name="logo">@drawable/ic_logo_bandit_five</item>
         <item name="title">@string/app_title_2</item>
         <item name="text">@string/app_text_2</item>
         <item name="cost">@string/app_cost_2</item>
@@ -55,7 +55,7 @@
 
     <!-- Match the Block -->
     <array translatable="false" name="house_ad_app_3">
-        <item name="logo">@drawable/logo_match_the_block</item>
+        <item name="logo">@drawable/ic_logo_match_the_block</item>
         <item name="title">@string/app_title_3</item>
         <item name="text">@string/app_text_3</item>
         <item name="cost">@string/app_cost_3</item>

@@ -9,16 +9,16 @@
     android:padding="16dip">
 
     <!-- Icon -->
-    <com.jamesmorrisstudios.appbaselibrary.controls.TintedImageView
+    <ImageView
         android:id="@+id/achievement_icon"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/menu_achievements_white"
+        android:src="@drawable/ic_achievement"
         android:scaleType="fitCenter"
-        android:tint="@color/textDarkMain" />
+        android:tint="?attr/colorIconTint" />
 
     <!-- Main Text -->
     <TextView
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/achievement_icon"
         android:text=""
-        android:textColor="@color/textDarkMain"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="20sp" />
 
     <!-- Number of achievements text -->
@@ -36,16 +36,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:textColor="@color/textDarkMain"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="15sp" />
 
     <!-- Progress bar for amount of achievements completed -->
-    <com.jamesmorrisstudios.appbaselibrary.controls.ProgressBarDeterminateHorizontal
+    <com.jamesmorrisstudios.appbaselibrary.controls.progress.ProgressBarDeterminateHorizontal
         android:id="@+id/achievement_progress"
         android:layout_width="100dp"
         android:layout_height="5dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/achievement_count_text"
-        android:background="@color/primary" />
+        android:background="?attr/colorPrimary" />
 
 </RelativeLayout>

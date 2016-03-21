@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.View;
@@ -29,10 +30,13 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.snapshot.Snapshots;
+import com.jamesmorrisstudios.appbaselibrary.AutoLockOrientation;
 import com.jamesmorrisstudios.appbaselibrary.Bus;
 import com.jamesmorrisstudios.appbaselibrary.Utils;
-import com.jamesmorrisstudios.appbaselibrary.activities.BaseLauncherNoViewActivity;
+import com.jamesmorrisstudios.appbaselibrary.UtilsTheme;
+import com.jamesmorrisstudios.appbaselibrary.activities.BaseActivity;
 import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
+import com.jamesmorrisstudios.appbaselibrary.fragments.BaseFragment;
 import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
 import com.jamesmorrisstudios.appbaselibrary.preferences.Prefs;
 import com.jamesmorrisstudios.googleplaylibrary.R;
@@ -43,7 +47,6 @@ import com.jamesmorrisstudios.googleplaylibrary.dialogs.AchievementOverlayDialog
 import com.jamesmorrisstudios.googleplaylibrary.dialogs.PlayerDetailsDialogBuilder;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.AchievementFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayFragment;
-import com.jamesmorrisstudios.googleplaylibrary.fragments.BaseGooglePlayMainFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.GooglePlaySettingsFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardMetaFragment;
@@ -73,11 +76,10 @@ import java.util.Set;
 /**
  * Created by James on 5/11/2015.
  */
-public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity implements
+public abstract class BaseAdLauncherActivity extends BaseActivity implements
         GooglePlaySettingsFragment.OnGooglePlaySettingsListener,
         GooglePlay.GameHelperListener,
         BaseGooglePlayFragment.OnGooglePlayListener,
-        BaseGooglePlayMainFragment.OnGooglePlayListener,
         LeaderboardMetaFragment.OnLeaderboardMetaListener,
         LeaderboardFragment.OnLeaderboardListener,
         DialogInterface.OnDismissListener, MoPubInterstitial.InterstitialAdListener {
@@ -95,8 +97,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
 
     private AppCompatSpinner spinnerSpan;
     private AppCompatSpinner spinnerCollection;
-
-    private boolean useAutoLock = false;
 
     //House ads
     private ArrayList<HouseAd> houseAdList = new ArrayList<>();
@@ -175,10 +175,15 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
      * @param savedInstanceState
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        onRestoreState(savedInstanceState);
-        setContentView(R.layout.layout_main);
+    protected void OnCreate(Bundle savedInstanceState) {
+        super.OnCreate(savedInstanceState);
+        addFragment(AchievementFragment.TAG, AchievementFragment.class, AchievementFragment.TAG_MAIN_FRAGMENT);
+        addFragment(LeaderboardFragment.TAG, LeaderboardFragment.class, LeaderboardFragment.TAG_MAIN_FRAGMENT);
+        addFragment(LeaderboardMetaFragment.TAG, LeaderboardMetaFragment.class, LeaderboardMetaFragment.TAG_MAIN_FRAGMENT);
+        addFragment(OnlineLoadGameFragment.TAG, OnlineLoadGameFragment.class, OnlineLoadGameFragment.TAG_MAIN_FRAGMENT);
+        addFragment(PlayerPickerFragment.TAG, PlayerPickerFragment.class, PlayerPickerFragment.TAG_MAIN_FRAGMENT);
+
+
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS){
             playServicesEnabled = true;
@@ -215,10 +220,9 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 }
             }
         } else {
-            //Ads still work without google play services but the user cant remove them with an IAP
+            //Ads still work without google ic_play_match services but the user cant remove them with an IAP
             enableAds();
         }
-        initOnCreate();
         initToolbarSpinners();
         MoPub.onCreate(this);
     }
@@ -226,11 +230,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
-    }
-
-    //Not the override
-    private void onRestoreState(Bundle bundle) {
-
     }
 
     protected abstract String getPublicKey();
@@ -279,7 +278,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             if(data == null || resultCode != Activity.RESULT_OK) {
                 Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_LOAD_MATCH_ONLINE_FAIL);
             } else {
-                loadMatchOnline((TurnBasedMatch)data.getParcelableExtra(Multiplayer.EXTRA_TURN_BASED_MATCH));
+                loadMatchOnline((TurnBasedMatch) data.getParcelableExtra(Multiplayer.EXTRA_TURN_BASED_MATCH));
             }
         } else if(requestCode == RC_LOOK_AT_SNAPSHOTS) {
             if(data == null || resultCode != Activity.RESULT_OK) {
@@ -353,7 +352,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                 Log.v("TAG", "Error checking inventory: " + result);
                 if(!AdUsage.getAdsEnabled()) {
                     enableAds();
-                    restartActivity();
+                    restartApp();
                 }
             } else {
                 // does the user have the premium upgrade?
@@ -361,13 +360,13 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     Log.v("TAG", "onQueryInventoryFinished GOT A RESPONSE YES Premium");
                     if(AdUsage.getAdsEnabled()) {
                         disableAds();
-                        restartActivity();
+                        restartApp();
                     }
                 } else {
                     Log.v("TAG", "onQueryInventoryFinished GOT A RESPONSE No Premium");
                     if(!AdUsage.getAdsEnabled()) {
                         enableAds();
-                        restartActivity();
+                        restartApp();
                     }
                 }
             }
@@ -394,8 +393,10 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         super.onResume();
         Chartboost.onResume(this);
         MoPub.onResume(this);
-        cacheInterstitial();
         cacheRewardAd();
+        if(AdUsage.getAdsEnabled()) {
+            cacheInterstitial();
+        }
     }
 
     @Override
@@ -443,6 +444,12 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     }
 
+    private void initRewardVideoAd() {
+        AdUsage.setMopubRewardAdId(getMopubRewardAdId());
+        MoPub.initializeRewardedVideo(this);
+        MoPub.setRewardedVideoListener(rewardedVideoListener);
+    }
+
     private void enableAds() {
         Log.v("TAG", "Showing ads");
         Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", true);
@@ -451,12 +458,11 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         AdUsage.setMopubNativeAdId(getMopubNativeAdId());
         AdUsage.setMopubNativeAdIdFull(getMopubNativeAdIdFull());
         AdUsage.setMopubInterstitialAdId(getMopubInterstitialAdId());
-        AdUsage.setMopubRewardAdId(getMopubRewardAdId());
+
         //Init the ads
         initHouseAd();
         initInterstitialAd();
-        MoPub.initializeRewardedVideo(this);
-        MoPub.setRewardedVideoListener(rewardedVideoListener);
+        initRewardVideoAd();
     }
 
     private void initHouseAd() {
@@ -473,7 +479,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
                     int idText = item.getResourceId(2, 0);
                     int idCost = item.getResourceId(3, 0);
                     int idPackage = item.getResourceId(4, 0);
-                    if(!getString(R.string.app_package).equals(getString(idPackage))) {
+                    if(!Utils.getPackage().equals(getString(idPackage))) {
                         houseAdList.add(new HouseAd(idLogo, idTitle, idText, idCost, idPackage));
                     }
                 }
@@ -493,6 +499,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         Log.v("TAG", "Hiding ads");
         Prefs.putBoolean(getResources().getString(R.string.settings_pref), "ENABLED", false);
         AdUsage.setAdsEnabled(false);
+        initRewardVideoAd(); //This is enabled even if ads are disabled
     }
 
     /**
@@ -510,29 +517,22 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
             return;
         }
         if(mHelper == null) {
-            Utils.toastShort(AppBase.getContext().getString(R.string.unable_setup_iap));
+            Utils.toastShort(AppBase.getContext().getString(R.string.error));
             return;
         }
-        if(Utils.getOrientationLock(this) == Utils.Orientation.UNDEFINED) {
-            Utils.lockOrientationCurrent(this);
-            useAutoLock = true;
-        } else {
-            useAutoLock = false;
-        }
+        AutoLockOrientation.enableAutoLock(this);
         mHelper.launchPurchaseFlow(this, REMOVE_ADS_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
             public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
                 if (result.isSuccess() && purchase.getSku().equals(REMOVE_ADS_SKU) && purchase.getDeveloperPayload().equals("REMOVE_ADS_PURCHASE_TOKEN")) {
                     Prefs.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
                     Utils.toastShort(getString(R.string.ads_removed));
                     disableAds();
-                    restartActivity();
+                    restartApp();
                 } else {
                     // Handle error
-                    Utils.toastShort(AppBase.getContext().getString(R.string.failed_purchase));
+                    Utils.toastShort(AppBase.getContext().getString(R.string.failed));
                 }
-                if (useAutoLock) {
-                    Utils.unlockOrientation(BaseAdLauncherActivity.this);
-                }
+                AutoLockOrientation.disableAutoLock(BaseAdLauncherActivity.this);
             }
         }, "REMOVE_ADS_PURCHASE_TOKEN");
     }
@@ -563,7 +563,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
         public void onConsumeFinished(Purchase purchase, IabResult result) {
             if (result.isSuccess()) {
-                restartActivity();
+                restartApp();
             } else {
                 // handle error
             }
@@ -588,13 +588,18 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     private void initToolbarSpinners() {
-        spinnerSpan = (AppCompatSpinner) findViewById(R.id.leaderboard_span);
-        spinnerCollection = (AppCompatSpinner) findViewById(R.id.leaderboard_collection);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar == null) {
+            return;
+        }
 
-        final ArrayAdapter spinnerTimesAdapter = ArrayAdapter.createFromResource(AppBase.getContext(), R.array.leaderboard_span, R.layout.simple_drop_down_item);
-        final ArrayAdapter spinnerCollectionAdapter = ArrayAdapter.createFromResource(AppBase.getContext(), R.array.leaderboard_collection, R.layout.simple_drop_down_item);
-        spinnerTimesAdapter.setDropDownViewResource(R.layout.simple_drop_down_item);
-        spinnerCollectionAdapter.setDropDownViewResource(R.layout.simple_drop_down_item);
+        spinnerSpan = (AppCompatSpinner) findViewById(R.id.spinner_left);
+        spinnerCollection = (AppCompatSpinner) findViewById(R.id.spinner_right);
+
+        final ArrayAdapter spinnerTimesAdapter = ArrayAdapter.createFromResource(actionBar.getThemedContext(), R.array.leaderboard_span, R.layout.support_simple_spinner_dropdown_item);
+        final ArrayAdapter spinnerCollectionAdapter = ArrayAdapter.createFromResource(actionBar.getThemedContext(), R.array.leaderboard_collection, R.layout.support_simple_spinner_dropdown_item);
+        spinnerTimesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinnerCollectionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
         spinnerSpan.setAdapter(spinnerTimesAdapter);
         spinnerCollection.setAdapter(spinnerCollectionAdapter);
@@ -749,47 +754,15 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     /**
-     * Gets the help fragment from the fragment manager.
-     * Creates the fragment if it does not exist yet.
-     *
-     * @return The fragment
-     */
-    @Override @NonNull
-    protected GooglePlaySettingsFragment getSettingsFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        GooglePlaySettingsFragment fragment = (GooglePlaySettingsFragment) fragmentManager.findFragmentByTag(SettingsFragment.TAG);
-        if (fragment == null) {
-            fragment = new GooglePlaySettingsFragment();
-        }
-        return fragment;
-    }
-
-    /**
-     * Gets the achievements fragment from the fragment manager.
-     * Creates the fragment if it does not exist yet.
-     *
-     * @return The fragment
-     */
-    @NonNull
-    protected final AchievementFragment getAchievementFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        AchievementFragment fragment = (AchievementFragment) fragmentManager.findFragmentByTag(AchievementFragment.TAG);
-        if (fragment == null) {
-            fragment = new AchievementFragment();
-        }
-        return fragment;
-    }
-
-    /**
      * Loads the achievements fragment into the main view
      */
     protected final boolean loadAchievementFragment(String[] achievementIds) {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
-                AchievementFragment fragment = getAchievementFragment();
-                fragment.setAchievementIds(achievementIds);
-                loadFragment(fragment, AchievementFragment.TAG, true);
-                getSupportFragmentManager().executePendingTransactions();
+                //fragment.setAchievementIds(achievementIds); //TODO
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("achievementIds", achievementIds);
+                loadFragment(AchievementFragment.TAG, bundle);
                 return true;
             } else {
                 if(!GooglePlay.getInstance().getHasSetup()) {
@@ -803,26 +776,16 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         return false;
     }
 
-    @NonNull
-    protected final LeaderboardMetaFragment getLeaderboardMetaFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        LeaderboardMetaFragment fragment = (LeaderboardMetaFragment) fragmentManager.findFragmentByTag(LeaderboardMetaFragment.TAG);
-        if (fragment == null) {
-            fragment = new LeaderboardMetaFragment();
-        }
-        return fragment;
-    }
-
     /**
-     * Loads the leaderboard fragment into the main view
+     * Loads the ic_leaderboard fragment into the main view
      */
     protected final boolean loadLeaderboardMetaFragment(String[] leaderboardIds) {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
-                LeaderboardMetaFragment fragment = getLeaderboardMetaFragment();
-                fragment.setLeaderboardIds(leaderboardIds);
-                loadFragment(fragment, LeaderboardMetaFragment.TAG, true);
-                getSupportFragmentManager().executePendingTransactions();
+                //fragment.setLeaderboardIds(leaderboardIds); //TODO
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("leaderboardIds", leaderboardIds);
+                loadFragment(LeaderboardMetaFragment.TAG, bundle);
                 return true;
             } else {
                 if(!GooglePlay.getInstance().getHasSetup()) {
@@ -836,34 +799,14 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         return false;
     }
 
-    @NonNull
-    protected final LeaderboardFragment getLeaderboardFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        LeaderboardFragment fragment = (LeaderboardFragment) fragmentManager.findFragmentByTag(LeaderboardFragment.TAG);
-        if (fragment == null) {
-            fragment = new LeaderboardFragment();
-        }
-        return fragment;
-    }
-
     /**
-     * Loads the leaderboard fragment into the main view
+     * Loads the ic_leaderboard fragment into the main view
      */
     protected final void loadLeaderboardFragment(String leaderboardId) {
-        LeaderboardFragment fragment = getLeaderboardFragment();
-        fragment.setLeaderboardId(leaderboardId);
-        loadFragment(fragment, LeaderboardFragment.TAG, true);
-        getSupportFragmentManager().executePendingTransactions();
-    }
-
-    @NonNull
-    protected final OnlineLoadGameFragment getOnlineLoadGameFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        OnlineLoadGameFragment fragment = (OnlineLoadGameFragment) fragmentManager.findFragmentByTag(OnlineLoadGameFragment.TAG);
-        if (fragment == null) {
-            fragment = new OnlineLoadGameFragment();
-        }
-        return fragment;
+        //fragment.setLeaderboardId(leaderboardId); //TODO
+        Bundle bundle = new Bundle();
+        bundle.putString("leaderboardId", leaderboardId);
+        loadFragment(LeaderboardFragment.TAG, bundle);
     }
 
     /**
@@ -872,9 +815,7 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     protected final void loadOnlineLoadGameFragment() {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
-                OnlineLoadGameFragment fragment = getOnlineLoadGameFragment();
-                loadFragment(fragment, OnlineLoadGameFragment.TAG, true);
-                getSupportFragmentManager().executePendingTransactions();
+                loadFragment(OnlineLoadGameFragment.TAG);
 
                 //startActivityForResult(Games.TurnBasedMultiplayer.getInboxIntent(GooglePlay.getInstance().getApiClient()), RC_LOOK_AT_MATCHES);
             } else {
@@ -888,25 +829,13 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         }
     }
 
-    @NonNull
-    protected final PlayerPickerFragment getPlayerPickerFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        PlayerPickerFragment fragment = (PlayerPickerFragment) fragmentManager.findFragmentByTag(PlayerPickerFragment.TAG);
-        if (fragment == null) {
-            fragment = new PlayerPickerFragment();
-        }
-        return fragment;
-    }
-
     //Variant max of 100 (normally 1)
     protected final boolean loadPlayerPickerFragment(int minPlayers, int maxPlayers, boolean allowAutomatch, int variant) {
         if(isGooglePlayServicesEnabled()) {
             if (GooglePlay.getInstance().isSignedIn()) {
                //startActivityForResult(Games.TurnBasedMultiplayer.getSelectOpponentsIntent(GooglePlay.getInstance().getApiClient(), minPlayers, maxPlayers, allowAutomatch), RC_SELECT_PLAYERS + variant);
-                PlayerPickerFragment fragment = getPlayerPickerFragment();
-                loadFragment(fragment, PlayerPickerFragment.TAG, true);
-                getSupportFragmentManager().executePendingTransactions();
 
+                loadFragment(PlayerPickerFragment.TAG);
 
                 return true;
             } else {
@@ -938,7 +867,6 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
         return false;
     }
 
-    @Override
     protected void onBackToHome() {
         Log.v("BaseAdLauncherActivity", "Back To Home");
         GooglePlayCalls.getInstance().clearLeaderboardsMetaCache();
@@ -973,13 +901,13 @@ public abstract class BaseAdLauncherActivity extends BaseLauncherNoViewActivity 
     }
 
     public void createPlayerDetailsDialog(@NonNull Player player) {
-        PlayerDetailsDialogBuilder builder = PlayerDetailsDialogBuilder.with(this);
+        PlayerDetailsDialogBuilder builder = PlayerDetailsDialogBuilder.with(this, UtilsTheme.getAlertDialogStyle());
         builder.setPlayer(player);
         builder.build().show();
     }
 
     public void createAchievementsOverlayDialog(@NonNull AchievementContainer item) {
-        AchievementOverlayDialogBuilder builder = AchievementOverlayDialogBuilder.with(this);
+        AchievementOverlayDialogBuilder builder = AchievementOverlayDialogBuilder.with(this, UtilsTheme.getAlertDialogStyle());
         builder.setAchievement(item);
         builder.build().show();
     }
