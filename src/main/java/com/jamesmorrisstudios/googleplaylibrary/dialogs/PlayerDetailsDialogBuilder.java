@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Player;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 
 /**
  * Created by James on 8/10/2015.
@@ -28,7 +28,7 @@ public class PlayerDetailsDialogBuilder {
 
     private PlayerDetailsDialogBuilder(@NonNull Context context, final int style) {
         builder = new AlertDialog.Builder(context, style);
-        view = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.player_overlay, null);
+        view = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.dialog_player_details_overlay, null);
         builder.setView(view);
     }
 
@@ -73,7 +73,7 @@ public class PlayerDetailsDialogBuilder {
 
         Player me = GooglePlayCalls.getInstance().getCurrentPlayer();
 
-        if(player.getPlayerId().equals(me.getPlayerId())) {
+        if (player.getPlayerId().equals(me.getPlayerId())) {
             btn.setText(AppBase.getContext().getString(R.string.view_profile));
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override

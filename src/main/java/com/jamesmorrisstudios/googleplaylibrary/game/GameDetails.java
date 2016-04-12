@@ -28,7 +28,7 @@ public class GameDetails {
         }
 
         public final MatchVariant getVariant(int number) {
-            switch(number) {
+            switch (number) {
                 case 1:
                     return VARIANT_1;
                 case 2:
@@ -59,11 +59,11 @@ public class GameDetails {
         PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4, PLAYER_5, PLAYER_6;
 
         public Team getTeam(NumberTeams numberTeams) {
-            switch(numberTeams) {
+            switch (numberTeams) {
                 case FREE_FOR_ALL:
                     return Team.NONE;
                 case TWO:
-                    switch(this) {
+                    switch (this) {
                         case PLAYER_1:
                         case PLAYER_3:
                         case PLAYER_5:
@@ -79,7 +79,7 @@ public class GameDetails {
         }
 
         public Player getPlayer(int index) {
-            switch(index) {
+            switch (index) {
                 case 0:
                     return PLAYER_1;
                 case 1:
@@ -98,7 +98,7 @@ public class GameDetails {
         }
 
         public int getIndex(Player player) {
-            switch(player) {
+            switch (player) {
                 case PLAYER_1:
                     return 0;
                 case PLAYER_2:

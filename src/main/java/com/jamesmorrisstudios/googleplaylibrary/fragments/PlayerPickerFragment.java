@@ -5,21 +5,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
+import com.jamesmorrisstudios.appbaselibrary.activityHandlers.SnackbarRequest;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.PlayerHeader;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.PlayerItem;
+import com.jamesmorrisstudios.googleplaylibrary.data.PlayerPickerHeader;
+import com.jamesmorrisstudios.googleplaylibrary.data.PlayerPickerItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.PlayerPickerAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.PlayerPickerContainer;
-import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.appbaselibrary.Bus;
-import com.jamesmorrisstudios.appbaselibrary.Utils;
+import com.jamesmorrisstudios.googleplaylibrary.util.UtilsAds;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
 import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
 import com.mopub.nativeads.ViewBinder;
@@ -38,7 +39,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new PlayerPickerAdapter(mListener);
-        if(AdUsage.getAdsEnabled()) {
+        if (!UtilsVersion.isPro()) {
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
@@ -56,7 +57,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
 
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             return myMoPubAdapter;
         }
         return adapter;
@@ -69,7 +70,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
 
     @Override
     public void itemClicked(int position) {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             itemClick(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
         } else {
             itemClick(adapter.getItems().get(position).data);
@@ -77,7 +78,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     }
 
     public void onDestroy() {
-        if(myMoPubAdapter != null) {
+        if (myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
@@ -85,25 +86,25 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
 
     @Subscribe
     public void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
-        switch(event) {
+        switch (event) {
             case PLAYERS_ACTIVE_READY:
                 applyDataActive();
                 break;
             case PLAYERS_ACTIVE_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 applyDataActive();
                 break;
             case PLAYERS_ALL_READY:
                 applyDataAll();
                 break;
             case PLAYERS_ALL_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 break;
             case PLAYERS_ALL_MORE_READY:
                 applyDataAllMore();
                 break;
             case PLAYERS_ALL_MORE_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 break;
         }
     }
@@ -111,10 +112,10 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     private void applyDataActive() {
         Log.v("PlayerPicker", "Apply Data Active");
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if(GooglePlayCalls.getInstance().hasPlayersActive()) {
-            ArrayList<PlayerItem> items = GooglePlayCalls.getInstance().getPlayersActive();
-            data.add(new PlayerPickerContainer(new PlayerHeader("Active Players")));
-            for(PlayerItem item : items) {
+        if (GooglePlayCalls.getInstance().hasPlayersActive()) {
+            ArrayList<PlayerPickerItem> items = GooglePlayCalls.getInstance().getPlayersActive();
+            data.add(new PlayerPickerContainer(new PlayerPickerHeader("Active Players")));
+            for (PlayerPickerItem item : items) {
                 data.add(new PlayerPickerContainer(item));
             }
         }
@@ -125,10 +126,10 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     private void applyDataAll() {
         Log.v("PlayerPicker", "Apply Data All");
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if(GooglePlayCalls.getInstance().hasPlayersAll()) {
-            ArrayList<PlayerItem> items = GooglePlayCalls.getInstance().getPlayersAll();
-            data.add(new PlayerPickerContainer(new PlayerHeader("Players in your Circles")));
-            for(PlayerItem item : items) {
+        if (GooglePlayCalls.getInstance().hasPlayersAll()) {
+            ArrayList<PlayerPickerItem> items = GooglePlayCalls.getInstance().getPlayersAll();
+            data.add(new PlayerPickerContainer(new PlayerPickerHeader("Players in your Circles")));
+            for (PlayerPickerItem item : items) {
                 data.add(new PlayerPickerContainer(item));
             }
         }
@@ -138,9 +139,9 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     private void applyDataAllMore() {
         Log.v("PlayerPicker", "Apply Data All");
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if(GooglePlayCalls.getInstance().hasPlayersAllMore()) {
-            ArrayList<PlayerItem> items = GooglePlayCalls.getInstance().getPlayersAllMore();
-            for(PlayerItem item : items) {
+        if (GooglePlayCalls.getInstance().hasPlayersAllMore()) {
+            ArrayList<PlayerPickerItem> items = GooglePlayCalls.getInstance().getPlayersAllMore();
+            for (PlayerPickerItem item : items) {
                 data.add(new PlayerPickerContainer(item));
             }
         }
@@ -221,8 +222,8 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     @Override
     protected void afterViewCreated() {
         setEnablePullToRefresh(true);
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdId());
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
+            myMoPubAdapter.loadAds(UtilsAds.getMopubNativeAdId());
         }
     }
 

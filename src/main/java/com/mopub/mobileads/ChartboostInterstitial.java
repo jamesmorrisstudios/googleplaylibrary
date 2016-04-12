@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * A custom event for showing Chartboost interstitial ads.
- *
+ * <p/>
  * Certified with Chartboost 5.3.0
  */
 class ChartboostInterstitial extends CustomEventInterstitial {
@@ -32,8 +32,8 @@ class ChartboostInterstitial extends CustomEventInterstitial {
      */
     @Override
     protected void loadInterstitial(@NonNull Context context,
-            @NonNull CustomEventInterstitialListener interstitialListener,
-            @NonNull Map<String, Object> localExtras, @NonNull Map<String, String> serverExtras) {
+                                    @NonNull CustomEventInterstitialListener interstitialListener,
+                                    @NonNull Map<String, Object> localExtras, @NonNull Map<String, String> serverExtras) {
         Preconditions.checkNotNull(context);
         Preconditions.checkNotNull(interstitialListener);
         Preconditions.checkNotNull(localExtras);

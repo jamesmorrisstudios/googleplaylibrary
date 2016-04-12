@@ -10,7 +10,6 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -180,15 +179,6 @@ public class GooglePlayUtils {
                     "its resources. Using a fallback string.");
             return FALLBACK_STRINGS[whichString];
         }
-    }
-
-    /**
-     * Gets the height of the smart banner style ad
-     *
-     * @return Height of the ad view
-     */
-    public static float getAdHeight() {
-        return AppBase.getContext().getResources().getDimension(R.dimen.ad_height);
     }
 
 }

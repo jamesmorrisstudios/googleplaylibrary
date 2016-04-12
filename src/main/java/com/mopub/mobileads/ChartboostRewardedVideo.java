@@ -15,15 +15,17 @@ import java.util.Map;
 
 /**
  * A custom event for showing Chartboost rewarded videos.
- *
+ * <p/>
  * Certified with Chartboost 5.3.0
  */
 public class ChartboostRewardedVideo extends CustomEventRewardedVideo {
-    @NonNull private static final LifecycleListener sLifecycleListener =
+    @NonNull
+    private static final LifecycleListener sLifecycleListener =
             new ChartboostLifecycleListener();
-
-    @NonNull private String mLocation = ChartboostShared.LOCATION_DEFAULT;
-    @NonNull private final Handler mHandler;
+    @NonNull
+    private final Handler mHandler;
+    @NonNull
+    private String mLocation = ChartboostShared.LOCATION_DEFAULT;
 
     public ChartboostRewardedVideo() {
         mHandler = new Handler();
@@ -49,8 +51,8 @@ public class ChartboostRewardedVideo extends CustomEventRewardedVideo {
 
     @Override
     public boolean checkAndInitializeSdk(@NonNull Activity launcherActivity,
-            @NonNull Map<String, Object> localExtras,
-            @NonNull Map<String, String> serverExtras) throws Exception {
+                                         @NonNull Map<String, Object> localExtras,
+                                         @NonNull Map<String, String> serverExtras) throws Exception {
         // We need to attempt to reinitialize Chartboost on each request, in case an interstitial has been
         // loaded and used since then.
         ChartboostShared.initializeSdk(launcherActivity, serverExtras);  // throws IllegalStateException
@@ -62,7 +64,7 @@ public class ChartboostRewardedVideo extends CustomEventRewardedVideo {
 
     @Override
     protected void loadWithSdkInitialized(@NonNull Activity activity,
-            @NonNull Map<String, Object> localExtras, @NonNull Map<String, String> serverExtras)
+                                          @NonNull Map<String, Object> localExtras, @NonNull Map<String, String> serverExtras)
             throws Exception {
 
         if (serverExtras.containsKey(ChartboostShared.LOCATION_KEY)) {
@@ -162,7 +164,8 @@ public class ChartboostRewardedVideo extends CustomEventRewardedVideo {
     }
 
     public static final class ChartboostMediationSettings implements MediationSettings {
-        @NonNull private final String mCustomId;
+        @NonNull
+        private final String mCustomId;
 
         public ChartboostMediationSettings(@NonNull final String customId) {
             mCustomId = customId;

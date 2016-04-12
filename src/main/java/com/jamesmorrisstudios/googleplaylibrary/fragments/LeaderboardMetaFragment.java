@@ -6,20 +6,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
+import com.jamesmorrisstudios.appbaselibrary.activityHandlers.SnackbarRequest;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardMetaItem;
+import com.jamesmorrisstudios.googleplaylibrary.data.LeaderboardMetaItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardMetaContainer;
-import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.appbaselibrary.Bus;
-import com.jamesmorrisstudios.appbaselibrary.Utils;
+import com.jamesmorrisstudios.googleplaylibrary.util.UtilsAds;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
 import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
 import com.mopub.nativeads.ViewBinder;
@@ -40,7 +41,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new LeaderboardMetaAdapter(mListener);
-        if(AdUsage.getAdsEnabled()) {
+        if (!UtilsVersion.isPro()) {
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
@@ -71,7 +72,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             return myMoPubAdapter;
         }
         return adapter;
@@ -84,7 +85,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
     @Override
     public void itemClicked(int position) {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             itemClicker(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
         } else {
             itemClicker(adapter.getItems().get(position).data);
@@ -92,7 +93,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     }
 
     public void onDestroy() {
-        if(myMoPubAdapter != null) {
+        if (myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
@@ -123,15 +124,15 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
     @Override
     protected void saveState(Bundle bundle) {
-        if(leaderboardIds != null) {
+        if (leaderboardIds != null) {
             bundle.putStringArray("leaderboardIds", leaderboardIds);
         }
     }
 
     @Override
     protected void restoreState(Bundle bundle) {
-        if(bundle != null) {
-            if(bundle.containsKey("leaderboardIds")) {
+        if (bundle != null) {
+            if (bundle.containsKey("leaderboardIds")) {
                 leaderboardIds = bundle.getStringArray("leaderboardIds");
             }
         }
@@ -140,7 +141,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     @Override
     protected void startDataLoad(boolean forceRefresh) {
         Log.v("LeaderboardMetaFragment", "Start data load");
-        if(leaderboardIds != null) {
+        if (leaderboardIds != null) {
             GooglePlayCalls.getInstance().loadLeaderboardsMeta(forceRefresh, leaderboardIds);
         }
     }
@@ -152,9 +153,9 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
     private void applyData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if(GooglePlayCalls.getInstance().hasLeaderboardsMeta()) {
+        if (GooglePlayCalls.getInstance().hasLeaderboardsMeta()) {
             ArrayList<LeaderboardMetaItem> items = GooglePlayCalls.getInstance().getLeaderboardsMeta();
-            for(LeaderboardMetaItem item : items) {
+            for (LeaderboardMetaItem item : items) {
                 data.add(new LeaderboardMetaContainer(item));
             }
         }
@@ -168,8 +169,8 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
     protected void itemClicker(@NonNull BaseRecycleContainer baseRecycleContainer) {
         Log.v("TAG", "Leaderboard item click");
-        LeaderboardMetaItem item = (LeaderboardMetaItem)baseRecycleContainer.getItem();
-        leaderboardMetaListener.goToLeaderboard(item.leaderboardId);
+        LeaderboardMetaItem item = (LeaderboardMetaItem) baseRecycleContainer.getItem();
+        leaderboardMetaListener.loadLeaderboardFragment(item.leaderboardId);
     }
 
     @Override
@@ -190,12 +191,12 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     @Override
     public void onStop() {
         super.onStop();
-        leaderboardMetaListener.setLeaderboardSpinnerVisibility(false);
+        leaderboardMetaListener.setSpinnerVisibility(false);
     }
 
     @Subscribe
     public void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
-        switch(event) {
+        switch (event) {
             case LEADERBOARD_SPINNER_CHANGE:
                 startRefresh(false);
                 break;
@@ -203,7 +204,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case LEADERBOARDS_META_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 applyData();
                 break;
         }
@@ -211,7 +212,7 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
 
     @Override
     protected void setStartData(@Nullable Bundle bundle, int i) {
-        if(bundle != null && bundle.containsKey("leaderboardIds")) {
+        if (bundle != null && bundle.containsKey("leaderboardIds")) {
             leaderboardIds = bundle.getStringArray("leaderboardIds");
         }
     }
@@ -242,19 +243,26 @@ public class LeaderboardMetaFragment extends BaseRecycleListFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        String adId = UtilsAds.getMopubNativeAdIdFull();
+        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
+            Log.v("AchievementFragment", "Loading Ads");
+            myMoPubAdapter.loadAds(adId);
+        }
+    }
+
+    @Override
     protected void afterViewCreated() {
         setEnablePullToRefresh(true);
-        leaderboardMetaListener.setLeaderboardSpinnerVisibility(true);
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdIdFull());
-        }
+        leaderboardMetaListener.setSpinnerVisibility(true);
     }
 
     public interface OnLeaderboardMetaListener {
 
-        void goToLeaderboard(String leaderboardId);
+        boolean loadLeaderboardFragment(String leaderboardId);
 
-        void setLeaderboardSpinnerVisibility(boolean visible);
+        void setSpinnerVisibility(boolean visible);
 
     }
 

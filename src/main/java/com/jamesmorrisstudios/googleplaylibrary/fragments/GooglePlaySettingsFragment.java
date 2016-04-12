@@ -1,31 +1,10 @@
 package com.jamesmorrisstudios.googleplaylibrary.fragments;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
-import com.google.android.gms.common.SignInButton;
-import com.jamesmorrisstudios.appbaselibrary.fragments.SettingsFragment;
-import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.activities.BaseAdLauncherActivity;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
-import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.appbaselibrary.Bus;
-import com.jamesmorrisstudios.appbaselibrary.Utils;
-import com.squareup.otto.Subscribe;
-
 /**
  * Created by James on 5/26/2015.
  */
-public class GooglePlaySettingsFragment /*extends SettingsFragment */{
-    protected OnGooglePlaySettingsListener googlePlaySettingsListener;
+public class GooglePlaySettingsFragment /*extends SettingsFragment */ {
+
 
     /**
      * @param activity Activity to attach to
@@ -193,19 +172,5 @@ public class GooglePlaySettingsFragment /*extends SettingsFragment */{
     }
     */
 
-    /**
-     *
-     */
-    public interface OnGooglePlaySettingsListener {
-
-        void testingConsumePurchase();
-
-        /**
-         *
-         */
-        void purchaseRemoveAds();
-
-        boolean isGooglePlayServicesEnabled();
-    }
 
 }

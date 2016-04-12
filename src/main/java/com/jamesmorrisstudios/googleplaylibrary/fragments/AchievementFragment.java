@@ -5,22 +5,23 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
+import com.jamesmorrisstudios.appbaselibrary.activityHandlers.SnackbarRequest;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.AchievementOverlayDialogRequest;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementHeader;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.AchievementItem;
+import com.jamesmorrisstudios.googleplaylibrary.dialogRequests.AchievementOverlayDialogRequest;
+import com.jamesmorrisstudios.googleplaylibrary.data.AchievementHeader;
+import com.jamesmorrisstudios.googleplaylibrary.data.AchievementItem;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementContainer;
-import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.appbaselibrary.Bus;
-import com.jamesmorrisstudios.appbaselibrary.Utils;
+import com.jamesmorrisstudios.googleplaylibrary.util.UtilsAds;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
 import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
 import com.mopub.nativeads.ViewBinder;
@@ -38,10 +39,12 @@ public class AchievementFragment extends BaseRecycleListFragment {
     private MoPubRecyclerAdapter myMoPubAdapter;
     private BaseRecycleAdapter adapter;
 
+    @NonNull
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new AchievementAdapter(mListener);
-        if(AdUsage.getAdsEnabled()) {
+        if (!UtilsVersion.isPro()) {
+            Log.v("AcievementFragment", "Creating ad adapter");
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
@@ -59,9 +62,10 @@ public class AchievementFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
+    @NonNull
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             return myMoPubAdapter;
         }
         return adapter;
@@ -69,7 +73,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     @Override
     public void itemClicked(int position) {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             itemClicker(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
         } else {
             itemClicker(adapter.getItems().get(position).data);
@@ -89,23 +93,23 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     @Override
     public void onDestroy() {
-        if(myMoPubAdapter != null) {
+        if (myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
     }
 
     @Override
-    protected void saveState(Bundle bundle) {
-        if(achievementIds != null) {
+    protected void saveState(@NonNull Bundle bundle) {
+        if (achievementIds != null) {
             bundle.putStringArray("achievementIds", achievementIds);
         }
     }
 
     @Override
-    protected void restoreState(Bundle bundle) {
-        if(bundle != null) {
-            if(bundle.containsKey("achievementIds")) {
+    protected void restoreState(@NonNull Bundle bundle) {
+        if (bundle != null) {
+            if (bundle.containsKey("achievementIds")) {
                 achievementIds = bundle.getStringArray("achievementIds");
             }
         }
@@ -113,16 +117,17 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     /**
      * Event subscriber for checking if achievements are ready
+     *
      * @param event Event
      */
     @Subscribe
     public final void onGooglePlayEvent(@NonNull GooglePlay.GooglePlayEvent event) {
-        switch(event) {
+        switch (event) {
             case ACHIEVEMENTS_ITEMS_READY:
                 applyData();
                 break;
             case ACHIEVEMENTS_ITEMS_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 applyData();
                 break;
         }
@@ -130,13 +135,13 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     private void applyData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if(GooglePlayCalls.getInstance().hasAchievements()) {
+        if (GooglePlayCalls.getInstance().hasAchievements()) {
             int complete = GooglePlayCalls.getInstance().getNumberCompletedAchievements();
             int total = GooglePlayCalls.getInstance().getNumberAchievements();
             AchievementContainer header = new AchievementContainer(new AchievementHeader(getString(R.string.achievements), complete, total));
             data.add(header);
             ArrayList<AchievementItem> items = GooglePlayCalls.getInstance().getAchievements();
-            for(AchievementItem item : items) {
+            for (AchievementItem item : items) {
                 data.add(new AchievementContainer(item));
             }
         }
@@ -145,7 +150,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     @Override
     protected void startDataLoad(boolean forced) {
-        if(achievementIds != null) {
+        if (achievementIds != null) {
             GooglePlayCalls.getInstance().loadAchievements(forced, achievementIds);
         }
     }
@@ -164,7 +169,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     protected void itemClicker(@NonNull BaseRecycleContainer baseRecycleContainer) {
         Log.v("AchievementsFragment", "Item clicked");
-        AchievementContainer item = (AchievementContainer)baseRecycleContainer;
+        AchievementContainer item = (AchievementContainer) baseRecycleContainer;
         Bus.postObject(new AchievementOverlayDialogRequest(item));
     }
 
@@ -185,7 +190,7 @@ public class AchievementFragment extends BaseRecycleListFragment {
 
     @Override
     protected void setStartData(@Nullable Bundle bundle, int i) {
-        if(bundle != null && bundle.containsKey("achievementIds")) {
+        if (bundle != null && bundle.containsKey("achievementIds")) {
             achievementIds = bundle.getStringArray("achievementIds");
         }
     }
@@ -216,11 +221,19 @@ public class AchievementFragment extends BaseRecycleListFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        String adId = UtilsAds.getMopubNativeAdIdFull();
+        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
+            Log.v("AchievementFragment", "Loading Ads");
+            myMoPubAdapter.loadAds(adId);
+        }
+    }
+
+    @Override
     protected void afterViewCreated() {
         setEnablePullToRefresh(true);
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdIdFull());
-        }
+
     }
 
 }

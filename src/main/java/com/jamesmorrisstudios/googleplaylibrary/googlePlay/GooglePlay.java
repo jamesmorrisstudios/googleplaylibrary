@@ -30,19 +30,160 @@ import java.util.ArrayList;
 /**
  * Created by James on 5/11/2015.
  */
-public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
+public final class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = "GooglePlay";
-    private boolean firstLaunch = true;
-
+    // Client request flags
+    public final static int CLIENT_NONE = 0x00;
+    public final static int CLIENT_GAMES = 0x01;
+    public final static int CLIENT_SNAPSHOT = 0x08;
+    public final static int CLIENT_ALL = CLIENT_GAMES | CLIENT_SNAPSHOT;
+    // Request code we use when invoking other Activities to complete the
+    // sign-in flow.
+    final static int RC_RESOLVE = 9001;
+    // Request code when invoking Activities whose result we don't care about.
+    final static int RC_UNUSED = 9002;
+    // Should we start the flow to sign the user in automatically on startup? If
+    // so, up to
+    // how many times in the life of the application?
+    static final int DEFAULT_MAX_SIGN_IN_ATTEMPTS = 3;
     private static GooglePlay instance;
+    private final String GAMEHELPER_SHARED_PREFS = "GAMEHELPER_SHARED_PREFS";
+    private final String KEY_SIGN_IN_CANCELLATIONS = "KEY_SIGN_IN_CANCELLATIONS";
+    // Are we expecting the result of a resolution flow?
+    boolean mExpectingResolution = false;
 
-    private GooglePlay() {}
+    //Normal class flow below this
+    // was the sign-in flow cancelled when we tried it?
+    // if true, we know not to try again automatically.
+    boolean mSignInCancelled = false;
+    /**
+     * The Activity we are bound to. We need to keep a reference to the Activity
+     * because some games methods require an Activity (a Context won't do). We
+     * are careful not to leak these references: we release them on onStop().
+     */
+    Activity mActivity = null;
+    // app context
+    Context mAppContext = null;
+    // the Google API client builder we will use to create GoogleApiClient
+    GoogleApiClient.Builder mGoogleApiClientBuilder = null;
+    // Api options to use when adding each API, null for none
+    Games.GamesOptions mGamesApiOptions = Games.GamesOptions.builder()
+            .setShowConnectingPopup(false)
+            .build();
+    Api.ApiOptions.NoOptions mAppStateApiOptions = null;
+    // Google API client object we manage.
+    GoogleApiClient mGoogleApiClient = null;
+    // What clients were requested? (bit flags)
+    int mRequestedClients = CLIENT_NONE;
+    // Whether to automatically try to sign in on onStart(). We only set this
+    // to true when the sign-in process fails or the user explicitly signs out.
+    // We set it back to false when the user initiates the sign in process.
+    boolean mConnectOnStart = true;
+    /*
+     * Whether user has specifically requested that the sign-in process begin.
+     * If mUserInitiatedSignIn is false, we're in the automatic sign-in attempt
+     * that we try once the Activity is started -- if true, then the user has
+     * already clicked a "Sign-In" button or something similar
+     */
+    boolean mUserInitiatedSignIn = false;
+    // The connection result we got from our last attempt to sign-in.
+    ConnectionResult mConnectionResult = null;
+    // The error that happened during sign-in.
+    SignInFailureReason mSignInFailureReason = null;
+    // Should we show error dialog boxes?
+    boolean mShowErrorDialogs = true;
+    // Print debug logs?
+    boolean mDebugLog = false;
+    Handler mHandler;
+    /*
+     * If we got an invitation when we connected to the games client, it's here.
+     * Otherwise, it's null.
+     */
+    Invitation mInvitation;
+    /*
+     * If we got turn-based match when we connected to the games client, it's
+     * here. Otherwise, it's null.
+     */
+    TurnBasedMatch mTurnBasedMatch;
+    /*
+     * If we have incoming requests when we connected to the games client, they
+     * are here. Otherwise, it's null.
+     */
+    ArrayList<GameRequest> mRequests;
+    // Listener
+    GameHelperListener mListener = null;
+    int mMaxAutoSignInAttempts = DEFAULT_MAX_SIGN_IN_ATTEMPTS;
+    private boolean firstLaunch = true;
+    // configuration done?
+    private boolean mSetupDone = false;
+    // are we currently connecting?
+    private boolean mConnecting = false;
+
+    private GooglePlay() {
+    }
 
     public static GooglePlay getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new GooglePlay();
         }
         return instance;
+    }
+
+    /**
+     * Shows an error dialog that's appropriate for the failure reason.
+     */
+    public static void showFailureDialog(Activity activity, int actResp,
+                                         int errorCode) {
+        if (activity == null) {
+            Log.e("GameHelper", "*** No Activity. Can't show failure dialog!");
+            return;
+        }
+        Dialog errorDialog = null;
+
+        switch (actResp) {
+            case GamesActivityResultCodes.RESULT_APP_MISCONFIGURED:
+                errorDialog = makeSimpleDialog(activity, GooglePlayUtils.getString(
+                        activity, GooglePlayUtils.R_APP_MISCONFIGURED));
+                break;
+            case GamesActivityResultCodes.RESULT_SIGN_IN_FAILED:
+                errorDialog = makeSimpleDialog(activity, GooglePlayUtils.getString(
+                        activity, GooglePlayUtils.R_SIGN_IN_FAILED));
+                break;
+            case GamesActivityResultCodes.RESULT_LICENSE_FAILED:
+                errorDialog = makeSimpleDialog(activity, GooglePlayUtils.getString(
+                        activity, GooglePlayUtils.R_LICENSE_FAILED));
+                break;
+            default:
+                // No meaningful Activity response code, so generate default Google
+                // Play services dialog
+                errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
+                        activity, RC_UNUSED, null);
+                if (errorDialog == null) {
+                    // get fallback dialog
+                    Log.e("GameHelper",
+                            "No standard error dialog available. Making fallback dialog.");
+                    errorDialog = makeSimpleDialog(
+                            activity,
+                            GooglePlayUtils.getString(activity,
+                                    GooglePlayUtils.R_UNKNOWN_ERROR)
+                                    + " "
+                                    + GooglePlayUtils.errorCodeToString(errorCode));
+                }
+        }
+
+        errorDialog.show();
+    }
+
+    static Dialog makeSimpleDialog(Activity activity, String text) {
+        return (new AlertDialog.Builder(activity)).setMessage(text)
+                .setNeutralButton(android.R.string.ok, null).create();
+    }
+
+    static Dialog
+    makeSimpleDialog(Activity activity, String title, String text) {
+        return (new AlertDialog.Builder(activity)).setMessage(text)
+                .setTitle(title).setNeutralButton(android.R.string.ok, null)
+                .create();
     }
 
     public final boolean getHasSetup() {
@@ -57,236 +198,13 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         this.firstLaunch = false;
     }
 
-    public enum GooglePlayEvent {
-        SHOW_INTERSTITIAL, SHOW_REWARD_AD,
-        SIGN_IN_SUCCESS, SIGN_IN_FAIL, SIGN_OUT,
-        ACHIEVEMENTS_ITEMS_FAIL, ACHIEVEMENTS_ITEMS_READY,
-        LEADERBOARDS_META_FAIL, LEADERBOARDS_META_READY,
-        LEADERBOARDS_FAIL, LEADERBOARDS_READY,
-        LEADERBOARDS_MORE_FAIL, LEADERBOARDS_MORE_READY,
-
-        ONLINE_SAVE_ITEM_LOAD_FAIL, ONLINE_SAVE_ITEM_LOAD_READY,
-
-        PLAYERS_ACTIVE_FAIL, PLAYERS_ACTIVE_READY,
-        PLAYERS_ALL_FAIL, PLAYERS_ALL_READY,
-        PLAYERS_ALL_MORE_FAIL, PLAYERS_ALL_MORE_READY,
-
-
-        SAVE_MATCH_LOCAL_FAIL, SAVE_MATCH_LOCAL_SUCCESS,
-        LOAD_MATCH_LOCAL_FAIL, LOAD_MATCH_LOCAL_SUCCESS, SELECT_LOAD_MATCH_LOCAL_FAIL,
-        FINISH_MATCH_ONLINE_FAIL, FINISH_MATCH_ONLINE_SUCCESS,
-        LOAD_MATCH_ONLINE_FAIL, LOAD_MATCH_ONLINE_SUCCESS, SELECT_LOAD_MATCH_ONLINE_FAIL, SELECT_PLAYERS_ONLINE_FAIL,
-        TAKE_TURN_ONLINE_FAIL, TAKE_TURN_ONLINE_SUCCESS,
-        START_MATCH_ONLINE_FAIL, START_MATCH_ONLINE_SUCCESS,
-        REMATCH_ONLINE_FAIL, REMATCH_ONLINE_SUCCESS,
-        ACCEPT_INVITATION_ONLINE_FAIL, ACCEPT_INVITATION_ONLINE_SUCCESS,
-
-        LEADERBOARD_SPINNER_CHANGE
-    }
-
-    public enum SaveType {
-        INVITATION, ONGOING, YOUR_TURN, THEIR_TURN, COMPLETE
-    }
-
-    public enum Span {
-        DAILY, WEEKLY, ALL_TIME;
-
-        public int getInt() {
-            switch(ordinal()) {
-                case 0:
-                    return LeaderboardVariant.TIME_SPAN_DAILY;
-                case 1:
-                    return LeaderboardVariant.TIME_SPAN_WEEKLY;
-                case 2:
-                    return LeaderboardVariant.TIME_SPAN_ALL_TIME;
-                default:
-                    return LeaderboardVariant.TIME_SPAN_ALL_TIME;
-            }
-        }
-
-        public static Span getFromInt(int variantInt) {
-            switch(variantInt) {
-                case LeaderboardVariant.TIME_SPAN_DAILY:
-                    return DAILY;
-                case LeaderboardVariant.TIME_SPAN_WEEKLY:
-                    return WEEKLY;
-                case LeaderboardVariant.TIME_SPAN_ALL_TIME:
-                    return ALL_TIME;
-                default:
-                    return ALL_TIME;
-            }
-        }
-    }
-
-    public enum Collection {
-        SOCIAL, PUBLIC;
-
-        public int getInt() {
-            switch(ordinal()) {
-                case 0:
-                    return LeaderboardVariant.COLLECTION_SOCIAL;
-                case 1:
-                    return LeaderboardVariant.COLLECTION_PUBLIC;
-                default:
-                    return LeaderboardVariant.COLLECTION_PUBLIC;
-            }
-        }
-
-        public static Collection getFromInt(int variantInt) {
-            switch(variantInt) {
-                case LeaderboardVariant.COLLECTION_PUBLIC:
-                    return PUBLIC;
-                case LeaderboardVariant.COLLECTION_SOCIAL:
-                    return SOCIAL;
-                default:
-                    return PUBLIC;
-            }
-        }
-    }
-
-    //Normal class flow below this
-
-    /** Listener for sign-in success or failure events. */
-    public interface GameHelperListener {
-        /**
-         * Called when sign-in fails. As a result, a "Sign-In" button can be
-         * shown to the user; when that button is clicked, call
-         *
-         * @link{GamesHelper#beginUserInitiatedSignIn . Note that not all calls
-         *                                            to this method mean an
-         *                                            error; it may be a result
-         *                                            of the fact that automatic
-         *                                            sign-in could not proceed
-         *                                            because user interaction
-         *                                            was required (consent
-         *                                            dialogs). So
-         *                                            implementations of this
-         *                                            method should NOT display
-         *                                            an error message unless a
-         *                                            call to @link{GamesHelper#
-         *                                            hasSignInError} indicates
-         *                                            that an error indeed
-         *                                            occurred.
-         */
-        void onSignInFailed();
-
-        /** Called when sign-in succeeds. */
-        void onSignInSucceeded();
-    }
-
-    // configuration done?
-    private boolean mSetupDone = false;
-
-    // are we currently connecting?
-    private boolean mConnecting = false;
-
-    // Are we expecting the result of a resolution flow?
-    boolean mExpectingResolution = false;
-
-    // was the sign-in flow cancelled when we tried it?
-    // if true, we know not to try again automatically.
-    boolean mSignInCancelled = false;
-
-    /**
-     * The Activity we are bound to. We need to keep a reference to the Activity
-     * because some games methods require an Activity (a Context won't do). We
-     * are careful not to leak these references: we release them on onStop().
-     */
-    Activity mActivity = null;
-
-    // app context
-    Context mAppContext = null;
-
-    // Request code we use when invoking other Activities to complete the
-    // sign-in flow.
-    final static int RC_RESOLVE = 9001;
-
-    // Request code when invoking Activities whose result we don't care about.
-    final static int RC_UNUSED = 9002;
-
-    // the Google API client builder we will use to create GoogleApiClient
-    GoogleApiClient.Builder mGoogleApiClientBuilder = null;
-
-    // Api options to use when adding each API, null for none
-    Games.GamesOptions mGamesApiOptions = Games.GamesOptions.builder()
-            .setShowConnectingPopup(false)
-            .build();
-    Api.ApiOptions.NoOptions mAppStateApiOptions = null;
-
-    // Google API client object we manage.
-    GoogleApiClient mGoogleApiClient = null;
-
-    // Client request flags
-    public final static int CLIENT_NONE = 0x00;
-    public final static int CLIENT_GAMES = 0x01;
-    public final static int CLIENT_SNAPSHOT = 0x08;
-    public final static int CLIENT_ALL = CLIENT_GAMES | CLIENT_SNAPSHOT;
-
-    // What clients were requested? (bit flags)
-    int mRequestedClients = CLIENT_NONE;
-
-    // Whether to automatically try to sign in on onStart(). We only set this
-    // to true when the sign-in process fails or the user explicitly signs out.
-    // We set it back to false when the user initiates the sign in process.
-    boolean mConnectOnStart = true;
-
-    /*
-     * Whether user has specifically requested that the sign-in process begin.
-     * If mUserInitiatedSignIn is false, we're in the automatic sign-in attempt
-     * that we try once the Activity is started -- if true, then the user has
-     * already clicked a "Sign-In" button or something similar
-     */
-    boolean mUserInitiatedSignIn = false;
-
-    // The connection result we got from our last attempt to sign-in.
-    ConnectionResult mConnectionResult = null;
-
-    // The error that happened during sign-in.
-    SignInFailureReason mSignInFailureReason = null;
-
-    // Should we show error dialog boxes?
-    boolean mShowErrorDialogs = true;
-
-    // Print debug logs?
-    boolean mDebugLog = false;
-
-    Handler mHandler;
-
-    /*
-     * If we got an invitation when we connected to the games client, it's here.
-     * Otherwise, it's null.
-     */
-    Invitation mInvitation;
-
-    /*
-     * If we got turn-based match when we connected to the games client, it's
-     * here. Otherwise, it's null.
-     */
-    TurnBasedMatch mTurnBasedMatch;
-
-    /*
-     * If we have incoming requests when we connected to the games client, they
-     * are here. Otherwise, it's null.
-     */
-    ArrayList<GameRequest> mRequests;
-
-    // Listener
-    GameHelperListener mListener = null;
-
-    // Should we start the flow to sign the user in automatically on startup? If
-    // so, up to
-    // how many times in the life of the application?
-    static final int DEFAULT_MAX_SIGN_IN_ATTEMPTS = 3;
-    int mMaxAutoSignInAttempts = DEFAULT_MAX_SIGN_IN_ATTEMPTS;
-
     /**
      * Construct a GameHelper object, initially tied to the given Activity.
      * After constructing this object, call @link{setup} from the onCreate()
      * method of your Activity.
      *
-     * @param clientsToUse
-     *            the API clients to use (a combination of the CLIENT_* flags,
-     *            or CLIENT_ALL to mean all clients).
+     * @param clientsToUse the API clients to use (a combination of the CLIENT_* flags,
+     *                     or CLIENT_ALL to mean all clients).
      */
     public void init(Activity activity, int clientsToUse) {
         mActivity = activity;
@@ -384,8 +302,7 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
      * initialization tasks. Next, call @link{#onStart} from the onStart()
      * method of your Activity.
      *
-     * @param listener
-     *            The listener to be notified of sign-in events.
+     * @param listener The listener to be notified of sign-in events.
      */
     public void setup(GameHelperListener listener) {
         if (mSetupDone) {
@@ -418,12 +335,16 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         return mGoogleApiClient;
     }
 
-    /** Returns whether or not the user is signed in. */
+    /**
+     * Returns whether or not the user is signed in.
+     */
     public boolean isSignedIn() {
         return mGoogleApiClient != null && mGoogleApiClient.isConnected();
     }
 
-    /** Returns whether or not we are currently connecting */
+    /**
+     * Returns whether or not we are currently connecting
+     */
     public boolean isConnecting() {
         return mConnecting;
     }
@@ -449,7 +370,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         mShowErrorDialogs = show;
     }
 
-    /** Call this method from your Activity's onStart(). */
+    /**
+     * Call this method from your Activity's onStart().
+     */
     public void onStart(Activity act) {
         Log.v("GooglePlay", "On Start");
         mActivity = act;
@@ -479,7 +402,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         }
     }
 
-    /** Call this method from your Activity's onStop(). */
+    /**
+     * Call this method from your Activity's onStop().
+     */
     public void onStop() {
         debugLog("onStop");
         assertConfigured("onStop");
@@ -500,10 +425,10 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
      * Returns the invitation ID received through an invitation notification.
      * This should be called from your GameHelperListener's
      *
-     * @link{GameHelperListener#onSignInSucceeded method, to check if there's an
-     *                                            invitation available. In that
-     *                                            case, accept the invitation.
      * @return The id of the invitation, or null if none was received.
+     * @link{GameHelperListener#onSignInSucceeded method, to check if there's an
+     * invitation available. In that
+     * case, accept the invitation.
      */
     public String getInvitationId() {
         if (!mGoogleApiClient.isConnected()) {
@@ -518,10 +443,10 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
      * Returns the invitation received through an invitation notification. This
      * should be called from your GameHelperListener's
      *
-     * @link{GameHelperListener#onSignInSucceeded method, to check if there's an
-     *                                            invitation available. In that
-     *                                            case, accept the invitation.
      * @return The invitation, or null if none was received.
+     * @link{GameHelperListener#onSignInSucceeded method, to check if there's an
+     * invitation available. In that
+     * case, accept the invitation.
      */
     public Invitation getInvitation() {
         if (!mGoogleApiClient.isConnected()) {
@@ -560,9 +485,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
      * Returns the tbmp match received through an invitation notification. This
      * should be called from your GameHelperListener's
      *
-     * @link{GameHelperListener#onSignInSucceeded method, to check if there's a
-     *                                            match available.
      * @return The match, or null if none was received.
+     * @link{GameHelperListener#onSignInSucceeded method, to check if there's a
+     * match available.
      */
     public TurnBasedMatch getTurnBasedMatch() {
         if (!mGoogleApiClient.isConnected()) {
@@ -577,10 +502,10 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
      * Returns the requests received through the onConnected bundle. This should
      * be called from your GameHelperListener's
      *
-     * @link{GameHelperListener#onSignInSucceeded method, to check if there are
-     *                                            incoming requests that must be
-     *                                            handled.
      * @return The requests, or null if none were received.
+     * @link{GameHelperListener#onSignInSucceeded method, to check if there are
+     * incoming requests that must be
+     * handled.
      */
     public ArrayList<GameRequest> getRequests() {
         if (!mGoogleApiClient.isConnected()) {
@@ -591,7 +516,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         return mRequests;
     }
 
-    /** Enables debug logging */
+    /**
+     * Enables debug logging
+     */
     public void enableDebugLog(boolean enabled) {
         mDebugLog = enabled;
         if (enabled) {
@@ -606,7 +533,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         enableDebugLog(enabled);
     }
 
-    /** Sign out and disconnect from the APIs. */
+    /**
+     * Sign out and disconnect from the APIs.
+     */
     public void signOut() {
         if (!mGoogleApiClient.isConnected()) {
             // nothing to do
@@ -781,7 +710,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         }
     }
 
-    /** Called when we successfully obtain a connection to a client. */
+    /**
+     * Called when we successfully obtain a connection to a client.
+     */
     @Override
     public void onConnected(Bundle connectionHint) {
         debugLog("onConnected: connected!");
@@ -824,9 +755,6 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         notifyListener(true);
     }
 
-    private final String GAMEHELPER_SHARED_PREFS = "GAMEHELPER_SHARED_PREFS";
-    private final String KEY_SIGN_IN_CANCELLATIONS = "KEY_SIGN_IN_CANCELLATIONS";
-
     // Return the number of times the user has cancelled the sign-in flow in the
     // life of the app
     int getSignInCancellations() {
@@ -856,7 +784,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         editor.apply();
     }
 
-    /** Handles a connection failure. */
+    /**
+     * Handles a connection failure.
+     */
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         // save connection result for later reference
@@ -985,7 +915,9 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         notifyListener(false);
     }
 
-    /** Called when we are disconnected from the Google API client. */
+    /**
+     * Called when we are disconnected from the Google API client.
+     */
     @Override
     public void onConnectionSuspended(int cause) {
         debugLog("onConnectionSuspended, cause=" + cause);
@@ -1008,61 +940,6 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
                         + "" + "Error was: " + mSignInFailureReason);
             }
         }
-    }
-
-    /** Shows an error dialog that's appropriate for the failure reason. */
-    public static void showFailureDialog(Activity activity, int actResp,
-                                         int errorCode) {
-        if (activity == null) {
-            Log.e("GameHelper", "*** No Activity. Can't show failure dialog!");
-            return;
-        }
-        Dialog errorDialog = null;
-
-        switch (actResp) {
-            case GamesActivityResultCodes.RESULT_APP_MISCONFIGURED:
-                errorDialog = makeSimpleDialog(activity, GooglePlayUtils.getString(
-                        activity, GooglePlayUtils.R_APP_MISCONFIGURED));
-                break;
-            case GamesActivityResultCodes.RESULT_SIGN_IN_FAILED:
-                errorDialog = makeSimpleDialog(activity, GooglePlayUtils.getString(
-                        activity, GooglePlayUtils.R_SIGN_IN_FAILED));
-                break;
-            case GamesActivityResultCodes.RESULT_LICENSE_FAILED:
-                errorDialog = makeSimpleDialog(activity, GooglePlayUtils.getString(
-                        activity, GooglePlayUtils.R_LICENSE_FAILED));
-                break;
-            default:
-                // No meaningful Activity response code, so generate default Google
-                // Play services dialog
-                errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
-                        activity, RC_UNUSED, null);
-                if (errorDialog == null) {
-                    // get fallback dialog
-                    Log.e("GameHelper",
-                            "No standard error dialog available. Making fallback dialog.");
-                    errorDialog = makeSimpleDialog(
-                            activity,
-                            GooglePlayUtils.getString(activity,
-                                    GooglePlayUtils.R_UNKNOWN_ERROR)
-                                    + " "
-                                    + GooglePlayUtils.errorCodeToString(errorCode));
-                }
-        }
-
-        errorDialog.show();
-    }
-
-    static Dialog makeSimpleDialog(Activity activity, String text) {
-        return (new AlertDialog.Builder(activity)).setMessage(text)
-                .setNeutralButton(android.R.string.ok, null).create();
-    }
-
-    static Dialog
-    makeSimpleDialog(Activity activity, String title, String text) {
-        return (new AlertDialog.Builder(activity)).setMessage(text)
-                .setTitle(title).setNeutralButton(android.R.string.ok, null)
-                .create();
     }
 
     public Dialog makeSimpleDialog(String text) {
@@ -1095,19 +972,147 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         Log.e(TAG, "*** GameHelper ERROR: " + message);
     }
 
+    // Not recommended for general use. This method forces the
+    // "connect on start" flag
+    // to a given state. This may be useful when using GameHelper in a
+    // non-standard
+    // sign-in flow.
+    public void setConnectOnStart(boolean connectOnStart) {
+        debugLog("Forcing mConnectOnStart=" + connectOnStart);
+        mConnectOnStart = connectOnStart;
+    }
+
+    public enum GooglePlayEvent {
+        SHOW_INTERSTITIAL, SHOW_REWARD_AD,
+        SIGN_IN_SUCCESS, SIGN_IN_FAIL, SIGN_OUT,
+        ACHIEVEMENTS_ITEMS_FAIL, ACHIEVEMENTS_ITEMS_READY,
+        LEADERBOARDS_META_FAIL, LEADERBOARDS_META_READY,
+        LEADERBOARDS_FAIL, LEADERBOARDS_READY,
+        LEADERBOARDS_MORE_FAIL, LEADERBOARDS_MORE_READY,
+
+        ONLINE_SAVE_ITEM_LOAD_FAIL, ONLINE_SAVE_ITEM_LOAD_READY,
+
+        PLAYERS_ACTIVE_FAIL, PLAYERS_ACTIVE_READY,
+        PLAYERS_ALL_FAIL, PLAYERS_ALL_READY,
+        PLAYERS_ALL_MORE_FAIL, PLAYERS_ALL_MORE_READY,
+
+
+        SAVE_MATCH_LOCAL_FAIL, SAVE_MATCH_LOCAL_SUCCESS,
+        LOAD_MATCH_LOCAL_FAIL, LOAD_MATCH_LOCAL_SUCCESS, SELECT_LOAD_MATCH_LOCAL_FAIL,
+        FINISH_MATCH_ONLINE_FAIL, FINISH_MATCH_ONLINE_SUCCESS,
+        LOAD_MATCH_ONLINE_FAIL, LOAD_MATCH_ONLINE_SUCCESS, SELECT_LOAD_MATCH_ONLINE_FAIL, SELECT_PLAYERS_ONLINE_FAIL,
+        TAKE_TURN_ONLINE_FAIL, TAKE_TURN_ONLINE_SUCCESS,
+        START_MATCH_ONLINE_FAIL, START_MATCH_ONLINE_SUCCESS,
+        REMATCH_ONLINE_FAIL, REMATCH_ONLINE_SUCCESS,
+        ACCEPT_INVITATION_ONLINE_FAIL, ACCEPT_INVITATION_ONLINE_SUCCESS,
+
+        LEADERBOARD_SPINNER_CHANGE;
+
+        /**
+         * Send the action event
+         */
+        public final void post() {
+            Bus.postEnum(this);
+        }
+    }
+
+    public enum SaveType {
+        INVITATION, ONGOING, YOUR_TURN, THEIR_TURN, COMPLETE
+    }
+
+    public enum Span {
+        DAILY, WEEKLY, ALL_TIME;
+
+        public static Span getFromInt(int variantInt) {
+            switch (variantInt) {
+                case LeaderboardVariant.TIME_SPAN_DAILY:
+                    return DAILY;
+                case LeaderboardVariant.TIME_SPAN_WEEKLY:
+                    return WEEKLY;
+                case LeaderboardVariant.TIME_SPAN_ALL_TIME:
+                    return ALL_TIME;
+                default:
+                    return ALL_TIME;
+            }
+        }
+
+        public int getInt() {
+            switch (ordinal()) {
+                case 0:
+                    return LeaderboardVariant.TIME_SPAN_DAILY;
+                case 1:
+                    return LeaderboardVariant.TIME_SPAN_WEEKLY;
+                case 2:
+                    return LeaderboardVariant.TIME_SPAN_ALL_TIME;
+                default:
+                    return LeaderboardVariant.TIME_SPAN_ALL_TIME;
+            }
+        }
+    }
+
+    public enum Collection {
+        SOCIAL, PUBLIC;
+
+        public static Collection getFromInt(int variantInt) {
+            switch (variantInt) {
+                case LeaderboardVariant.COLLECTION_PUBLIC:
+                    return PUBLIC;
+                case LeaderboardVariant.COLLECTION_SOCIAL:
+                    return SOCIAL;
+                default:
+                    return PUBLIC;
+            }
+        }
+
+        public int getInt() {
+            switch (ordinal()) {
+                case 0:
+                    return LeaderboardVariant.COLLECTION_SOCIAL;
+                case 1:
+                    return LeaderboardVariant.COLLECTION_PUBLIC;
+                default:
+                    return LeaderboardVariant.COLLECTION_PUBLIC;
+            }
+        }
+    }
+
+    /**
+     * Listener for sign-in success or failure events.
+     */
+    public interface GameHelperListener {
+        /**
+         * Called when sign-in fails. As a result, a "Sign-In" button can be
+         * shown to the user; when that button is clicked, call
+         *
+         * @link{GamesHelper#beginUserInitiatedSignIn . Note that not all calls
+         * to this method mean an
+         * error; it may be a result
+         * of the fact that automatic
+         * sign-in could not proceed
+         * because user interaction
+         * was required (consent
+         * dialogs). So
+         * implementations of this
+         * method should NOT display
+         * an error message unless a
+         * call to @link{GamesHelper#
+         * hasSignInError} indicates
+         * that an error indeed
+         * occurred.
+         */
+        void onSignInFailed();
+
+        /**
+         * Called when sign-in succeeds.
+         */
+        void onSignInSucceeded();
+    }
+
     // Represents the reason for a sign-in failure
     public static class SignInFailureReason {
         public static final int NO_ACTIVITY_RESULT_CODE = -100;
         int mServiceErrorCode = 0;
         int mActivityResultCode = NO_ACTIVITY_RESULT_CODE;
-
-        public int getServiceErrorCode() {
-            return mServiceErrorCode;
-        }
-
-        public int getActivityResultCode() {
-            return mActivityResultCode;
-        }
 
         public SignInFailureReason(int serviceErrorCode, int activityResultCode) {
             mServiceErrorCode = serviceErrorCode;
@@ -1116,6 +1121,14 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 
         public SignInFailureReason(int serviceErrorCode) {
             this(serviceErrorCode, NO_ACTIVITY_RESULT_CODE);
+        }
+
+        public int getServiceErrorCode() {
+            return mServiceErrorCode;
+        }
+
+        public int getActivityResultCode() {
+            return mActivityResultCode;
         }
 
         @Override
@@ -1127,15 +1140,5 @@ public class GooglePlay implements GoogleApiClient.ConnectionCallbacks, GoogleAp
                     + GooglePlayUtils
                     .activityResponseCodeToString(mActivityResultCode) + ")"));
         }
-    }
-
-    // Not recommended for general use. This method forces the
-    // "connect on start" flag
-    // to a given state. This may be useful when using GameHelper in a
-    // non-standard
-    // sign-in flow.
-    public void setConnectOnStart(boolean connectOnStart) {
-        debugLog("Forcing mConnectOnStart=" + connectOnStart);
-        mConnectOnStart = connectOnStart;
     }
 }

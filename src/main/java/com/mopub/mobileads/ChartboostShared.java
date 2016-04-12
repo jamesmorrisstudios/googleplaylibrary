@@ -25,12 +25,10 @@ import static com.mopub.mobileads.MoPubErrorCode.VIDEO_DOWNLOAD_ERROR;
 
 /**
  * Shared infrastructure for initializing the Chartboost SDK when mediated by MoPub
- *
+ * <p/>
  * Certified with Chartboost 5.3.0
  */
 public class ChartboostShared {
-    private static volatile ChartboostSingletonDelegate sDelegate = new ChartboostSingletonDelegate();
-
     /*
      * These keys are intended for MoPub internal use. Do not modify.
      */
@@ -38,17 +36,21 @@ public class ChartboostShared {
     public static final String APP_SIGNATURE_KEY = "appSignature";
     public static final String LOCATION_KEY = "location";
     public static final String LOCATION_DEFAULT = "Default";
-
-    @Nullable private static String mAppId;
-    @Nullable private static String mAppSignature;
+    private static volatile ChartboostSingletonDelegate sDelegate = new ChartboostSingletonDelegate();
+    @Nullable
+    private static String mAppId;
+    @Nullable
+    private static String mAppSignature;
 
     /**
      * Initialize the Chartboost SDK for the provided application id and app signature.
      */
     public static synchronized boolean initializeSdk(@NonNull Activity launcherActivity,
-            @NonNull Map<String, String> serverExtras) {
+                                                     @NonNull Map<String, String> serverExtras) {
         Preconditions.checkNotNull(launcherActivity);
         Preconditions.checkNotNull(serverExtras);
+
+        Log.v("ChartboostShared", "initializeSdk");
 
         // Validate Chartboost args
         if (!serverExtras.containsKey(APP_ID_KEY)) {
@@ -81,6 +83,7 @@ public class ChartboostShared {
         Chartboost.setAutoCacheAds(false);
         Chartboost.setShouldDisplayLoadingViewForMoreApps(false);
 
+
         // Callers of this method need to call onCreate & onStart themselves.
         return true;
     }
@@ -88,6 +91,15 @@ public class ChartboostShared {
     @NonNull
     public static ChartboostSingletonDelegate getDelegate() {
         return sDelegate;
+    }
+
+    @VisibleForTesting
+    @Deprecated
+    static void reset() {
+        // Clears all the locations to load and other state.
+        sDelegate = new ChartboostSingletonDelegate();
+        mAppId = null;
+        mAppSignature = null;
     }
 
     /**
@@ -99,22 +111,28 @@ public class ChartboostShared {
         private static final CustomEventInterstitialListener NULL_LISTENER =
                 new CustomEventInterstitialListener() {
                     @Override
-                    public void onInterstitialLoaded() { }
+                    public void onInterstitialLoaded() {
+                    }
 
                     @Override
-                    public void onInterstitialFailed(MoPubErrorCode errorCode) { }
+                    public void onInterstitialFailed(MoPubErrorCode errorCode) {
+                    }
 
                     @Override
-                    public void onInterstitialShown() { }
+                    public void onInterstitialShown() {
+                    }
 
                     @Override
-                    public void onInterstitialClicked() { }
+                    public void onInterstitialClicked() {
+                    }
 
                     @Override
-                    public void onLeaveApplication() { }
+                    public void onLeaveApplication() {
+                    }
 
                     @Override
-                    public void onInterstitialDismissed() { }
+                    public void onInterstitialDismissed() {
+                    }
                 };
 
         //***************
@@ -127,7 +145,7 @@ public class ChartboostShared {
         private Set<String> mRewardedVideoLocationsToLoad = Collections.synchronizedSet(new TreeSet<String>());
 
         public void registerInterstitialListener(@NonNull String location,
-                @NonNull CustomEventInterstitialListener interstitialListener) {
+                                                 @NonNull CustomEventInterstitialListener interstitialListener) {
             Preconditions.checkNotNull(location);
             Preconditions.checkNotNull(interstitialListener);
             mInterstitialListenersForLocation.put(location, interstitialListener);
@@ -282,15 +300,5 @@ public class ChartboostShared {
         public boolean shouldDisplayMoreApps(final String location) {
             return false;
         }
-    }
-
-
-    @VisibleForTesting
-    @Deprecated
-    static void reset() {
-        // Clears all the locations to load and other state.
-        sDelegate = new ChartboostSingletonDelegate();
-        mAppId = null;
-        mAppSignature = null;
     }
 }

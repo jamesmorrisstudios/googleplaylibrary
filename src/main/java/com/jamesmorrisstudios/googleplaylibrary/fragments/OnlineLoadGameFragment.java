@@ -4,21 +4,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
+import com.jamesmorrisstudios.appbaselibrary.activityHandlers.SnackbarRequest;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineLoadHeader;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.OnlineSaveItem;
+import com.jamesmorrisstudios.googleplaylibrary.data.OnlineLoadHeader;
+import com.jamesmorrisstudios.googleplaylibrary.data.OnlineSaveItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.OnlineLoadGameAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.OnlineLoadGameContainer;
-import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.appbaselibrary.Bus;
-import com.jamesmorrisstudios.appbaselibrary.Utils;
+import com.jamesmorrisstudios.googleplaylibrary.util.UtilsAds;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
 import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
 import com.mopub.nativeads.ViewBinder;
@@ -38,7 +39,7 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new OnlineLoadGameAdapter(mListener);
-        if(AdUsage.getAdsEnabled()) {
+        if (!UtilsVersion.isPro()) {
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
@@ -58,7 +59,7 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
 
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             return myMoPubAdapter;
         }
         return adapter;
@@ -71,7 +72,7 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
 
     @Override
     public void itemClicked(int position) {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             itemClick(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
         } else {
             itemClick(adapter.getItems().get(position).data);
@@ -80,7 +81,7 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
 
     @Override
     public void onDestroy() {
-        if(myMoPubAdapter != null) {
+        if (myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
@@ -88,16 +89,17 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
 
     /**
      * Event subscriber for checking if achievements are ready
+     *
      * @param event Event
      */
     @Subscribe
     public final void onGooglePlayEvent(@NonNull GooglePlay.GooglePlayEvent event) {
-        switch(event) {
+        switch (event) {
             case ONLINE_SAVE_ITEM_LOAD_READY:
                 applyData();
                 break;
             case ONLINE_SAVE_ITEM_LOAD_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 applyData();
                 break;
         }
@@ -106,40 +108,39 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
     private void applyData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
         ArrayList<OnlineSaveItem> items;
-        if(GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.INVITATION)) {
+        if (GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.INVITATION)) {
             data.add(new OnlineLoadGameContainer(new OnlineLoadHeader(getString(R.string.invitations))));
             items = GooglePlayCalls.getInstance().getOnlineSaveItems(GooglePlay.SaveType.INVITATION);
-            for(OnlineSaveItem item : items) {
+            for (OnlineSaveItem item : items) {
                 data.add(new OnlineLoadGameContainer(item));
             }
         }
-        if(GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.YOUR_TURN)) {
+        if (GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.YOUR_TURN)) {
             data.add(new OnlineLoadGameContainer(new OnlineLoadHeader(getString(R.string.your_turn))));
             items = GooglePlayCalls.getInstance().getOnlineSaveItems(GooglePlay.SaveType.YOUR_TURN);
-            for(OnlineSaveItem item : items) {
+            for (OnlineSaveItem item : items) {
                 data.add(new OnlineLoadGameContainer(item));
             }
         }
-        if(GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.THEIR_TURN)) {
+        if (GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.THEIR_TURN)) {
             data.add(new OnlineLoadGameContainer(new OnlineLoadHeader(getString(R.string.their_turn))));
             items = GooglePlayCalls.getInstance().getOnlineSaveItems(GooglePlay.SaveType.THEIR_TURN);
-            for(OnlineSaveItem item : items) {
+            for (OnlineSaveItem item : items) {
                 data.add(new OnlineLoadGameContainer(item));
             }
         }
-        if(GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.COMPLETE)) {
+        if (GooglePlayCalls.getInstance().hasOnlineSaveItems(GooglePlay.SaveType.COMPLETE)) {
             data.add(new OnlineLoadGameContainer(new OnlineLoadHeader(getString(R.string.completed))));
             items = GooglePlayCalls.getInstance().getOnlineSaveItems(GooglePlay.SaveType.COMPLETE);
-            for(OnlineSaveItem item : items) {
+            for (OnlineSaveItem item : items) {
                 data.add(new OnlineLoadGameContainer(item));
             }
         }
         applyData(data);
 
 
-
         //data.add(new OnlineLoadGameContainer(new OnlineLoadHeader(getString(R.string.invitations))));
-       // data.add(new OnlineLoadGameContainer(new OnlineSaveItem(true)));
+        // data.add(new OnlineLoadGameContainer(new OnlineSaveItem(true)));
         //data.add(new OnlineLoadGameContainer(new OnlineLoadHeader(getString(R.string.your_turn))));
         //data.add(new OnlineLoadGameContainer(new OnlineSaveItem(false)));
         //data.add(new OnlineLoadGameContainer(new OnlineLoadHeader(getString(R.string.their_turn))));
@@ -222,8 +223,8 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
     @Override
     protected void afterViewCreated() {
         setEnablePullToRefresh(true);
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdIdFull());
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
+            myMoPubAdapter.loadAds(UtilsAds.getMopubNativeAdIdFull());
         }
     }
 }

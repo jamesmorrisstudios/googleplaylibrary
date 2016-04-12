@@ -80,6 +80,9 @@
             //Check if Chartboost is using Web Views
             `bool isWebViewEnabled()`
 
+            //Enable Activity Lifecycle Callbacks (Only available in Android 4.X or above and disabled by default)
+            `void setActivityCallbacks(boolean enabled)`
+
 * Class
 	`CBAnalytics`
 		* Methods:

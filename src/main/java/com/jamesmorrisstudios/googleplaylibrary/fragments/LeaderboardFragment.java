@@ -6,21 +6,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
+import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
+import com.jamesmorrisstudios.appbaselibrary.activityHandlers.SnackbarRequest;
+import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.dialogHelper.PlayerDetailsDialogRequest;
+import com.jamesmorrisstudios.googleplaylibrary.dialogRequests.PlayerDetailsDialogRequest;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.googleplaylibrary.googlePlay.LeaderboardItem;
+import com.jamesmorrisstudios.googleplaylibrary.data.LeaderboardItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardContainer;
-import com.jamesmorrisstudios.googleplaylibrary.util.AdUsage;
-import com.jamesmorrisstudios.appbaselibrary.Bus;
-import com.jamesmorrisstudios.appbaselibrary.Utils;
+import com.jamesmorrisstudios.googleplaylibrary.util.UtilsAds;
 import com.mopub.nativeads.MoPubRecyclerAdapter;
 import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
 import com.mopub.nativeads.ViewBinder;
@@ -42,7 +43,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new LeaderboardAdapter(mListener);
-        if(AdUsage.getAdsEnabled()) {
+        if (!UtilsVersion.isPro()) {
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
@@ -60,7 +61,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
 
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             return myMoPubAdapter;
         }
         return adapter;
@@ -74,7 +75,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
 
     @Override
     public void itemClicked(int position) {
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
             itemClicker(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
         } else {
             itemClicker(adapter.getItems().get(position).data);
@@ -82,7 +83,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
     }
 
     public void onDestroy() {
-        if(myMoPubAdapter != null) {
+        if (myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
@@ -90,15 +91,15 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
 
     @Override
     protected void saveState(Bundle bundle) {
-        if(leaderboardId != null) {
+        if (leaderboardId != null) {
             bundle.putString("leaderboardId", leaderboardId);
         }
     }
 
     @Override
     protected void restoreState(Bundle bundle) {
-        if(bundle != null) {
-            if(bundle.containsKey("leaderboardId")) {
+        if (bundle != null) {
+            if (bundle.containsKey("leaderboardId")) {
                 leaderboardId = bundle.getString("leaderboardId");
             }
         }
@@ -141,9 +142,9 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
 
     private void applyData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if(GooglePlayCalls.getInstance().hasLeaderboards()) {
+        if (GooglePlayCalls.getInstance().hasLeaderboards()) {
             ArrayList<LeaderboardItem> items = GooglePlayCalls.getInstance().getLeaderboards();
-            for(LeaderboardItem item : items) {
+            for (LeaderboardItem item : items) {
                 data.add(new LeaderboardContainer(item));
             }
         }
@@ -152,9 +153,9 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
 
     private void appendData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if(GooglePlayCalls.getInstance().hasLeaderboardsMore()) {
+        if (GooglePlayCalls.getInstance().hasLeaderboardsMore()) {
             ArrayList<LeaderboardItem> items = GooglePlayCalls.getInstance().getLeaderboardsMore();
-            for(LeaderboardItem item : items) {
+            for (LeaderboardItem item : items) {
                 data.add(new LeaderboardContainer(item));
             }
         }
@@ -168,7 +169,7 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
 
     protected void itemClicker(@NonNull BaseRecycleContainer baseRecycleContainer) {
         Log.v("LeaderboardFragment", "Load player details");
-        LeaderboardItem item = (LeaderboardItem)baseRecycleContainer.getItem();
+        LeaderboardItem item = (LeaderboardItem) baseRecycleContainer.getItem();
         Bus.postObject(new PlayerDetailsDialogRequest(item.player));
     }
 
@@ -190,12 +191,12 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
     @Override
     public void onStop() {
         super.onStop();
-        leaderboardListener.setLeaderboardSpinnerVisibility(false);
+        leaderboardListener.setSpinnerVisibility(false);
     }
 
     @Subscribe
     public void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
-        switch(event) {
+        switch (event) {
             case LEADERBOARD_SPINNER_CHANGE:
                 startRefresh(false);
                 break;
@@ -203,21 +204,21 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
                 applyData();
                 break;
             case LEADERBOARDS_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 applyData();
                 break;
             case LEADERBOARDS_MORE_READY:
                 appendData();
                 break;
             case LEADERBOARDS_MORE_FAIL:
-                Utils.toastShort(getString(R.string.loading_failed));
+                new SnackbarRequest(AppBase.getContext().getString(R.string.loading_failed), SnackbarRequest.SnackBarDuration.SHORT).execute();
                 break;
         }
     }
 
     @Override
     protected void setStartData(@Nullable Bundle bundle, int i) {
-        if(bundle != null && bundle.containsKey("leaderboardId")) {
+        if (bundle != null && bundle.containsKey("leaderboardId")) {
             leaderboardId = bundle.getString("leaderboardId");
         }
     }
@@ -248,17 +249,23 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
     }
 
     @Override
-    protected void afterViewCreated() {
-        setEnablePullToRefresh(true);
-        leaderboardListener.setLeaderboardSpinnerVisibility(true);
-        if(myMoPubAdapter != null && AdUsage.getAdsEnabled()) {
-            myMoPubAdapter.loadAds(AdUsage.getMopubNativeAdId());
+    public void onResume() {
+        super.onResume();
+        String adId = UtilsAds.getMopubNativeAdId();
+        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
+            Log.v("AchievementFragment", "Loading Ads");
+            myMoPubAdapter.loadAds(adId);
         }
     }
 
-    public interface OnLeaderboardListener {
-        void setLeaderboardSpinnerVisibility(boolean visible);
+    @Override
+    protected void afterViewCreated() {
+        setEnablePullToRefresh(true);
+        leaderboardListener.setSpinnerVisibility(true);
+    }
 
+    public interface OnLeaderboardListener {
+        void setSpinnerVisibility(boolean visible);
     }
 
 }

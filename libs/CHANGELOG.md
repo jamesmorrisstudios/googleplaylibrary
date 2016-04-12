@@ -1,5 +1,32 @@
 Android Change Log
 
+Version 6.4.1 *(2016-03-23)*
+----------------------------
+
+*Features:*
+
+*Improvements:*
+
+MO-1148 @sathish, Parsing exception for api/config when determining the right endpoint to make adserver calls.
+MO-1156 @sathish, Minor issue in logging exception, if trying to access file directories that are prohibited access.
+MO-1157 @sathish, HasXXX() calls always returns false for webview ad formats. Like for example HasInterstitial(location).
+
+Version 6.4.0 *(2016-03-14)*
+----------------------------
+
+*Features:*
+- TBD Marketing Text
+- New method 'setActivityCallbacks(boolean enabled)'. Use it to enable the Activity Lifecycle Activities. Only available in Android 4.X and above versions. This behavior is disabled by default.
+
+*Improvements:*
+- Retry downloading assets that fail
+- We invalidate cached impressions on soft boot ups if any shared assets have been deleted
+- Fixed issues causing "Could Not Delete Cache Entry for key" log message on startup
+
+MO-1041 @sathish, Support for registering Activity Lifecycle Callbacks for only apps that support Android API 14 and above
+
+
+
 Version 6.3.0 *(2016-02-08)*
 ----------------------------
 - Upgrade now to enable Chartboost's behind-the-scenes video optimization.

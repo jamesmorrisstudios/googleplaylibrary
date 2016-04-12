@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/achievement_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
+    android:padding="16dip">
+
+    <!-- Icon -->
+    <ImageView
+        android:id="@+id/achievement_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_achievement"
+        android:tint="?attr/colorIconTint" />
+
+    <!-- Main Text -->
+    <TextView
+        android:id="@+id/achievement_main_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/achievement_icon"
+        android:text=""
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="20sp" />
+
+    <!-- Number of achievements text -->
+    <TextView
+        android:id="@+id/achievement_count_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="15sp" />
+
+    <!-- Progress bar for amount of achievements completed -->
+    <com.jamesmorrisstudios.appbaselibrary.controls.progress.ProgressBarDeterminateHorizontal
+        android:id="@+id/achievement_progress"
+        android:layout_width="100dp"
+        android:layout_height="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/achievement_count_text"
+        android:background="?attr/colorPrimary" />
+
+</RelativeLayout>
