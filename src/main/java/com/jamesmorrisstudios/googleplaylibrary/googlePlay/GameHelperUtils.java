@@ -15,9 +15,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by James on 5/11/2015.
+ * Created by btco on 2/10/14.
  */
-public class GooglePlayUtils {
+class GameHelperUtils {
     public static final int R_UNKNOWN_ERROR = 0;
     public static final int R_SIGN_IN_FAILED = 1;
     public static final int R_APP_MISCONFIGURED = 2;
@@ -32,7 +32,7 @@ public class GooglePlayUtils {
 
     private final static int[] RES_IDS = {
             R.string.error, R.string.sign_in_failed,
-            R.string.gamehelper_app_misconfigured, R.string.failed
+            R.string.gamehelper_app_misconfigured, R.string.gamehelper_license_failed
     };
 
     static String activityResponseCodeToString(int respCode) {
@@ -173,12 +173,11 @@ public class GooglePlayUtils {
             return ctx.getString(resId);
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.w(GooglePlay.TAG, "*** GameHelper could not found resource id #" + resId + ". " +
-                    "This probably happened because you included it as a stand-alone JAR. " +
-                    "BaseGameUtils should be compiled as a LIBRARY PROJECT, so that it can access " +
-                    "its resources. Using a fallback string.");
+            Log.w(GameHelper.TAG, "*** GameHelper could not found resource id #" + resId + ". " +
+                "This probably happened because you included it as a stand-alone JAR. " +
+                "BaseGameUtils should be compiled as a LIBRARY PROJECT, so that it can access " +
+                "its resources. Using a fallback string.");
             return FALLBACK_STRINGS[whichString];
         }
     }
-
 }

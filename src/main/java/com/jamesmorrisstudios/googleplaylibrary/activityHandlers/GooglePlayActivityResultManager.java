@@ -1,5 +1,6 @@
 package com.jamesmorrisstudios.googleplaylibrary.activityHandlers;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
@@ -11,7 +12,7 @@ import com.squareup.otto.Subscribe;
 public class GooglePlayActivityResultManager extends GooglePlayBaseBuildManager {
 
     @Subscribe
-    public void onSettingEvent(final GooglePlay.GooglePlayEvent event) {
+    public void onAdEvent(@NonNull final GooglePlay.AdEvent event) {
         switch (event) {
             case SHOW_INTERSTITIAL:
                 Log.v("BaseAdLauncherActivity", "Showing interstitial ad");

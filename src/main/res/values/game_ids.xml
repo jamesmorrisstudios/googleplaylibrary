@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="achievements_all">
+
+    </string-array>
+
+    <string-array name="achievements_online">
+
+    </string-array>
+
+    <string-array name="achievements_offline">
+
+    </string-array>
+
+    <string-array name="leaderboards_all">
+
+    </string-array>
+
+    <string-array name="leaderboards_online">
+
+    </string-array>
+
+    <string-array name="leaderboards_offline">
+
+    </string-array>
+
+</resources>

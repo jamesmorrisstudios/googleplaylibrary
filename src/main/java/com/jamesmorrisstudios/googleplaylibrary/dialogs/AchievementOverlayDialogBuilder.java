@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 
 import com.google.android.gms.common.images.ImageManager;
 import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
+import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleViewHolder;
 import com.jamesmorrisstudios.googleplaylibrary.R;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementContainer;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.AchievementViewHolder;
@@ -37,7 +38,17 @@ public class AchievementOverlayDialogBuilder {
     }
 
     public AlertDialog build() {
-        AchievementViewHolder overlayHolder = new AchievementViewHolder(view, false, null, ImageManager.create(AppBase.getContext()));
+        AchievementViewHolder overlayHolder = new AchievementViewHolder(view, false, new BaseRecycleViewHolder.cardClickListener() {
+            @Override
+            public void cardClicked(int i) {
+
+            }
+
+            @Override
+            public void toggleExpanded(int i) {
+
+            }
+        }, ImageManager.create(AppBase.getContext()));
         overlayHolder.bindItem(item, false);
         dialog = builder.create();
         return dialog;

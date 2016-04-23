@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,6 +22,7 @@ import com.android.vending.billing.IInAppBillingService;
 import com.chartboost.sdk.Chartboost;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
@@ -30,6 +32,7 @@ import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.snapshot.Snapshots;
 import com.jamesmorrisstudios.appbaselibrary.AutoLockOrientation;
 import com.jamesmorrisstudios.appbaselibrary.Bus;
+import com.jamesmorrisstudios.appbaselibrary.UtilsDisplay;
 import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
 import com.jamesmorrisstudios.appbaselibrary.activities.BaseActivity;
 import com.jamesmorrisstudios.appbaselibrary.activityHandlers.SnackbarRequest;
@@ -43,6 +46,7 @@ import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.LeaderboardMetaFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.OnlineLoadGameFragment;
 import com.jamesmorrisstudios.googleplaylibrary.fragments.PlayerPickerFragment;
+import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GameHelper;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
 import com.jamesmorrisstudios.googleplaylibrary.iab.IabHelper;
@@ -65,7 +69,8 @@ import java.util.Set;
  * Created by James on 5/11/2015.
  */
 public abstract class GooglePlayActivity extends BaseActivity implements
-        GooglePlay.GameHelperListener,
+        GooglePlay.GooglePlayListener,
+        GameHelper.GameHelperListener,
         LeaderboardMetaFragment.OnLeaderboardMetaListener,
         LeaderboardFragment.OnLeaderboardListener,
         MoPubInterstitial.InterstitialAdListener {
@@ -75,9 +80,18 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     private final static int RC_LOOK_AT_MATCHES = 10000;
     private final static int RC_LOOK_AT_SNAPSHOTS = 10001;
     private final static int RC_SELECT_PLAYERS = 11000;
+    // The game helper object. This class is mainly a wrapper around this object.
+    protected GameHelper mHelper;
+    // We expose these constants here because we don't want users of this class
+    // to have to know about GameHelper at all.
+    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
+    public static final int CLIENT_SNAPSHOT = GameHelper.CLIENT_SNAPSHOT;
+    public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
+    // Requested clients. By default, that's just the games client.
+    protected boolean mDebugLog = true;
     //In app billing
     protected IInAppBillingService mService;
-    protected IabHelper mHelper;
+    protected IabHelper iabHelper;
     //Activity handlers
     GooglePlayDialogBuildManager dialogBuildManager;
     GooglePlayActivityResultManager activityResultManager;
@@ -108,7 +122,7 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             if (result.isFailure()) {
                 // Handle failure
             } else {
-                mHelper.consumeAsync(inventory.getPurchase(UPGRADE_PRO_SKU), consumeProFinishedListener);
+                iabHelper.consumeAsync(inventory.getPurchase(UPGRADE_PRO_SKU), consumeProFinishedListener);
             }
         }
     };
@@ -169,7 +183,9 @@ public abstract class GooglePlayActivity extends BaseActivity implements
 
         @Override
         public void onRewardedVideoClosed(@NonNull String adUnitId) {
-
+            Log.v("Chartboost", "Reward Ad Closed");
+            //UtilsDisplay.resetImmersiveMode(GooglePlayActivity.this, true);
+            cacheRewardAd();
         }
 
         @Override
@@ -177,6 +193,7 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             if (reward.isSuccessful()) {
                 Log.v("Chartboost", "Reward: " + reward);
                 rewardAdWatched(reward.getAmount());
+                GooglePlay.AdEvent.REWARD_AD_WATCHED.setAmount(reward.getAmount()).post();
             }
         }
     };
@@ -279,15 +296,12 @@ public abstract class GooglePlayActivity extends BaseActivity implements
                 disableAds();
             }
             startIABHelper();
-            GooglePlay.getInstance().init(this, getGooglePlayClients());
-            if (getPlayGamesEnabledPref()) {
-                if (GooglePlay.getInstance().isFirstLaunch()) {
-                    GooglePlay.getInstance().setup(this);
-                    GooglePlay.getInstance().setHasLaunched();
-                }
+            if (mHelper == null) {
+                getGameHelper();
             }
+            mHelper.setup(this);
         } else {
-            //Ads still work without google ic_play_match services but the user cant remove them with an IAP
+            //Ads still work without google play services but the user cant remove them with an IAP
             enableAds();
         }
         initSpinners();
@@ -297,11 +311,9 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     public void onStart() {
         super.onStart();
         if (playServicesEnabled) {
-            if (getPlayGamesEnabledPref()) {
-                if (!GooglePlay.getInstance().isSignedIn()) {
-                    GooglePlay.getInstance().onStart(this);
-                }
-            }
+            mHelper.setConnectOnStart(getPlayGamesEnabledPref());
+            mHelper.onStart(this);
+            GooglePlayCalls.getInstance().attach(this);
         }
         MoPub.onStart(this);
         Chartboost.onStart(GooglePlayActivity.this);
@@ -328,6 +340,10 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     @Override
     public void onStop() {
         super.onStop();
+        if (playServicesEnabled) {
+            mHelper.onStop();
+            GooglePlayCalls.getInstance().detach();
+        }
         MoPub.onStop(this);
         Chartboost.onStop(GooglePlayActivity.this);
     }
@@ -339,10 +355,10 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             if (mService != null) {
                 unbindService(mServiceConn);
             }
-            if (mHelper != null) {
-                mHelper.dispose();
+            if (iabHelper != null) {
+                iabHelper.dispose();
             }
-            mHelper = null;
+            iabHelper = null;
         }
         if (mInterstitial != null) {
             mInterstitial.destroy();
@@ -356,6 +372,7 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     @Override
     public void onRestart() {
         super.onRestart();
+        Log.v("GooglePlayActivity", "onRestart");
         MoPub.onRestart(this);
     }
 
@@ -365,6 +382,15 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             super.onBackPressed();
             MoPub.onBackPressed(this);
         }
+    }
+
+    @NonNull
+    public final GameHelper getGameHelper() {
+        if (mHelper == null) {
+            mHelper = new GameHelper(this, getGooglePlayClients());
+            mHelper.enableDebugLog(mDebugLog);
+        }
+        return mHelper;
     }
 
     /**
@@ -377,8 +403,8 @@ public abstract class GooglePlayActivity extends BaseActivity implements
         }
         spinnerSpan = (AppCompatSpinner) findViewById(R.id.spinner_left);
         spinnerCollection = (AppCompatSpinner) findViewById(R.id.spinner_right);
-        final ArrayAdapter spinnerTimesAdapter = ArrayAdapter.createFromResource(actionBar.getThemedContext(), R.array.leaderboard_span, R.layout.support_simple_spinner_dropdown_item);
-        final ArrayAdapter spinnerCollectionAdapter = ArrayAdapter.createFromResource(actionBar.getThemedContext(), R.array.leaderboard_collection, R.layout.support_simple_spinner_dropdown_item);
+        final ArrayAdapter spinnerTimesAdapter = ArrayAdapter.createFromResource(actionBar.getThemedContext(), R.array.leaderboard_span, R.layout.simple_spinner_title_item);
+        final ArrayAdapter spinnerCollectionAdapter = ArrayAdapter.createFromResource(actionBar.getThemedContext(), R.array.leaderboard_collection, R.layout.simple_spinner_title_item);
         spinnerTimesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinnerCollectionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinnerSpan.setAdapter(spinnerTimesAdapter);
@@ -461,16 +487,16 @@ public abstract class GooglePlayActivity extends BaseActivity implements
         serviceIntent.setPackage("com.android.vending");
         bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
         // compute your public key and store it in base64EncodedPublicKey
-        mHelper = new IabHelper(this, getPublicKey());
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+        iabHelper = new IabHelper(this, getPublicKey());
+        iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
                     Log.d("BaseAdLauncherActivity", "Problem setting up In-app Billing: " + result);
-                    mHelper = null;
+                    iabHelper = null;
                     return;
                 }
                 Log.d("BaseAdLauncherActivity", "In app billing is setup and working: " + result);
-                mHelper.queryInventoryAsync(false, purchaseProInventoryListener);
+                iabHelper.queryInventoryAsync(false, purchaseProInventoryListener);
             }
         });
     }
@@ -587,6 +613,8 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             Log.v("GooglePlayActivity", "Cached: Showing Reward Ad");
             MoPub.showRewardedVideo(adId);
             return true;
+        } else {
+            new SnackbarRequest(getString(R.string.ad_unavailable), SnackbarRequest.SnackBarDuration.LONG).execute();
         }
         Log.v("GooglePlayActivity", "NOT Cached: Skipping Reward Ad");
         return false;
@@ -651,12 +679,12 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             new SnackbarRequest(AppBase.getContext().getString(R.string.pro_unlocked), SnackbarRequest.SnackBarDuration.SHORT).execute();
             return;
         }
-        if (mHelper == null) {
+        if (iabHelper == null) {
             new SnackbarRequest(AppBase.getContext().getString(R.string.error), SnackbarRequest.SnackBarDuration.SHORT).execute();
             return;
         }
         AutoLockOrientation.enableAutoLock(this);
-        mHelper.launchPurchaseFlow(this, UPGRADE_PRO_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
+        iabHelper.launchPurchaseFlow(this, UPGRADE_PRO_SKU, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
             public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
                 if (result.isSuccess() && purchase.getSku().equals(UPGRADE_PRO_SKU) && purchase.getDeveloperPayload().equals("REMOVE_ADS_PURCHASE_TOKEN")) {
                     Prefs.putString(getResources().getString(R.string.settings_pref), "ORDERID", purchase.getOrderId());
@@ -678,8 +706,8 @@ public abstract class GooglePlayActivity extends BaseActivity implements
      * It cannot be undone without purchasing pro again.
      */
     public final void consumeProUpgrade() {
-        if (mHelper != null) {
-            mHelper.queryInventoryAsync(consumeProInventoryListener);
+        if (iabHelper != null) {
+            iabHelper.queryInventoryAsync(consumeProInventoryListener);
         }
     }
 
@@ -704,15 +732,11 @@ public abstract class GooglePlayActivity extends BaseActivity implements
      */
     public final boolean isGooglePlayReady(boolean tryToSignIn, boolean showStatusOnFailure) {
         if (playServicesEnabled) {
-            if (GooglePlay.getInstance().isSignedIn()) {
+            if(isSignedIn()) {
                 return true;
-            } else if (tryToSignIn) {
-                if (!GooglePlay.getInstance().getHasSetup()) {
-                    GooglePlay.getInstance().setup(this);
-                }
-                GooglePlay.getInstance().beginUserInitiatedSignIn();
-                return false;
             }
+            getGameHelper();
+            beginUserInitiatedSignIn();
         } else if (showStatusOnFailure) {
             new SnackbarRequest(AppBase.getContext().getString(R.string.requires_google_play), SnackbarRequest.SnackBarDuration.SHORT).execute();
         }
@@ -752,7 +776,10 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     public final void onSignInSucceeded() {
         Log.v("Activity", "Sign in Succeeded");
         Bus.postEnum(GooglePlay.GooglePlayEvent.SIGN_IN_SUCCESS);
-        //Games.setViewForPopups(GooglePlay.getInstance().getApiClient(), findViewById(R.id.toolbarContainer)); //TODO
+        View view = findViewById(R.id.coordinatorLayout);
+        if(view != null) {
+            Games.setViewForPopups(getApiClient(), view);
+        }
         setPlayGamesEnabledPref(true);
     }
 
@@ -766,13 +793,13 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //Check if the mHelper (in app billing) consumes the result.
-        if (mHelper != null) {
-            mHelper.handleActivityResult(requestCode, resultCode, data);
+        //Check if the iabHelper (in app billing) consumes the result.
+        if (iabHelper != null) {
+            iabHelper.handleActivityResult(requestCode, resultCode, data);
         }
         //Check if the google play login uses the result
-        if (isGooglePlayReady(false, false)) {
-            GooglePlay.getInstance().onActivityResult(requestCode, resultCode, data);
+        if(mHelper != null) {
+            mHelper.onActivityResult(requestCode, resultCode, data);
         }
         //Check for page callbacks and results. TODO These will be removed once native pages have been created.
         if (requestCode == RC_LOOK_AT_MATCHES) {
@@ -916,10 +943,120 @@ public abstract class GooglePlayActivity extends BaseActivity implements
 
     public final boolean loadOfflineInboxFragment() {
         if (isGooglePlayReady(true, true)) {
-            startActivityForResult(Games.Snapshots.getSelectSnapshotIntent(GooglePlay.getInstance().getApiClient(), getString(R.string.select_save), false, true, Snapshots.DISPLAY_LIMIT_NONE), RC_LOOK_AT_SNAPSHOTS);
+            //startActivityForResult(Games.Snapshots.getSelectSnapshotIntent(GooglePlay.getInstance().getApiClient(), getString(R.string.select_save), false, true, Snapshots.DISPLAY_LIMIT_NONE), RC_LOOK_AT_SNAPSHOTS);
             return true;
         }
         return false;
+    }
+
+    @CallSuper
+    @Override
+    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+        if(item.getItemId() == R.id.navigation_remove_ads) {
+            item.setChecked(false);
+            if(UtilsVersion.isPro()) {
+                new SnackbarRequest(getString(R.string.ads_removed), SnackbarRequest.SnackBarDuration.SHORT).execute();
+            } else {
+                upgradeToPro();
+            }
+        } else if(item.getItemId() == R.id.navigation_sign_in) {
+            item.setChecked(false);
+            Log.v("GooglePlayActivity", "Sign In");
+            beginUserInitiatedSignIn();
+        } else if(item.getItemId() == R.id.navigation_sign_out) {
+            item.setChecked(false);
+            Log.v("GooglePlayActivity", "Sign Out");
+            if(isGooglePlayReady(false, false)) {
+                signOut();
+            }
+        } else if(item.getItemId() == R.id.navigation_achievements_all) {
+            item.setChecked(false);
+            if(isGooglePlayReady(true, true)) {
+                loadAchievementFragment(getResources().getStringArray(R.array.achievements_all));
+            }
+        } else if(item.getItemId() == R.id.navigation_achievements_offline) {
+            item.setChecked(false);
+            if(isGooglePlayReady(true, true)) {
+                loadAchievementFragment(getResources().getStringArray(R.array.achievements_offline));
+            }
+        } else if(item.getItemId() == R.id.navigation_achievements_online) {
+            item.setChecked(false);
+            if(isGooglePlayReady(true, true)) {
+                loadAchievementFragment(getResources().getStringArray(R.array.achievements_online));
+            }
+        } else if(item.getItemId() == R.id.navigation_leaderboards_all) {
+            item.setChecked(false);
+            if(isGooglePlayReady(true, true)) {
+                loadLeaderboardMetaFragment(getResources().getStringArray(R.array.leaderboards_all));
+            }
+        } else if(item.getItemId() == R.id.navigation_leaderboards_offline) {
+            item.setChecked(false);
+            if(isGooglePlayReady(true, true)) {
+                loadLeaderboardMetaFragment(getResources().getStringArray(R.array.leaderboards_offline));
+            }
+        } else if(item.getItemId() == R.id.navigation_leaderboards_online) {
+            item.setChecked(false);
+            if(isGooglePlayReady(true, true)) {
+                loadLeaderboardMetaFragment(getResources().getStringArray(R.array.leaderboards_online));
+            }
+        }
+        return super.onNavigationItemSelected(item);
+    }
+
+    protected GoogleApiClient getApiClient() {
+        return mHelper.getApiClient();
+    }
+
+    protected boolean isSignedIn() {
+        return mHelper.isSignedIn();
+    }
+
+    protected void beginUserInitiatedSignIn() {
+        mHelper.beginUserInitiatedSignIn();
+    }
+
+    protected void signOut() {
+        mHelper.signOut();
+        new SnackbarRequest(AppBase.getContext().getString(R.string.signed_out), SnackbarRequest.SnackBarDuration.SHORT).execute();
+        GooglePlay.GooglePlayEvent.SIGN_OUT.post();
+    }
+
+    protected void showAlert(String message) {
+        mHelper.makeSimpleDialog(message).show();
+    }
+
+    protected void showAlert(String title, String message) {
+        mHelper.makeSimpleDialog(title, message).show();
+    }
+
+    protected void enableDebugLog(boolean enabled) {
+        mDebugLog = true;
+        if (mHelper != null) {
+            mHelper.enableDebugLog(enabled);
+        }
+    }
+
+    @Deprecated
+    protected void enableDebugLog(boolean enabled, String tag) {
+        Log.w("GooglePlayActivity", "BaseGameActivity.enabledDebugLog(bool,String) is " +
+                "deprecated. Use enableDebugLog(boolean)");
+        enableDebugLog(enabled);
+    }
+
+    protected String getInvitationId() {
+        return mHelper.getInvitationId();
+    }
+
+    protected void reconnectClient() {
+        mHelper.reconnectClient();
+    }
+
+    protected boolean hasSignInError() {
+        return mHelper.hasSignInError();
+    }
+
+    protected GameHelper.SignInFailureReason getSignInError() {
+        return mHelper.getSignInError();
     }
 
 }

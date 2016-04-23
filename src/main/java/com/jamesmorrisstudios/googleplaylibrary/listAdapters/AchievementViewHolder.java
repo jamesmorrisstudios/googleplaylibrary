@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.images.ImageManager;
+import com.jamesmorrisstudios.appbaselibrary.UtilsTheme;
 import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.appbaselibrary.controls.progress.CircleProgressDeterminate;
 import com.jamesmorrisstudios.appbaselibrary.controls.progress.ProgressBarDeterminateHorizontal;
@@ -81,6 +82,7 @@ public final class AchievementViewHolder extends BaseRecycleViewHolder {
         this.progressBar.setMin(0);
         this.progressBar.setMax(header.numberTotal);
         this.progressBar.setProgress(header.numberComplete);
+        this.progressBar.setColors(new int[]{UtilsTheme.getPrimaryDarkColor()});
     }
 
     /**

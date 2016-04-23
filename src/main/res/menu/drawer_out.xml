@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/menu_nav"
+        android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/navigation_achievements_all"
+            android:icon="@drawable/ic_games_achievements"
+            android:title="@string/achievements" />
+
+        <item
+            android:id="@+id/navigation_achievements_offline"
+            android:icon="@drawable/ic_games_achievements"
+            android:title="@string/achievements" />
+
+        <item
+            android:id="@+id/navigation_achievements_online"
+            android:icon="@drawable/ic_games_achievements"
+            android:title="@string/achievements" />
+
+        <item
+            android:id="@+id/navigation_leaderboards_all"
+            android:icon="@drawable/ic_games_leaderboards"
+            android:title="@string/leaderboards" />
+
+        <item
+            android:id="@+id/navigation_leaderboards_offline"
+            android:icon="@drawable/ic_games_leaderboards"
+            android:title="@string/leaderboards" />
+
+        <item
+            android:id="@+id/navigation_leaderboards_online"
+            android:icon="@drawable/ic_games_leaderboards"
+            android:title="@string/leaderboards" />
+
+    </group>
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/navigation_sign_out"
+            android:checkable="false"
+            android:icon="@drawable/ic_games_controller"
+            android:title="@string/sign_out" />
+
+        <item
+            android:id="@+id/navigation_remove_ads"
+            android:checkable="false"
+            android:icon="@drawable/ic_remove_ads"
+            android:title="@string/remove_ads" />
+
+        <item
+            android:id="@+id/navigation_settings"
+            android:checkable="false"
+            android:icon="@drawable/ic_settings_white_24dp"
+            android:title="@string/settings" />
+
+        <item
+            android:id="@+id/navigation_help"
+            android:checkable="false"
+            android:icon="@drawable/ic_help_white_24dp"
+            android:title="@string/help_and_feedback" />
+
+    </group>
+
+</menu>

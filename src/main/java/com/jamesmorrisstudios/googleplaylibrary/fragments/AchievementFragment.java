@@ -30,21 +30,26 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 
 /**
+ * Achievement views fragment
+ *
  * Created by James on 5/27/2015.
  */
-public class AchievementFragment extends BaseRecycleListFragment {
+public final class AchievementFragment extends BaseRecycleListFragment {
     public static final String TAG = "AchievementsFragment";
-
     private String[] achievementIds = null;
     private MoPubRecyclerAdapter myMoPubAdapter;
     private BaseRecycleAdapter adapter;
 
+    /**
+     * Creates the custom adapter for achievements and if ads are enabled it wraps in in the mopub adapter
+     * @param mListener Adapter listener
+     * @return Custom recycle adapter
+     */
     @NonNull
     @Override
-    protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
+    protected final BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new AchievementAdapter(mListener);
         if (!UtilsVersion.isPro()) {
-            Log.v("AcievementFragment", "Creating ad adapter");
             // Pass the recycler Adapter your original adapter.
             myMoPubAdapter = new MoPubRecyclerAdapter(getActivity(), adapter);
             // Create a view binder that describes your native ad layout.
@@ -62,6 +67,9 @@ public class AchievementFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
+    /**
+     * @return The set adapter. Mopub adapter if present.
+     */
     @NonNull
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
@@ -71,53 +79,83 @@ public class AchievementFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
+    /**
+     * Enable pull to refresh
+     */
     @Override
-    public void itemClicked(int position) {
-        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
-            itemClicker(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
-        } else {
-            itemClicker(adapter.getItems().get(position).data);
+    protected final void afterViewCreated() {
+        setEnablePullToRefresh(true);
+        hideFab();
+    }
+
+    /**
+     * Start ads loading if enabled.
+     */
+    @Override
+    public final void onResume() {
+        super.onResume();
+        String adId = UtilsAds.getMopubNativeAdIdFull();
+        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
+            myMoPubAdapter.loadAds(adId);
         }
     }
 
+    /**
+     * Clear the achievement cache
+     */
     @Override
-    protected boolean includeSearch() {
-        return false;
-    }
-
-    @Override
-    public void onStop() {
+    public final void onStop() {
         super.onStop();
         GooglePlayCalls.getInstance().clearAchievementsCache();
     }
 
+    /**
+     * Destroy the mopub adapter
+     */
     @Override
-    public void onDestroy() {
+    public final void onDestroy() {
         if (myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
     }
 
+    /**
+     * Save the achievement id list
+     * @param bundle Bundle
+     */
     @Override
-    protected void saveState(@NonNull Bundle bundle) {
+    protected final void saveState(@NonNull Bundle bundle) {
         if (achievementIds != null) {
             bundle.putStringArray("achievementIds", achievementIds);
         }
     }
 
+    /**
+     * Restore the achievement id list
+     * @param bundle Bundle
+     */
     @Override
-    protected void restoreState(@NonNull Bundle bundle) {
-        if (bundle != null) {
-            if (bundle.containsKey("achievementIds")) {
-                achievementIds = bundle.getStringArray("achievementIds");
-            }
+    protected final void restoreState(@NonNull Bundle bundle) {
+        if (bundle.containsKey("achievementIds")) {
+            achievementIds = bundle.getStringArray("achievementIds");
+        }
+    }
+
+    /**
+     * Set the initial data
+     * @param startBundle Start bundle
+     * @param startScrollY Start scroll Y position
+     */
+    @Override
+    protected final void setStartData(@Nullable Bundle startBundle, int startScrollY) {
+        if (startBundle != null && startBundle.containsKey("achievementIds")) {
+            achievementIds = startBundle.getStringArray("achievementIds");
         }
     }
 
     /**
      * Event subscriber for checking if achievements are ready
-     *
      * @param event Event
      */
     @Subscribe
@@ -133,6 +171,28 @@ public class AchievementFragment extends BaseRecycleListFragment {
         }
     }
 
+    /**
+     * Begin loading of data
+     * @param forceRefresh True to force a reload of data
+     */
+    @Override
+    protected final void startDataLoad(boolean forceRefresh) {
+        if (achievementIds != null) {
+            GooglePlayCalls.getInstance().loadAchievements(forceRefresh, achievementIds);
+        }
+    }
+
+    /**
+     * Load more data if we have scrolled to the end position.
+     */
+    @Override
+    protected final void startMoreDataLoad() {
+
+    }
+
+    /**
+     * Apply the data to the list
+     */
     private void applyData() {
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
         if (GooglePlayCalls.getInstance().hasAchievements()) {
@@ -148,92 +208,116 @@ public class AchievementFragment extends BaseRecycleListFragment {
         applyData(data);
     }
 
+    /**
+     * Translates the item clicked position to the actual position around the ads.
+     * @param position Clicked item position.
+     */
     @Override
-    protected void startDataLoad(boolean forced) {
-        if (achievementIds != null) {
-            GooglePlayCalls.getInstance().loadAchievements(forced, achievementIds);
+    public final void itemClicked(int position) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
+            itemClickTranslated(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
+        } else {
+            itemClickTranslated(adapter.getItems().get(position).data);
         }
     }
 
-
+    /**
+     * Item click
+     * @param baseRecycleContainer Item clicked container
+     */
     @Override
-    protected void startMoreDataLoad() {
+    protected final void itemClick(@NonNull BaseRecycleContainer baseRecycleContainer) {
 
     }
 
-
-    @Override
-    protected void itemClick(@NonNull BaseRecycleContainer baseRecycleContainer) {
-
-    }
-
-    protected void itemClicker(@NonNull BaseRecycleContainer baseRecycleContainer) {
-        Log.v("AchievementsFragment", "Item clicked");
+    /**
+     * Item click after it was translated around ads
+     * @param baseRecycleContainer Clicked item
+     */
+    protected final void itemClickTranslated(@NonNull BaseRecycleContainer baseRecycleContainer) {
         AchievementContainer item = (AchievementContainer) baseRecycleContainer;
         Bus.postObject(new AchievementOverlayDialogRequest(item));
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
-    protected void itemMove(int i, int i1) {
-
-    }
-
-    @Override
-    protected boolean supportsHeaders() {
-        return true;
-    }
-
-    @Override
-    protected boolean allowReording() {
+    protected final boolean allowReording() {
         return false;
     }
 
+    /**
+     * Item was moved
+     * @param fromPosition
+     * @param toPosition
+     */
     @Override
-    protected void setStartData(@Nullable Bundle bundle, int i) {
-        if (bundle != null && bundle.containsKey("achievementIds")) {
-            achievementIds = bundle.getStringArray("achievementIds");
-        }
+    protected final void itemMove(int fromPosition, int toPosition) {
+
     }
 
+    /**
+     * @return false
+     */
     @Override
-    protected int getOptionsMenuRes() {
+    protected final boolean includeSearch() {
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    protected final boolean supportsHeaders() {
+        return true;
+    }
+
+
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    protected final boolean usesOptionsMenu() {
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    protected final int getOptionsMenuRes() {
         return 0;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
-    protected boolean usesOptionsMenu() {
-        return false;
-    }
-
-    @Override
-    public boolean showToolbarTitle() {
+    public final boolean showToolbarTitle() {
         return true;
     }
 
+    /**
+     * Register the bus listener
+     */
     @Override
-    protected void registerBus() {
+    protected final void registerBus() {
         Bus.register(this);
     }
 
+    /**
+     * Unregister the bus listener
+     */
     @Override
-    protected void unregisterBus() {
+    protected final void unregisterBus() {
         Bus.unregister(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        String adId = UtilsAds.getMopubNativeAdIdFull();
-        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
-            Log.v("AchievementFragment", "Loading Ads");
-            myMoPubAdapter.loadAds(adId);
-        }
-    }
-
-    @Override
-    protected void afterViewCreated() {
-        setEnablePullToRefresh(true);
-
     }
 
 }

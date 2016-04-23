@@ -1,11 +1,10 @@
 package com.jamesmorrisstudios.googleplaylibrary.fragments;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.jamesmorrisstudios.appbaselibrary.Bus;
 import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
@@ -15,10 +14,10 @@ import com.jamesmorrisstudios.appbaselibrary.fragments.BaseRecycleListFragment;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleAdapter;
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleContainer;
 import com.jamesmorrisstudios.googleplaylibrary.R;
-import com.jamesmorrisstudios.googleplaylibrary.dialogRequests.PlayerDetailsDialogRequest;
+import com.jamesmorrisstudios.googleplaylibrary.data.LeaderboardItem;
+import com.jamesmorrisstudios.googleplaylibrary.dialogRequests.CompareProfilesRequest;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlay;
 import com.jamesmorrisstudios.googleplaylibrary.googlePlay.GooglePlayCalls;
-import com.jamesmorrisstudios.googleplaylibrary.data.LeaderboardItem;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardAdapter;
 import com.jamesmorrisstudios.googleplaylibrary.listAdapters.LeaderboardContainer;
 import com.jamesmorrisstudios.googleplaylibrary.util.UtilsAds;
@@ -30,16 +29,23 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 
 /**
+ * Leaderboard views fragment
+ *
  * Created by James on 6/6/2015.
  */
-public class LeaderboardFragment extends BaseRecycleListFragment {
+public final class LeaderboardFragment extends BaseRecycleListFragment {
     public static final String TAG = "LeaderboardFragment";
     private OnLeaderboardListener leaderboardListener;
-
     private String leaderboardId = null;
     private MoPubRecyclerAdapter myMoPubAdapter;
     private BaseRecycleAdapter adapter;
 
+    /**
+     * Creates the custom adapter for leaderboards and if ads are enabled it wraps in in the mopub adapter
+     * @param mListener Adapter listener
+     * @return Custom recycle adapter
+     */
+    @NonNull
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new LeaderboardAdapter(mListener);
@@ -59,6 +65,10 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
+    /**
+     * @return The set adapter. Mopub adapter if present.
+     */
+    @NonNull
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
         if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
@@ -67,135 +77,95 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
+    /**
+     * Enable pull to refresh
+     * Show the leaderboard spinners
+     */
     @Override
-    protected boolean includeSearch() {
-        return false;
+    protected final void afterViewCreated() {
+        setEnablePullToRefresh(true);
+        hideFab();
     }
 
-
     @Override
-    public void itemClicked(int position) {
-        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
-            itemClicker(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
-        } else {
-            itemClicker(adapter.getItems().get(position).data);
+    public void onStart() {
+        super.onStart();
+        leaderboardListener.setSpinnerVisibility(true);
+    }
+
+    /**
+     * Start ads loading if enabled.
+     */
+    @Override
+    public final void onResume() {
+        super.onResume();
+        String adId = UtilsAds.getMopubNativeAdId();
+        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
+            myMoPubAdapter.loadAds(adId);
         }
     }
 
-    public void onDestroy() {
+    /**
+     * Clear the leaderboard cache
+     */
+    @Override
+    public final void onStop() {
+        super.onStop();
+        GooglePlayCalls.getInstance().clearLeaderboardsCache();
+        leaderboardListener.setSpinnerVisibility(false);
+    }
+
+    /**
+     * Destroy the mopub adapter
+     */
+    @Override
+    public final void onDestroy() {
         if (myMoPubAdapter != null) {
             myMoPubAdapter.destroy();
         }
         super.onDestroy();
     }
 
+    /**
+     * Save the leaderboard id list
+     * @param bundle Bundle
+     */
     @Override
-    protected void saveState(Bundle bundle) {
+    protected final void saveState(@NonNull Bundle bundle) {
         if (leaderboardId != null) {
             bundle.putString("leaderboardId", leaderboardId);
         }
     }
 
+    /**
+     * Restore the leaderboard id list
+     * @param bundle Bundle
+     */
     @Override
-    protected void restoreState(Bundle bundle) {
-        if (bundle != null) {
-            if (bundle.containsKey("leaderboardId")) {
-                leaderboardId = bundle.getString("leaderboardId");
-            }
+    protected final void restoreState(@NonNull Bundle bundle) {
+        if (bundle.containsKey("leaderboardId")) {
+            leaderboardId = bundle.getString("leaderboardId");
         }
     }
 
     /**
-     * @param activity Activity to attach to
+     * Set the initial data
+     * @param startBundle Start bundle
+     * @param startScrollY Start scroll Y position
      */
     @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        try {
-            leaderboardListener = (OnLeaderboardListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnLeaderboardListener");
+    protected final void setStartData(@Nullable Bundle startBundle, int startScrollY) {
+        if (startBundle != null && startBundle.containsKey("leaderboardId")) {
+            leaderboardId = startBundle.getString("leaderboardId");
         }
     }
 
     /**
-     * Detach from activity
+     * Event subscriber for checking if leaderboards are ready
+     * @param event Event
      */
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        leaderboardListener = null;
-    }
-
-    @Override
-    protected void startDataLoad(boolean forceRefresh) {
-        Log.v("LeaderboardFragment", "Start data load");
-        GooglePlayCalls.getInstance().loadLeaderboards(forceRefresh, leaderboardId);
-    }
-
-    @Override
-    protected void startMoreDataLoad() {
-        Log.v("LeaderboardFragment", "Start more data load");
-        GooglePlayCalls.getInstance().loadLeaderboardsMore();
-    }
-
-    private void applyData() {
-        ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if (GooglePlayCalls.getInstance().hasLeaderboards()) {
-            ArrayList<LeaderboardItem> items = GooglePlayCalls.getInstance().getLeaderboards();
-            for (LeaderboardItem item : items) {
-                data.add(new LeaderboardContainer(item));
-            }
-        }
-        applyData(data);
-    }
-
-    private void appendData() {
-        ArrayList<BaseRecycleContainer> data = new ArrayList<>();
-        if (GooglePlayCalls.getInstance().hasLeaderboardsMore()) {
-            ArrayList<LeaderboardItem> items = GooglePlayCalls.getInstance().getLeaderboardsMore();
-            for (LeaderboardItem item : items) {
-                data.add(new LeaderboardContainer(item));
-            }
-        }
-        appendData(data);
-    }
-
-    @Override
-    protected void itemClick(@NonNull BaseRecycleContainer baseRecycleContainer) {
-
-    }
-
-    protected void itemClicker(@NonNull BaseRecycleContainer baseRecycleContainer) {
-        Log.v("LeaderboardFragment", "Load player details");
-        LeaderboardItem item = (LeaderboardItem) baseRecycleContainer.getItem();
-        Bus.postObject(new PlayerDetailsDialogRequest(item.player));
-    }
-
-    @Override
-    protected void itemMove(int i, int i1) {
-
-    }
-
-    @Override
-    protected boolean supportsHeaders() {
-        return false;
-    }
-
-    @Override
-    protected boolean allowReording() {
-        return false;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        leaderboardListener.setSpinnerVisibility(false);
-    }
-
     @Subscribe
-    public void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
+    public final void onGooglePlayEvent(@NonNull GooglePlay.GooglePlayEvent event) {
         switch (event) {
             case LEADERBOARD_SPINNER_CHANGE:
                 startRefresh(false);
@@ -216,53 +186,171 @@ public class LeaderboardFragment extends BaseRecycleListFragment {
         }
     }
 
+    /**
+     * Begin loading of data
+     * @param forceRefresh True to force a reload of data
+     */
     @Override
-    protected void setStartData(@Nullable Bundle bundle, int i) {
-        if (bundle != null && bundle.containsKey("leaderboardId")) {
-            leaderboardId = bundle.getString("leaderboardId");
+    protected final void startDataLoad(boolean forceRefresh) {
+        GooglePlayCalls.getInstance().loadLeaderboards(forceRefresh, leaderboardId);
+    }
+
+    /**
+     * Load more data if we have scrolled to the end position.
+     */
+    @Override
+    protected final void startMoreDataLoad() {
+        GooglePlayCalls.getInstance().loadLeaderboardsMore();
+    }
+
+    /**
+     * Apply the data to the list
+     */
+    private void applyData() {
+        ArrayList<BaseRecycleContainer> data = new ArrayList<>();
+        if (GooglePlayCalls.getInstance().hasLeaderboards()) {
+            ArrayList<LeaderboardItem> items = GooglePlayCalls.getInstance().getLeaderboards();
+            for (LeaderboardItem item : items) {
+                data.add(new LeaderboardContainer(item));
+            }
+        }
+        applyData(data);
+    }
+
+    /**
+     * Translates the item clicked position to the actual position around the ads.
+     * @param position Clicked item position.
+     */
+    @Override
+    public final void itemClicked(int position) {
+        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
+            itemClickTranslated(adapter.getItems().get(myMoPubAdapter.getOriginalPosition(position)).data);
+        } else {
+            itemClickTranslated(adapter.getItems().get(position).data);
         }
     }
 
+    /**
+     * Item click
+     * @param baseRecycleContainer Item clicked container
+     */
     @Override
-    protected int getOptionsMenuRes() {
+    protected final void itemClick(@NonNull BaseRecycleContainer baseRecycleContainer) {
+
+    }
+
+    /**
+     * Item click after it was translated around ads
+     * @param baseRecycleContainer Clicked item
+     */
+    protected final void itemClickTranslated(@NonNull BaseRecycleContainer baseRecycleContainer) {
+        LeaderboardItem item = (LeaderboardItem) baseRecycleContainer.getItem();
+        Bus.postObject(new CompareProfilesRequest(item.player));
+    }
+
+    @Override
+    protected final void itemMove(int fromPosition, int toPosition) {
+
+    }
+
+    @Override
+    protected final boolean allowReording() {
+        return false;
+    }
+
+    @Override
+    protected final boolean includeSearch() {
+        return false;
+    }
+
+
+
+
+
+
+
+    /**
+     * @param context Context to attach to
+     */
+    @Override
+    public final void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            leaderboardListener = (OnLeaderboardListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnLeaderboardListener");
+        }
+    }
+
+    /**
+     * Detach from activity
+     */
+    @Override
+    public final void onDetach() {
+        super.onDetach();
+        leaderboardListener = null;
+    }
+
+
+
+
+
+    private void appendData() {
+        ArrayList<BaseRecycleContainer> data = new ArrayList<>();
+        if (GooglePlayCalls.getInstance().hasLeaderboardsMore()) {
+            ArrayList<LeaderboardItem> items = GooglePlayCalls.getInstance().getLeaderboardsMore();
+            for (LeaderboardItem item : items) {
+                data.add(new LeaderboardContainer(item));
+            }
+        }
+        appendData(data);
+    }
+
+
+
+
+
+    @Override
+    protected final boolean supportsHeaders() {
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+    @Override
+    protected final int getOptionsMenuRes() {
         return 0;
     }
 
     @Override
-    protected boolean usesOptionsMenu() {
+    protected final boolean usesOptionsMenu() {
         return false;
     }
 
     @Override
-    public boolean showToolbarTitle() {
+    public final boolean showToolbarTitle() {
         return false;
     }
 
     @Override
-    protected void registerBus() {
+    protected final void registerBus() {
         Bus.register(this);
     }
 
     @Override
-    protected void unregisterBus() {
+    protected final void unregisterBus() {
         Bus.unregister(this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        String adId = UtilsAds.getMopubNativeAdId();
-        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
-            Log.v("AchievementFragment", "Loading Ads");
-            myMoPubAdapter.loadAds(adId);
-        }
-    }
 
-    @Override
-    protected void afterViewCreated() {
-        setEnablePullToRefresh(true);
-        leaderboardListener.setSpinnerVisibility(true);
-    }
+
+
 
     public interface OnLeaderboardListener {
         void setSpinnerVisibility(boolean visible);

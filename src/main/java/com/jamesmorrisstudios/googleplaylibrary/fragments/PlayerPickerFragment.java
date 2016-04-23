@@ -36,6 +36,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     private MoPubRecyclerAdapter myMoPubAdapter;
     private BaseRecycleAdapter adapter;
 
+    @NonNull
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new PlayerPickerAdapter(mListener);
@@ -55,6 +56,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
+    @NonNull
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
         if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
@@ -85,7 +87,7 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     }
 
     @Subscribe
-    public void onGooglePlayEvent(GooglePlay.GooglePlayEvent event) {
+    public void onGooglePlayEvent(@NonNull GooglePlay.GooglePlayEvent event) {
         switch (event) {
             case PLAYERS_ACTIVE_READY:
                 applyDataActive();
@@ -110,7 +112,6 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     }
 
     private void applyDataActive() {
-        Log.v("PlayerPicker", "Apply Data Active");
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
         if (GooglePlayCalls.getInstance().hasPlayersActive()) {
             ArrayList<PlayerPickerItem> items = GooglePlayCalls.getInstance().getPlayersActive();
@@ -124,7 +125,6 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     }
 
     private void applyDataAll() {
-        Log.v("PlayerPicker", "Apply Data All");
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
         if (GooglePlayCalls.getInstance().hasPlayersAll()) {
             ArrayList<PlayerPickerItem> items = GooglePlayCalls.getInstance().getPlayersAll();
@@ -137,7 +137,6 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     }
 
     private void applyDataAllMore() {
-        Log.v("PlayerPicker", "Apply Data All");
         ArrayList<BaseRecycleContainer> data = new ArrayList<>();
         if (GooglePlayCalls.getInstance().hasPlayersAllMore()) {
             ArrayList<PlayerPickerItem> items = GooglePlayCalls.getInstance().getPlayersAllMore();
@@ -150,7 +149,6 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
 
     @Override
     protected void startDataLoad(boolean forceRefresh) {
-        Log.v("PlayerPicker", "Start Data Load");
         GooglePlayCalls.getInstance().loadPlayersActive(forceRefresh);
     }
 
@@ -210,21 +208,28 @@ public class PlayerPickerFragment extends BaseRecycleListFragment {
     }
 
     @Override
-    protected void saveState(Bundle bundle) {
+    protected void saveState(@NonNull Bundle bundle) {
 
     }
 
     @Override
-    protected void restoreState(Bundle bundle) {
+    protected void restoreState(@NonNull Bundle bundle) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String adId = UtilsAds.getMopubNativeAdId();
+        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
+            myMoPubAdapter.loadAds(adId);
+        }
     }
 
     @Override
     protected void afterViewCreated() {
         setEnablePullToRefresh(true);
-        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
-            myMoPubAdapter.loadAds(UtilsAds.getMopubNativeAdId());
-        }
+        hideFab();
     }
 
 }

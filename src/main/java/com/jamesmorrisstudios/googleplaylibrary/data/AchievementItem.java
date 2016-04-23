@@ -1,6 +1,7 @@
 package com.jamesmorrisstudios.googleplaylibrary.data;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.jamesmorrisstudios.appbaselibrary.listAdapters.BaseRecycleItem;
 
@@ -27,9 +28,8 @@ public class AchievementItem extends BaseRecycleItem {
      * @param totalSteps       Total bitIndex of steps
      * @param state            Current state (unlocked, revealed, etc)
      */
-    public AchievementItem(String title, String description,
-                           Uri imageRevealedUri, Uri imageUnlockedUri,
-                           long xp, int currentSteps, int totalSteps, AchievementState state) {
+    public AchievementItem(@NonNull String title, @NonNull String description, @NonNull Uri imageRevealedUri,
+                           @NonNull Uri imageUnlockedUri, long xp, int currentSteps, int totalSteps, @NonNull AchievementState state) {
         this.title = title;
         this.description = description;
         this.imageRevealedUri = imageRevealedUri;

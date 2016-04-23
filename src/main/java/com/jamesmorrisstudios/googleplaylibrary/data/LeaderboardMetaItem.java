@@ -37,7 +37,8 @@ public class LeaderboardMetaItem extends BaseRecycleItem {
         return null;
     }
 
-    public final void updateVariant(@NonNull GooglePlay.Collection collection, @NonNull GooglePlay.Span span, @NonNull String displayPlayerRank, @NonNull String displayPlayerScore, long playerRank, long playerScore) {
+    public final void updateVariant(@NonNull GooglePlay.Collection collection, @NonNull GooglePlay.Span span,
+                                    @NonNull String displayPlayerRank, @NonNull String displayPlayerScore, long playerRank, long playerScore) {
         LeaderboardMetaVariantItem item = getVariant(collection, span);
         if (item != null) {
             item.updateScore(displayPlayerRank, displayPlayerScore, playerRank, playerScore);

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.common.api.BatchResult;
+import com.google.android.gms.common.api.BatchResultToken;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -58,6 +59,7 @@ import java.util.concurrent.TimeUnit;
 public class GooglePlayCalls extends GooglePlayCallsBase {
     public static final String TAG = "GooglePlayCalls";
     private static GooglePlayCalls instance = null;
+    private GooglePlay.GooglePlayListener listener;
 
     //Cached Data
     private ArrayList<PlayerPickerItem> playersActive = null;
@@ -104,8 +106,28 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         return instance;
     }
 
+    /**
+     * Attach to the containing activity. Call from onCreate
+     *
+     * @param listener Activity implementing the build manager listener.
+     */
+    public final void attach(@NonNull final GooglePlay.GooglePlayListener listener) {
+        this.listener = listener;
+    }
+
+    /**
+     * Detach from activity. Call from onDestroy
+     */
+    public final void detach() {
+        this.listener = null;
+    }
+
+    public final boolean isSignedIn() {
+        return listener != null && listener.getGameHelper() != null && listener.getGameHelper().isSignedIn();
+    }
+
     public final Player getCurrentPlayer() {
-        return Games.Players.getCurrentPlayer(GooglePlay.getInstance().getApiClient());
+        return Games.Players.getCurrentPlayer(listener.getGameHelper().getApiClient());
     }
 
     public synchronized final void loadPlayersActive(boolean forceRefresh) {
@@ -113,11 +135,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             Bus.postEnum(GooglePlay.GooglePlayEvent.PLAYERS_ACTIVE_READY);
             return;
         }
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.PLAYERS_ACTIVE_FAIL);
             return;
         }
-        Games.Players.loadConnectedPlayers(GooglePlay.getInstance().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Players.LoadPlayersResult>() {
+        Games.Players.loadConnectedPlayers(listener.getGameHelper().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Players.LoadPlayersResult>() {
             @Override
             public void onResult(Players.LoadPlayersResult loadPlayersResult) {
                 if (loadPlayersResult.getStatus().isSuccess()) {
@@ -140,11 +162,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             Bus.postEnum(GooglePlay.GooglePlayEvent.PLAYERS_ALL_READY);
             return;
         }
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.PLAYERS_ALL_FAIL);
             return;
         }
-        Games.Players.loadInvitablePlayers(GooglePlay.getInstance().getApiClient(), 25, forceRefresh).setResultCallback(new ResultCallback<Players.LoadPlayersResult>() {
+        Games.Players.loadInvitablePlayers(listener.getGameHelper().getApiClient(), 25, forceRefresh).setResultCallback(new ResultCallback<Players.LoadPlayersResult>() {
             @Override
             public void onResult(Players.LoadPlayersResult loadPlayersResult) {
                 if (loadPlayersResult.getStatus().isSuccess()) {
@@ -163,12 +185,12 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public synchronized final void loadPlayersAllMore() {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.PLAYERS_ALL_MORE_FAIL);
             return;
         }
         playersAllMore = null;
-        Games.Players.loadMoreInvitablePlayers(GooglePlay.getInstance().getApiClient(), 10).setResultCallback(new ResultCallback<Players.LoadPlayersResult>() {
+        Games.Players.loadMoreInvitablePlayers(listener.getGameHelper().getApiClient(), 10).setResultCallback(new ResultCallback<Players.LoadPlayersResult>() {
             @Override
             public void onResult(Players.LoadPlayersResult loadPlayersResult) {
                 if (loadPlayersResult.getStatus().isSuccess()) {
@@ -256,11 +278,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_READY);
             return;
         }
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ACHIEVEMENTS_ITEMS_FAIL);
             return;
         }
-        Games.Achievements.load(GooglePlay.getInstance().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Achievements.LoadAchievementsResult>() {
+        Games.Achievements.load(listener.getGameHelper().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Achievements.LoadAchievementsResult>() {
             @Override
             public void onResult(Achievements.LoadAchievementsResult loadAchievementsResult) {
                 Logger.v(Logger.LoggerCategory.BASE, TAG, "Achievements loaded");
@@ -347,11 +369,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void unlockAchievement(@NonNull String achievementId) {
-        Games.Achievements.unlock(GooglePlay.getInstance().getApiClient(), achievementId);
+        Games.Achievements.unlock(listener.getGameHelper().getApiClient(), achievementId);
     }
 
     public final void incrementAchievement(@NonNull String achievementId, int numberIncrements) {
-        Games.Achievements.increment(GooglePlay.getInstance().getApiClient(), achievementId, numberIncrements);
+        Games.Achievements.increment(listener.getGameHelper().getApiClient(), achievementId, numberIncrements);
     }
 
     public synchronized final void loadLeaderboardsMeta(boolean forceRefresh, @NonNull final String[] leaderboardIds) {
@@ -360,12 +382,12 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_META_READY);
             return;
         }
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_META_FAIL);
             return;
         }
         this.leaderboardIds = leaderboardIds;
-        Games.Leaderboards.loadLeaderboardMetadata(GooglePlay.getInstance().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Leaderboards.LeaderboardMetadataResult>() {
+        Games.Leaderboards.loadLeaderboardMetadata(listener.getGameHelper().getApiClient(), forceRefresh).setResultCallback(new ResultCallback<Leaderboards.LeaderboardMetadataResult>() {
             @Override
             public void onResult(Leaderboards.LeaderboardMetadataResult leaderboardMetadataResult) {
                 Log.v("GooglePlayCalls", "Load ic_leaderboard Meta Data complete");
@@ -401,34 +423,43 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
 
     private void loadPlayerScores(final String[] leaderboardIds) {
         Log.v("GooglePlayCalls", "Load player scores");
-        Batch.Builder builder = new Batch.Builder(GooglePlay.getInstance().getApiClient());
-
+        final Batch.Builder builder = new Batch.Builder(listener.getGameHelper().getApiClient());
+        final ArrayList<PlayerScoresContainer> playerScores = new ArrayList<>();
         for (String id : leaderboardIds) {
-            final String idFinal = id;
-            PendingResult<Leaderboards.LoadPlayerScoreResult> result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(GooglePlay.getInstance().getApiClient(), id, leaderboardSpan.getInt(), leaderboardCollection.getInt());
-            result.setResultCallback(new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-                @Override
-                public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                    if (loadPlayerScoreResult.getStatus().isSuccess()) {
-                        LeaderboardScore score = loadPlayerScoreResult.getScore();
-                        LeaderboardMetaItem item = getLeaderboardMetaItem(idFinal);
-                        if (score != null && item != null) {
-                            item.updateVariant(leaderboardCollection, leaderboardSpan, score.getDisplayRank(), score.getDisplayScore(), score.getRank(), score.getRawScore());
-                            //Log.v("GooglePlayCalls", "Collection: "+leaderboardCollection.toString()+" Span: "+leaderboardSpan.toString()+" Score: "+score.getDisplayScore());
-                        }
-                    }
-                }
-            });
-            builder.add(result);
+            PendingResult<Leaderboards.LoadPlayerScoreResult> result = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(listener.getGameHelper().getApiClient(), id, leaderboardSpan.getInt(), leaderboardCollection.getInt());
+            playerScores.add(new PlayerScoresContainer(id, builder.add(result)));
         }
         final Batch batch = builder.build();
         batch.setResultCallback(new ResultCallback<BatchResult>() {
             @Override
-            public void onResult(BatchResult batchResult) {
+            public void onResult(@NonNull BatchResult batchResult) {
                 Log.v("GooglePlayCalls", "Batch Complete");
+                if(batchResult.getStatus().isSuccess()) {
+                    for(PlayerScoresContainer playerScore : playerScores) {
+                        Leaderboards.LoadPlayerScoreResult result = batchResult.take(playerScore.token);
+                        if(result.getStatus().isSuccess()) {
+                            LeaderboardScore score = result.getScore();
+                            LeaderboardMetaItem item = getLeaderboardMetaItem(playerScore.id);
+                            if (score != null && item != null) {
+                                item.updateVariant(leaderboardCollection, leaderboardSpan, score.getDisplayRank(), score.getDisplayScore(), score.getRank(), score.getRawScore());
+                            }
+                        }
+                    }
+                }
                 Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_META_READY);
             }
         }, timeout, timeUnit);
+    }
+
+    private class PlayerScoresContainer {
+        public final String id;
+        public final BatchResultToken<Leaderboards.LoadPlayerScoreResult> token;
+
+        public PlayerScoresContainer(@NonNull final String id, @NonNull final BatchResultToken<Leaderboards.LoadPlayerScoreResult> token) {
+            this.id = id;
+            this.token = token;
+        }
+
     }
 
     @Nullable
@@ -465,11 +496,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_READY);
             return;
         }
-        if (!GooglePlay.getInstance().isSignedIn() || leaderboardId == null) {
+        if (!isSignedIn() || leaderboardId == null) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_FAIL);
             return;
         }
-        Games.Leaderboards.loadTopScores(GooglePlay.getInstance().getApiClient(), leaderboardId, leaderboardSpan.getInt(), leaderboardCollection.getInt(),
+        Games.Leaderboards.loadTopScores(listener.getGameHelper().getApiClient(), leaderboardId, leaderboardSpan.getInt(), leaderboardCollection.getInt(),
                 25, forceRefresh).setResultCallback(new ResultCallback<Leaderboards.LoadScoresResult>() {
             @Override
             public void onResult(Leaderboards.LoadScoresResult loadScoresResult) {
@@ -490,12 +521,12 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public synchronized final void loadLeaderboardsMore() {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_MORE_FAIL);
             return;
         }
         Log.v("GooglePlayCalls", "Load leaderboards more");
-        Games.Leaderboards.loadMoreScores(GooglePlay.getInstance().getApiClient(), leaderboardBuffer, 10, PageDirection.NEXT).setResultCallback(new ResultCallback<Leaderboards.LoadScoresResult>() {
+        Games.Leaderboards.loadMoreScores(listener.getGameHelper().getApiClient(), leaderboardBuffer, 10, PageDirection.NEXT).setResultCallback(new ResultCallback<Leaderboards.LoadScoresResult>() {
             @Override
             public void onResult(Leaderboards.LoadScoresResult loadScoresResult) {
                 if (loadScoresResult.getStatus().isSuccess()) {
@@ -576,11 +607,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ONLINE_SAVE_ITEM_LOAD_READY);
             return;
         }
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ONLINE_SAVE_ITEM_LOAD_FAIL);
             return;
         }
-        Games.TurnBasedMultiplayer.loadMatchesByStatus(GooglePlay.getInstance().getApiClient(),
+        Games.TurnBasedMultiplayer.loadMatchesByStatus(listener.getGameHelper().getApiClient(),
                 new int[]{TurnBasedMatch.MATCH_TURN_STATUS_INVITED, TurnBasedMatch.MATCH_TURN_STATUS_MY_TURN, TurnBasedMatch.MATCH_TURN_STATUS_THEIR_TURN,
                         TurnBasedMatch.MATCH_TURN_STATUS_COMPLETE}).setResultCallback(new ResultCallback<TurnBasedMultiplayer.LoadMatchesResult>() {
             @Override
@@ -680,19 +711,19 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void updateLeaderboard(@NonNull String leaderboardId, long value) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             //TODO error
             return;
         }
-        Games.Leaderboards.submitScore(GooglePlay.getInstance().getApiClient(), leaderboardId, value);
+        Games.Leaderboards.submitScore(listener.getGameHelper().getApiClient(), leaderboardId, value);
     }
 
     public final void acceptInvitationOnline(@NonNull Invitation invitation) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ACCEPT_INVITATION_ONLINE_FAIL);
             return;
         }
-        Games.TurnBasedMultiplayer.acceptInvitation(GooglePlay.getInstance().getApiClient(), invitation.getInvitationId()).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
+        Games.TurnBasedMultiplayer.acceptInvitation(listener.getGameHelper().getApiClient(), invitation.getInvitationId()).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
             @Override
             public void onResult(TurnBasedMultiplayer.InitiateMatchResult initiateMatchResult) {
                 if (initiateMatchResult.getStatus().isSuccess()) {
@@ -706,19 +737,19 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void dismissMatchOnline(@NonNull String matchId) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             //TODO error
             return;
         }
-        Games.TurnBasedMultiplayer.dismissMatch(GooglePlay.getInstance().getApiClient(), matchId);
+        Games.TurnBasedMultiplayer.dismissMatch(listener.getGameHelper().getApiClient(), matchId);
     }
 
     public final void rematchOnline(@NonNull String matchId) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.REMATCH_ONLINE_FAIL);
             return;
         }
-        Games.TurnBasedMultiplayer.rematch(GooglePlay.getInstance().getApiClient(), matchId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
+        Games.TurnBasedMultiplayer.rematch(listener.getGameHelper().getApiClient(), matchId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
             @Override
             public void onResult(TurnBasedMultiplayer.InitiateMatchResult initiateMatchResult) {
                 if (initiateMatchResult.getStatus().isSuccess()) {
@@ -732,11 +763,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void startMatchOnline(@NonNull TurnBasedMatchConfig matchConfig) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.START_MATCH_ONLINE_FAIL);
             return;
         }
-        Games.TurnBasedMultiplayer.createMatch(GooglePlay.getInstance().getApiClient(), matchConfig).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
+        Games.TurnBasedMultiplayer.createMatch(listener.getGameHelper().getApiClient(), matchConfig).setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
             @Override
             public void onResult(TurnBasedMultiplayer.InitiateMatchResult initiateMatchResult) {
                 if (initiateMatchResult.getStatus().isSuccess()) {
@@ -750,12 +781,12 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void finishMatchOnline(@NonNull TurnBasedMatch match, @NonNull byte[] data, @Nullable List<ParticipantResult> results) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.FINISH_MATCH_ONLINE_FAIL);
             return;
         }
         if (results != null) {
-            Games.TurnBasedMultiplayer.finishMatch(GooglePlay.getInstance().getApiClient(), match.getMatchId(), data, results).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
+            Games.TurnBasedMultiplayer.finishMatch(listener.getGameHelper().getApiClient(), match.getMatchId(), data, results).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                 @Override
                 public void onResult(TurnBasedMultiplayer.UpdateMatchResult updateMatchResult) {
                     if (updateMatchResult.getStatus().isSuccess()) {
@@ -767,7 +798,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
                 }
             });
         } else {
-            Games.TurnBasedMultiplayer.finishMatch(GooglePlay.getInstance().getApiClient(), match.getMatchId(), data).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
+            Games.TurnBasedMultiplayer.finishMatch(listener.getGameHelper().getApiClient(), match.getMatchId(), data).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                 @Override
                 public void onResult(TurnBasedMultiplayer.UpdateMatchResult updateMatchResult) {
                     if (updateMatchResult.getStatus().isSuccess()) {
@@ -782,11 +813,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void takeTurnOnline(@NonNull TurnBasedMatch match, @NonNull String nextParticipantId, @NonNull byte[] data) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.TAKE_TURN_ONLINE_FAIL);
             return;
         }
-        Games.TurnBasedMultiplayer.takeTurn(GooglePlay.getInstance().getApiClient(), match.getMatchId(), data, nextParticipantId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
+        Games.TurnBasedMultiplayer.takeTurn(listener.getGameHelper().getApiClient(), match.getMatchId(), data, nextParticipantId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
             @Override
             public void onResult(TurnBasedMultiplayer.UpdateMatchResult updateMatchResult) {
                 if (updateMatchResult.getStatus().isSuccess()) {
@@ -800,7 +831,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void loadMatchOnline(@NonNull TurnBasedMatch match) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_ONLINE_FAIL);
             return;
         }
@@ -809,11 +840,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void loadMatchOnline(@NonNull String matchId) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_ONLINE_FAIL);
             return;
         }
-        Games.TurnBasedMultiplayer.loadMatch(GooglePlay.getInstance().getApiClient(), matchId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.LoadMatchResult>() {
+        Games.TurnBasedMultiplayer.loadMatch(listener.getGameHelper().getApiClient(), matchId).setResultCallback(new ResultCallback<TurnBasedMultiplayer.LoadMatchResult>() {
             @Override
             public void onResult(TurnBasedMultiplayer.LoadMatchResult loadMatchResult) {
                 if (loadMatchResult.getStatus().isSuccess()) {
@@ -827,11 +858,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void saveGameLocal(@NonNull final byte[] data, @NonNull final Bitmap screenshot, @NonNull final String description, @NonNull String saveName) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
             return;
         }
-        Games.Snapshots.open(GooglePlay.getInstance().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
+        Games.Snapshots.open(listener.getGameHelper().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
             @Override
             public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
                 processAndWriteSnapshotResult(openSnapshotResult, 0, data, screenshot, description);
@@ -840,11 +871,11 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     }
 
     public final void loadGameLocal(@NonNull String saveName) {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_FAIL);
             return;
         }
-        Games.Snapshots.open(GooglePlay.getInstance().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
+        Games.Snapshots.open(listener.getGameHelper().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
             @Override
             public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
                 if (openSnapshotResult.getStatus().isSuccess()) {
@@ -887,7 +918,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
                 mResolvedSnapshot = conflictSnapshot;
             }
 
-            Games.Snapshots.resolveConflict(GooglePlay.getInstance().getApiClient(), result.getConflictId(), mResolvedSnapshot).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
+            Games.Snapshots.resolveConflict(listener.getGameHelper().getApiClient(), result.getConflictId(), mResolvedSnapshot).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
                 @Override
                 public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
                     if (retryCount < 3) {
@@ -914,7 +945,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
                 .setCoverImage(screenshot)
                 .setDescription(description)
                 .build();
-        Games.Snapshots.commitAndClose(GooglePlay.getInstance().getApiClient(), snapshot, metadataChange).setResultCallback(new ResultCallback<Snapshots.CommitSnapshotResult>() {
+        Games.Snapshots.commitAndClose(listener.getGameHelper().getApiClient(), snapshot, metadataChange).setResultCallback(new ResultCallback<Snapshots.CommitSnapshotResult>() {
             @Override
             public void onResult(Snapshots.CommitSnapshotResult commitSnapshotResult) {
                 if (commitSnapshotResult.getStatus().isSuccess()) {
@@ -931,7 +962,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
      * This adds the current user's playerId. This is important.
      */
     private Intent buildDeepLinkIntent() {
-        if (!GooglePlay.getInstance().isSignedIn()) {
+        if (!isSignedIn()) {
             return null;
         }
         Intent intent = new Intent();
@@ -943,7 +974,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         //Not really needed as default happens if you don't specify it.
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         //You must specify the current players user. It ensures that Google Play Games is logged in as the same person.
-        intent.putExtra("com.google.android.gms.games.ACCOUNT_KEY", Games.Players.getCurrentPlayerId(GooglePlay.getInstance().getApiClient()));
+        intent.putExtra("com.google.android.gms.games.ACCOUNT_KEY", Games.Players.getCurrentPlayerId(listener.getGameHelper().getApiClient()));
         //I have not tested with this but there is an option to specify the minimum version
         //intent.putExtra("com.google.android.gms.games.MIN_VERSION", ???);
         return intent;
@@ -979,7 +1010,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             return false;
         }
         intent.putExtra("com.google.android.gms.games.SCREEN", 1050);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(GooglePlay.getInstance().getApiClient()));
+        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
         return startGooglePlayGames(intent);
     }
 
@@ -992,7 +1023,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             return false;
         }
         intent.putExtra("com.google.android.gms.games.SCREEN", 1051);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(GooglePlay.getInstance().getApiClient()));
+        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
         return startGooglePlayGames(intent);
     }
 
@@ -1005,7 +1036,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             return false;
         }
         intent.putExtra("com.google.android.gms.games.SCREEN", 1052);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(GooglePlay.getInstance().getApiClient()));
+        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
         return startGooglePlayGames(intent);
     }
 
@@ -1018,7 +1049,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             return false;
         }
         intent.putExtra("com.google.android.gms.games.SCREEN", 1053);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(GooglePlay.getInstance().getApiClient()));
+        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
         intent.putExtra("com.google.android.gms.games.LEADERBOARD_ID", leaderboardId);
         return startGooglePlayGames(intent);
     }
@@ -1032,7 +1063,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             return false;
         }
         intent.putExtra("com.google.android.gms.games.SCREEN", 1054);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(GooglePlay.getInstance().getApiClient()));
+        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
         return startGooglePlayGames(intent);
     }
 
@@ -1045,7 +1076,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
             return false;
         }
         intent.putExtra("com.google.android.gms.games.SCREEN", 1055);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(GooglePlay.getInstance().getApiClient()));
+        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
         return startGooglePlayGames(intent);
     }
 
@@ -1090,5 +1121,7 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         intent.putExtra("com.google.android.gms.games.SCREEN", 1200);
         return startGooglePlayGames(intent);
     }
+
+
 
 }

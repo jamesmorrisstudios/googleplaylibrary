@@ -18,7 +18,8 @@ public class LeaderboardItem extends BaseRecycleItem {
     public final long playerRank;
     public final Player player;
 
-    public LeaderboardItem(@NonNull String displayName, @Nullable Uri icon, @NonNull String displayPlayerRank, @NonNull String displayPlayerScore, long playerRank, @NonNull Player player) {
+    public LeaderboardItem(@NonNull String displayName, @Nullable Uri icon, @NonNull String displayPlayerRank,
+                           @NonNull String displayPlayerScore, long playerRank, @NonNull Player player) {
         this.displayName = displayName;
         this.icon = icon;
         this.displayPlayerRank = displayPlayerRank;

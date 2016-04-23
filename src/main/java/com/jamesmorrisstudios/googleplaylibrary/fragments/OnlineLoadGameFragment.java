@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.jamesmorrisstudios.appbaselibrary.Bus;
 import com.jamesmorrisstudios.appbaselibrary.UtilsVersion;
@@ -32,10 +33,10 @@ import java.util.ArrayList;
  */
 public class OnlineLoadGameFragment extends BaseRecycleListFragment {
     public static final String TAG = "OnlineLoadGameFragment";
-
     private MoPubRecyclerAdapter myMoPubAdapter;
     private BaseRecycleAdapter adapter;
 
+    @NonNull
     @Override
     protected BaseRecycleAdapter getAdapter(@NonNull BaseRecycleAdapter.OnRecycleAdapterEventsListener mListener) {
         adapter = new OnlineLoadGameAdapter(mListener);
@@ -57,6 +58,7 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
         return adapter;
     }
 
+    @NonNull
     @Override
     protected final RecyclerView.Adapter getAdapterToSet() {
         if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
@@ -211,20 +213,28 @@ public class OnlineLoadGameFragment extends BaseRecycleListFragment {
     }
 
     @Override
-    protected void saveState(Bundle bundle) {
+    protected void saveState(@NonNull Bundle bundle) {
 
     }
 
     @Override
-    protected void restoreState(Bundle bundle) {
+    protected void restoreState(@NonNull Bundle bundle) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String adId = UtilsAds.getMopubNativeAdIdFull();
+        if (myMoPubAdapter != null && adId != null && !UtilsVersion.isPro()) {
+            myMoPubAdapter.loadAds(adId);
+        }
     }
 
     @Override
     protected void afterViewCreated() {
         setEnablePullToRefresh(true);
-        if (myMoPubAdapter != null && !UtilsVersion.isPro()) {
-            myMoPubAdapter.loadAds(UtilsAds.getMopubNativeAdIdFull());
-        }
+        hideFab();
     }
+
 }

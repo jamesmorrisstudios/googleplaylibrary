@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_achievement"
+        android:src="@drawable/ic_games_achievements"
         android:tint="?attr/colorIconTint" />
 
     <!-- Main Text -->
