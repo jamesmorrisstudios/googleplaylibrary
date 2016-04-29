@@ -808,12 +808,6 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             } else {
                 loadMatchOnline((TurnBasedMatch) data.getParcelableExtra(Multiplayer.EXTRA_TURN_BASED_MATCH));
             }
-        } else if (requestCode == RC_LOOK_AT_SNAPSHOTS) {
-            if (data == null || resultCode != Activity.RESULT_OK) {
-                Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_LOAD_MATCH_LOCAL_FAIL);
-            } else {
-                loadMatchLocal((SnapshotMetadata) data.getParcelableExtra(Snapshots.EXTRA_SNAPSHOT_METADATA));
-            }
         } else if (requestCode >= RC_SELECT_PLAYERS && requestCode <= RC_SELECT_PLAYERS + 100) {
             if (data == null || resultCode != Activity.RESULT_OK) {
                 Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_PLAYERS_ONLINE_FAIL);
@@ -848,16 +842,6 @@ public abstract class GooglePlayActivity extends BaseActivity implements
                 .setAutoMatchCriteria(autoMatchCriteria).build();
 
         GooglePlayCalls.getInstance().startMatchOnline(matchConfig);
-    }
-
-    //TODO
-    private void loadMatchLocal(@Nullable SnapshotMetadata snapshotMetadata) {
-        if (snapshotMetadata != null) {
-            Log.v("Activity", "Load Local");
-            GooglePlayCalls.getInstance().loadGameLocal(snapshotMetadata.getUniqueName());
-        } else {
-            Bus.postEnum(GooglePlay.GooglePlayEvent.SELECT_LOAD_MATCH_LOCAL_FAIL);
-        }
     }
 
     //TODO

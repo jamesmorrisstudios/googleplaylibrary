@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by James on 5/11/2015.
  */
-public class GooglePlayCalls extends GooglePlayCallsBase {
+public class GooglePlayCalls {
     public static final String TAG = "GooglePlayCalls";
     private static GooglePlayCalls instance = null;
     private GooglePlay.GooglePlayListener listener;
@@ -74,9 +74,6 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
     private String[] leaderboardIds = null;
     private String[] achievementIds = null;
     private ArrayList<OnlineSaveItem> onlineSaveItems = null;
-
-    //Local save cache
-    private byte[] localSaveData = null;
 
     //Online save cache
     private TurnBasedMatch onlineMatch;
@@ -857,271 +854,24 @@ public class GooglePlayCalls extends GooglePlayCallsBase {
         });
     }
 
-    public final void saveGameLocal(@NonNull final byte[] data, @NonNull final Bitmap screenshot, @NonNull final String description, @NonNull String saveName) {
-        if (!isSignedIn()) {
-            Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
-            return;
-        }
-        Games.Snapshots.open(listener.getGameHelper().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
-            @Override
-            public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
-                processAndWriteSnapshotResult(openSnapshotResult, 0, data, screenshot, description);
-            }
-        }, timeout, timeUnit);
-    }
-
-    public final void loadGameLocal(@NonNull String saveName) {
-        if (!isSignedIn()) {
-            Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_FAIL);
-            return;
-        }
-        Games.Snapshots.open(listener.getGameHelper().getApiClient(), saveName, true).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
-            @Override
-            public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
-                if (openSnapshotResult.getStatus().isSuccess()) {
-                    Snapshot snapshot = openSnapshotResult.getSnapshot();
-                    try {
-                        localSaveData = snapshot.getSnapshotContents().readFully();
-                        Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_SUCCESS);
-                    } catch (IOException e) {
-                        Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_FAIL);
-                    }
-                } else {
-                    Bus.postEnum(GooglePlay.GooglePlayEvent.LOAD_MATCH_LOCAL_FAIL);
-                }
-            }
-        }, timeout, timeUnit);
-    }
-
     /**
-     * Conflict resolution for when Snapshots are opened.
+     * Gets the Achievements state
      *
-     * @param result The open snapshot result to resolve on open.
+     * @param ach Achievement
+     * @return The Achievement state
      */
-    private void processAndWriteSnapshotResult(@NonNull Snapshots.OpenSnapshotResult result, final int retryCount,
-                                               @NonNull final byte[] data, @NonNull final Bitmap screenshot, @NonNull final String description) {
-        Snapshot mResolvedSnapshot;
-        int status = result.getStatus().getStatusCode();
-
-        if (status == GamesStatusCodes.STATUS_OK) {
-            writeSnapshot(result.getSnapshot(), data, screenshot, description);
-        } else if (status == GamesStatusCodes.STATUS_SNAPSHOT_CONTENTS_UNAVAILABLE) {
-            writeSnapshot(result.getSnapshot(), data, screenshot, description);
-        } else if (status == GamesStatusCodes.STATUS_SNAPSHOT_CONFLICT) {
-            Snapshot snapshot = result.getSnapshot();
-            Snapshot conflictSnapshot = result.getConflictingSnapshot();
-
-            // Resolve between conflicts by selecting the newest of the conflicting snapshots.
-            mResolvedSnapshot = snapshot;
-
-            if (snapshot.getMetadata().getLastModifiedTimestamp() < conflictSnapshot.getMetadata().getLastModifiedTimestamp()) {
-                mResolvedSnapshot = conflictSnapshot;
-            }
-
-            Games.Snapshots.resolveConflict(listener.getGameHelper().getApiClient(), result.getConflictId(), mResolvedSnapshot).setResultCallback(new ResultCallback<Snapshots.OpenSnapshotResult>() {
-                @Override
-                public void onResult(Snapshots.OpenSnapshotResult openSnapshotResult) {
-                    if (retryCount < 3) {
-                        processAndWriteSnapshotResult(openSnapshotResult, retryCount + 1, data, screenshot, description);
-                    } else {
-                        Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
-                    }
-                }
-            }, timeout, timeUnit);
-        } else {
-            Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
+    @NonNull
+    protected final AchievementItem.AchievementState getAchievementState(@NonNull Achievement ach) {
+        switch (ach.getState()) {
+            case Achievement.STATE_HIDDEN:
+                return AchievementItem.AchievementState.HIDDEN;
+            case Achievement.STATE_REVEALED:
+                return AchievementItem.AchievementState.REVEALED;
+            case Achievement.STATE_UNLOCKED:
+                return AchievementItem.AchievementState.UNLOCKED;
+            default:
+                return AchievementItem.AchievementState.REVEALED;
         }
     }
-
-    /**
-     * Generates metadata, takes a screenshot, and performs the write operation for saving a snapshot.
-     */
-    private void writeSnapshot(@NonNull Snapshot snapshot, @NonNull byte[] data, @NonNull Bitmap screenshot, @NonNull String description) {
-        // Set the data payload for the snapshot.
-        snapshot.getSnapshotContents().writeBytes(data);
-        // Save the snapshot.
-        SnapshotMetadataChange metadataChange;
-        metadataChange = new SnapshotMetadataChange.Builder()
-                .setCoverImage(screenshot)
-                .setDescription(description)
-                .build();
-        Games.Snapshots.commitAndClose(listener.getGameHelper().getApiClient(), snapshot, metadataChange).setResultCallback(new ResultCallback<Snapshots.CommitSnapshotResult>() {
-            @Override
-            public void onResult(Snapshots.CommitSnapshotResult commitSnapshotResult) {
-                if (commitSnapshotResult.getStatus().isSuccess()) {
-                    Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_SUCCESS);
-                } else {
-                    Bus.postEnum(GooglePlay.GooglePlayEvent.SAVE_MATCH_LOCAL_FAIL);
-                }
-            }
-        }, timeout, timeUnit);
-    }
-
-    /**
-     * Build the basic intent. This is common to all linked pages
-     * This adds the current user's playerId. This is important.
-     */
-    private Intent buildDeepLinkIntent() {
-        if (!isSignedIn()) {
-            return null;
-        }
-        Intent intent = new Intent();
-        //Clear the activity so the back button returns to your app
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //Manually specify the package and activity name
-        intent.setComponent(new ComponentName("com.google.android.ic_play_match.games", "com.google.android.gms.games.ui.destination.api.ApiActivity"));
-        //Not really needed as default happens if you don't specify it.
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        //You must specify the current players user. It ensures that Google Play Games is logged in as the same person.
-        intent.putExtra("com.google.android.gms.games.ACCOUNT_KEY", Games.Players.getCurrentPlayerId(listener.getGameHelper().getApiClient()));
-        //I have not tested with this but there is an option to specify the minimum version
-        //intent.putExtra("com.google.android.gms.games.MIN_VERSION", ???);
-        return intent;
-    }
-
-    /**
-     * Fire the intent if Google Play Games is installed.
-     * Otherwise handle the error
-     */
-    private boolean startGooglePlayGames(Intent intent) {
-        AppBase.getContext().startActivity(intent);
-        return true;
-        /*
-        //This assumes it is running in a fragment. Adjust getActivity() as needed.
-        PackageManager packageManager = AppBase.getContext().getPackageManager();
-        List activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        boolean isIntentSafe = activities.size() > 0;
-        if(isIntentSafe) {
-            AppBase.getContext().startActivity(intent);
-            return true;
-        } else {
-            return false;
-        }
-        */
-    }
-
-    /**
-     * Launches the about screen for your game
-     */
-    public final boolean launchGPSAbout() {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1050);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
-        return startGooglePlayGames(intent);
-    }
-
-    /**
-     * Launches the achievements page
-     */
-    public final boolean launchGPSAchievements() {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1051);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
-        return startGooglePlayGames(intent);
-    }
-
-    /**
-     * Launches the leaderboards page
-     */
-    public final boolean launchGPSLeaderboards() {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1052);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
-        return startGooglePlayGames(intent);
-    }
-
-    /**
-     * Launches to a specific ic_leaderboard. You must specify the leaderboardId
-     */
-    public final boolean launchGPSLeaderboard(String leaderboardId) {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1053);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
-        intent.putExtra("com.google.android.gms.games.LEADERBOARD_ID", leaderboardId);
-        return startGooglePlayGames(intent);
-    }
-
-    /**
-     * Launches the list of players (in your circles) with this game.
-     */
-    public final boolean launchGPSPlayers() {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1054);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
-        return startGooglePlayGames(intent);
-    }
-
-    /**
-     * Launches the quests available for this game
-     */
-    public final boolean launchGPSQuests() {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1055);
-        intent.putExtra("com.google.android.gms.games.GAME", Games.GamesMetadata.getCurrentGame(listener.getGameHelper().getApiClient()));
-        return startGooglePlayGames(intent);
-    }
-
-    /**
-     * Shows the current players profile
-     */
-    public final boolean launchGPSProfile() {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1101);
-        return startGooglePlayGames(intent);
-    }
-
-    /**
-     * Shows the compare profiles page. You must pass a full Player object for the second player.
-     * Make sure you use .freeze() on it so you can release your buffers.
-     */
-    public final boolean launchGPSProfileCompare(Player player) {
-        //Bus.postObject(new CompareProfilesRequest(player));
-        //return true;
-
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1102);
-        intent.putExtra("com.google.android.gms.games.OTHER_PLAYER", player);
-        return startGooglePlayGames(intent);
-
-    }
-
-    /**
-     * Show the inbox (matches) list.
-     */
-    public final boolean launchGPSInbox() {
-        Intent intent = buildDeepLinkIntent();
-        if (intent == null) {
-            return false;
-        }
-        intent.putExtra("com.google.android.gms.games.SCREEN", 1200);
-        return startGooglePlayGames(intent);
-    }
-
-
 
 }
