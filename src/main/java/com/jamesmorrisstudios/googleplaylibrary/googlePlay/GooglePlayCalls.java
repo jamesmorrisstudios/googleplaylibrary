@@ -1,8 +1,5 @@
 package com.jamesmorrisstudios.googleplaylibrary.googlePlay;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,6 +7,7 @@ import android.util.Log;
 import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.common.api.BatchResult;
 import com.google.android.gms.common.api.BatchResultToken;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -21,6 +19,7 @@ import com.google.android.gms.games.Players;
 import com.google.android.gms.games.achievement.Achievement;
 import com.google.android.gms.games.achievement.AchievementBuffer;
 import com.google.android.gms.games.achievement.Achievements;
+import com.google.android.gms.games.internal.api.TurnBasedMultiplayerImpl;
 import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.google.android.gms.games.leaderboard.LeaderboardBuffer;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
@@ -28,18 +27,18 @@ import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.games.multiplayer.Invitation;
+import com.google.android.gms.games.multiplayer.ParticipantEntity;
+import com.google.android.gms.games.multiplayer.ParticipantEntityCreator;
 import com.google.android.gms.games.multiplayer.ParticipantResult;
 import com.google.android.gms.games.multiplayer.turnbased.LoadMatchesResponse;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchEntity;
+import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchEntityCreator;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
-import com.google.android.gms.games.snapshot.Snapshot;
-import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
-import com.google.android.gms.games.snapshot.Snapshots;
 import com.jamesmorrisstudios.appbaselibrary.Bus;
 import com.jamesmorrisstudios.appbaselibrary.Logger;
 import com.jamesmorrisstudios.appbaselibrary.Utils;
-import com.jamesmorrisstudios.appbaselibrary.app.AppBase;
 import com.jamesmorrisstudios.googleplaylibrary.data.AchievementItem;
 import com.jamesmorrisstudios.googleplaylibrary.data.LeaderboardItem;
 import com.jamesmorrisstudios.googleplaylibrary.data.LeaderboardMetaItem;
@@ -47,7 +46,6 @@ import com.jamesmorrisstudios.googleplaylibrary.data.LeaderboardMetaVariantItem;
 import com.jamesmorrisstudios.googleplaylibrary.data.OnlineSaveItem;
 import com.jamesmorrisstudios.googleplaylibrary.data.PlayerPickerItem;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -126,6 +124,12 @@ public class GooglePlayCalls {
     public final Player getCurrentPlayer() {
         return Games.Players.getCurrentPlayer(listener.getGameHelper().getApiClient());
     }
+
+
+
+
+
+
 
     public synchronized final void loadPlayersActive(boolean forceRefresh) {
         if (hasPlayersActive() && !forceRefresh) {
@@ -263,6 +267,11 @@ public class GooglePlayCalls {
         return playersAllMore != null;
     }
 
+
+
+
+
+
     /**
      * Downloads the achievements to a cached copy.
      * Retrieve with getAchievements
@@ -372,6 +381,11 @@ public class GooglePlayCalls {
     public final void incrementAchievement(@NonNull String achievementId, int numberIncrements) {
         Games.Achievements.increment(listener.getGameHelper().getApiClient(), achievementId, numberIncrements);
     }
+
+
+
+
+
 
     public synchronized final void loadLeaderboardsMeta(boolean forceRefresh, @NonNull final String[] leaderboardIds) {
         Log.v("GooglePlayCalls", "Load ic_leaderboard Meta Data");
@@ -488,6 +502,10 @@ public class GooglePlayCalls {
         return leaderboardsMeta != null;
     }
 
+
+
+
+
     public synchronized final void loadLeaderboards(boolean forceRefresh, @Nullable final String leaderboardId) {
         if (hasLeaderboards() && !forceRefresh) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.LEADERBOARDS_READY);
@@ -599,6 +617,16 @@ public class GooglePlayCalls {
         clearLeaderboardsCache();
     }
 
+    public final void updateLeaderboard(@NonNull String leaderboardId, long value) {
+        if (!isSignedIn()) {
+            //TODO error
+            return;
+        }
+        Games.Leaderboards.submitScore(listener.getGameHelper().getApiClient(), leaderboardId, value);
+    }
+
+
+
     public synchronized final void loadOnlineSaves(boolean forceRefresh) {
         if (hasOnlineSaveItems() && !forceRefresh) {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ONLINE_SAVE_ITEM_LOAD_READY);
@@ -608,6 +636,8 @@ public class GooglePlayCalls {
             Bus.postEnum(GooglePlay.GooglePlayEvent.ONLINE_SAVE_ITEM_LOAD_FAIL);
             return;
         }
+
+
         Games.TurnBasedMultiplayer.loadMatchesByStatus(listener.getGameHelper().getApiClient(),
                 new int[]{TurnBasedMatch.MATCH_TURN_STATUS_INVITED, TurnBasedMatch.MATCH_TURN_STATUS_MY_TURN, TurnBasedMatch.MATCH_TURN_STATUS_THEIR_TURN,
                         TurnBasedMatch.MATCH_TURN_STATUS_COMPLETE}).setResultCallback(new ResultCallback<TurnBasedMultiplayer.LoadMatchesResult>() {
@@ -707,13 +737,7 @@ public class GooglePlayCalls {
         return new ArrayList<>();
     }
 
-    public final void updateLeaderboard(@NonNull String leaderboardId, long value) {
-        if (!isSignedIn()) {
-            //TODO error
-            return;
-        }
-        Games.Leaderboards.submitScore(listener.getGameHelper().getApiClient(), leaderboardId, value);
-    }
+
 
     public final void acceptInvitationOnline(@NonNull Invitation invitation) {
         if (!isSignedIn()) {

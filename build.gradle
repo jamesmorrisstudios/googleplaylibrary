@@ -50,9 +50,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar']) //For Chartboost
-    compile('com.mopub:mopub-sdk:4.5.1@aar') { transitive = true }
+    compile('com.mopub:mopub-sdk:4.6.1@aar') { transitive = true }
     compile 'com.google.android.gms:play-services-games:8.4.0'
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.jamesmorrisstudios:appbaselibrary:1.1' //local gradle
-    //compile 'com.github.morris-james:appbaselibrary:v1.1.1' //Jitpack
+    //compile 'com.github.jamesmorrisstudios:appbaselibrary:v1.1.1' //Jitpack
+    compile 'com.jamesmorrisstudios:jmsgameslibrary:1.0' //local gradle
 }

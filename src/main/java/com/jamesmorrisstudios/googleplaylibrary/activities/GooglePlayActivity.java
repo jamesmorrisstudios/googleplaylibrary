@@ -54,6 +54,8 @@ import com.jamesmorrisstudios.googleplaylibrary.iab.IabResult;
 import com.jamesmorrisstudios.googleplaylibrary.iab.Inventory;
 import com.jamesmorrisstudios.googleplaylibrary.iab.Purchase;
 import com.jamesmorrisstudios.googleplaylibrary.util.UtilsAds;
+import com.jamesmorrisstudios.jmsgameslibrary.client.JMSGamesCalls;
+import com.jamesmorrisstudios.jmsgameslibrary.client.JMSHelper;
 import com.mopub.common.MoPub;
 import com.mopub.common.MoPubReward;
 import com.mopub.mobileads.MoPubErrorCode;
@@ -73,7 +75,9 @@ public abstract class GooglePlayActivity extends BaseActivity implements
         GameHelper.GameHelperListener,
         LeaderboardMetaFragment.OnLeaderboardMetaListener,
         LeaderboardFragment.OnLeaderboardListener,
-        MoPubInterstitial.InterstitialAdListener {
+        MoPubInterstitial.InterstitialAdListener,
+        JMSHelper.JMSHelperListener,
+        JMSGamesCalls.JMSListener {
 
     //Constants
     private final static String UPGRADE_PRO_SKU = "remove_ads_1";
@@ -82,6 +86,7 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     private final static int RC_SELECT_PLAYERS = 11000;
     // The game helper object. This class is mainly a wrapper around this object.
     protected GameHelper mHelper;
+    protected JMSHelper jmsHelper;
     // We expose these constants here because we don't want users of this class
     // to have to know about GameHelper at all.
     public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
@@ -210,6 +215,11 @@ public abstract class GooglePlayActivity extends BaseActivity implements
     protected abstract int getGooglePlayClients();
 
     /**
+     * @return The bitwise state of jms api clients to use
+     */
+    protected abstract int getJMSClients();
+
+    /**
      * @return Chartboost app id
      */
     @Nullable
@@ -283,6 +293,10 @@ public abstract class GooglePlayActivity extends BaseActivity implements
         MoPub.onCreate(this);
         Chartboost.startWithAppId(this, getChartboostAppId(), getChartboostAppSignature());
         Chartboost.onCreate(GooglePlayActivity.this);
+        if(jmsHelper == null) {
+            getJMSHelper();
+        }
+        jmsHelper.setup(this);
         //Check if google play services are available
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS) {
@@ -315,6 +329,10 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             mHelper.onStart(this);
             GooglePlayCalls.getInstance().attach(this);
         }
+        if(jmsHelper != null) {
+            jmsHelper.onStart();
+            JMSGamesCalls.getInstance().attach(this);
+        }
         MoPub.onStart(this);
         Chartboost.onStart(GooglePlayActivity.this);
     }
@@ -343,6 +361,10 @@ public abstract class GooglePlayActivity extends BaseActivity implements
         if (playServicesEnabled) {
             mHelper.onStop();
             GooglePlayCalls.getInstance().detach();
+        }
+        if(jmsHelper != null) {
+            jmsHelper.onStop();
+            JMSGamesCalls.getInstance().detach();
         }
         MoPub.onStop(this);
         Chartboost.onStop(GooglePlayActivity.this);
@@ -384,6 +406,7 @@ public abstract class GooglePlayActivity extends BaseActivity implements
         }
     }
 
+    @Override
     @NonNull
     public final GameHelper getGameHelper() {
         if (mHelper == null) {
@@ -391,6 +414,15 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             mHelper.enableDebugLog(mDebugLog);
         }
         return mHelper;
+    }
+
+    @Override
+    @NonNull
+    public final JMSHelper getJMSHelper() {
+        if (jmsHelper == null) {
+            jmsHelper = new JMSHelper(getJMSClients());
+        }
+        return jmsHelper;
     }
 
     /**
@@ -781,6 +813,15 @@ public abstract class GooglePlayActivity extends BaseActivity implements
             Games.setViewForPopups(getApiClient(), view);
         }
         setPlayGamesEnabledPref(true);
+    }
+
+    public final void onJMSSignInFailed() {
+        //TODO
+    }
+
+    /** Called when sign-in succeeds. */
+    public final void onJMSSignInSucceeded() {
+        //TODO
     }
 
     /**
